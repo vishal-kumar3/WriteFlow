@@ -1,0 +1,191 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  coverImage    String?
+  password      String?
+  role          Role      @default(USER)
+  accounts      Account[]
+  about         About[]
+  blogs         Blog[]
+  comments      Comment[]
+  report        Report[]  @relation("IssuedBy")
+  reportedUser    Report[] @relation("ReportedUser")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model About {
+  id        String   @id @default(cuid())
+  userId    String
+  bio       String?
+  location  String?
+  website   String?
+  career    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Blog {
+  id           String    @id @default(cuid())
+  userId       String
+  title        String
+  content      String
+  isPublished  Boolean   @default(false)
+  thumbnail    String?
+  coverImage   String?
+  tags         String[]
+  noOfLikes    Int       @default(0)
+  //TODO: Add likes and other fields
+  // likes     User[] @relation("BlogLikes", references: [id])
+  noOfComments Int       @default(0)
+  noOfViews    Int       @default(0)
+  Comment      Comment[]
+  Report       Report[]  @relation("ReportedBlog")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+//TODO: Tag model
+
+model Comment {
+  id        String   @id @default(cuid())
+  userId    String?
+  blogId    String?
+  content   String
+  // Parent Comment ID
+  parentId  String?
+  noOfLikes Int      @default(0)
+  // likes     User[] @relation("CommentLikes", references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog     Blog?     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentParent", fields: [parentId], references: [id], onDelete: Cascade)
+  children Comment[] @relation("CommentParent")
+  Report   Report[]  @relation("ReportedComment")
+}
+
+model Log {
+  id      String    @id @default(cuid())
+  userId  String?
+  type    String
+  message String
+  request Request[]
+  error   Error[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Severity {
+  INFO
+  WARN
+  ERROR
+}
+
+model Request {
+  id         String  @id @default(cuid())
+  userId     String?
+  method     String
+  path       String
+  statusCode Int
+  duration   Int?
+  ip         String
+  userAgent  String
+  logId      String
+  log        Log     @relation(fields: [logId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Error {
+  id       String   @id @default(cuid())
+  userId   String?
+  message  String
+  stack    String?
+  severity Severity
+  logId    String
+  log      Log      @relation(fields: [logId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Report {
+  id                String       @id @default(cuid())
+  title             String
+  issue             String
+  status            ReportStatus @default(PENDING)
+  closedBy          String?
+  reportedUserId    String?
+  reportedBlogId    String?
+  reportedCommentId String?
+  createdBy         String?
+  reportedUser      User?        @relation(name: "ReportedUser", fields: [reportedUserId], references: [id])
+  reportedBlog      Blog?        @relation(name: "ReportedBlog", fields: [reportedBlogId], references: [id])
+  reportedComment   Comment?     @relation(name: "ReportedComment", fields: [reportedCommentId], references: [id])
+  issuedBy          User?        @relation(name: "IssuedBy", fields: [createdBy], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  REJECTED
+}
