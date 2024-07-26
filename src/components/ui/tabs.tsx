@@ -26,6 +26,9 @@ const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
 >(({ className, ...props }, ref) => (
+
+  //TODO: URL State management agar chahiye hoga to hi
+
   <TabsPrimitive.Trigger
     ref={ref}
     className={cn(
