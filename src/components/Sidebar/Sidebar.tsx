@@ -42,7 +42,7 @@ const SideBar = async() => {
         </div>
       </div>
       <div className="pb-5">
-        <LinkButton link="/user/settings">Logout</LinkButton>
+        <LinkButton link="/user/logout">Logout</LinkButton>
         <LinkButton link="/user/settings">Settings</LinkButton>
       </div>
     </div>
