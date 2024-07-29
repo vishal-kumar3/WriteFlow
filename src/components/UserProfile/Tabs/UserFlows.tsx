@@ -37,7 +37,7 @@ export const UserFlowsCard = ({title, thumbnail, description, publishDate}: User
   return (
     <Card className="border-none pt-2">
       <CardContent className="pb-0">
-        <div className="max-w-[95%] bg-pink-200 h-[200px] mx-auto"></div>
+        <div className="max-w-[70%] bg-pink-200 h-[200px] mx-auto"></div>
       </CardContent>
       <CardHeader>
         <CardTitle className="line-clamp-1">{title}</CardTitle>
