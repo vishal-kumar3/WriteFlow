@@ -4,9 +4,21 @@ import Link from "next/link";
 import LinkButton from "./LinkButton";
 import { auth } from "@/auth";
 
-const SideBar = async() => {
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "../ui/label";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
 
-  const session = await auth()
+const SideBar = async () => {
+  const session = await auth();
 
   return (
     <div className="h-screen pt-5 px-2 md:flex flex-col justify-between border-r">
@@ -17,13 +29,41 @@ const SideBar = async() => {
 
         {/* sb buttons yaha */}
         <div className="flex flex-col gap-1">
-          <LinkButton imageUrl={session?.user?.image || ""} link={`/user/${session?.user?.id}`}>
+          <LinkButton
+            imageUrl={session?.user?.image || ""}
+            link={`/user/${session?.user?.id}`}
+          >
             Profile
           </LinkButton>
           <LinkButton icon={"/home"}>Feeds</LinkButton>
-          <LinkButton icon={""} link={`/blog/create`}>
-            Write Flow
-          </LinkButton>
+          <Dialog>
+            <DialogTrigger asChild>
+              <LinkButton icon={""} link={`#`}>
+                Write Flow
+              </LinkButton>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Write Your Flow</DialogTitle>
+              </DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="name" className="text-right">
+                    Title
+                  </Label>
+                  <Input
+                    id="name"
+                    defaultValue="Pedro Duarte"
+                    className="col-span-3"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button type="submit">Create Flow</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
           <LinkButton icon={""} link={`/user/friends`}>
             Friends
           </LinkButton>
