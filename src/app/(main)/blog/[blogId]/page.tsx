@@ -28,7 +28,7 @@ const page = (props: props) => {
   }, [content, setContent])
 
   return (
-    <div>
+    <div className='mx-auto'>
       <Editor initialValue={defaultValue} onChange={setContent} />
     </div>
   )

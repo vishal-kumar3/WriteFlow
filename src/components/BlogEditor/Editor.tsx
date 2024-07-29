@@ -25,6 +25,7 @@ import { ColorSelector } from "./selectors/color-selector";
 import { useDebouncedCallback } from "use-debounce";
 import { MathSelector } from "./selectors/math-selector";
 import GenerativeMenuSwitch from "./generative/generative-menu-switch";
+import { defaultValue } from "@/app/(main)/blog/[blogId]/page";
 
 interface EditorProps {
   initialValue?: JSONContent;
@@ -35,7 +36,7 @@ const extensions = [...defaultExtensions, slashCommand];
 
 
 const Editor = ({ initialValue, onChange }: EditorProps) => {
-  const [initialContent, setInitialContent] = useState<null | JSONContent>(null);
+  const [initialContent, setInitialContent] = useState<null | JSONContent>(defaultValue);
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [charsCount, setCharsCount] = useState();
 
@@ -50,7 +51,7 @@ const Editor = ({ initialValue, onChange }: EditorProps) => {
     doc.querySelectorAll('pre code').forEach((el) => {
       // @ts-ignore
       // https://highlightjs.readthedocs.io/en/latest/api.html?highlight=highlightElement#highlightelement
-      hljs.highlightElement(el);
+      el.highlightElement(el);
     });
     return new XMLSerializer().serializeToString(doc);
   };
@@ -61,6 +62,7 @@ const Editor = ({ initialValue, onChange }: EditorProps) => {
     window.localStorage.setItem("html-content", highlightCodeblocks(editor.getHTML()));
     window.localStorage.setItem("novel-content", JSON.stringify(json));
     window.localStorage.setItem("markdown", editor.storage.markdown.getMarkdown());
+    window.localStorage.setItem("blogHTML", editor.getHTML());
     setSaveStatus("Saved");
   }, 500);
 
@@ -73,7 +75,7 @@ const Editor = ({ initialValue, onChange }: EditorProps) => {
   if (!initialContent) return null;
 
   return (
-    <div className="relative w-full max-w-screen-lg">
+    <div className="relative mx-auto max-w-screen-lg">
       <div className="flex absolute right-5 top-5 z-10 mb-5 gap-2">
         <div className="rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">
           {saveStatus}
@@ -92,7 +94,7 @@ const Editor = ({ initialValue, onChange }: EditorProps) => {
         <EditorContent
           initialContent={initialContent}
           extensions={extensions}
-          className="relative min-h-[500px] w-full max-w-screen-lg border-muted bg-background sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:shadow-lg"
+          className="relative h-screen w-full max-w-screen-lg border-muted bg-background sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:shadow-lg"
           editorProps={{
             handleDOMEvents: {
               keydown: (_view, event) => handleCommandNavigation(event),
