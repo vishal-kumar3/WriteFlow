@@ -26,6 +26,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { MathSelector } from "./selectors/math-selector";
 import GenerativeMenuSwitch from "./generative/generative-menu-switch";
 import { defaultValue } from "@/app/(main)/blog/[blogId]/page";
+import EditorCoverImage from "./CoverImage";
 
 interface EditorProps {
   initialValue?: JSONContent;
@@ -75,7 +76,8 @@ const Editor = ({ initialValue, onChange }: EditorProps) => {
   if (!initialContent) return null;
 
   return (
-    <div className="relative mx-auto max-w-screen-lg">
+    <div className="relative w-full mx-auto max-w-screen-lg">
+      <EditorCoverImage />
       <div className="flex absolute right-5 top-5 z-10 mb-5 gap-2">
         <div className="rounded-lg bg-accent px-2 py-1 text-sm text-muted-foreground">
           {saveStatus}
@@ -92,6 +94,7 @@ const Editor = ({ initialValue, onChange }: EditorProps) => {
       </div>
       <EditorRoot>
         <EditorContent
+          immediatelyRender={false}
           initialContent={initialContent}
           extensions={extensions}
           className="relative h-screen w-full max-w-screen-lg border-muted bg-background sm:mb-[calc(20vh)] sm:rounded-lg sm:border sm:shadow-lg"
@@ -155,7 +158,9 @@ const Editor = ({ initialValue, onChange }: EditorProps) => {
             <ColorSelector open={openColor} onOpenChange={setOpenColor} />
           </GenerativeMenuSwitch>
         </EditorContent>
+        sdfsf
       </EditorRoot>
+      
     </div>
   );
 };
