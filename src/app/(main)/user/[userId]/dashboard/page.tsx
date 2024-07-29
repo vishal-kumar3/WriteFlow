@@ -70,7 +70,7 @@ const DashboardPage = (props: props) => {
       <div className="my-10">
         <div className="flex justify-between items-center">
           <h1 className="font-semibold mb-4">Your WriteFlow Stats</h1>
-          <p className="text-blue-400">Go to analytics -></p>
+          <p className="text-blue-400">Go to analytics -</p>
         </div>
         <div className="flex gap-10 justify-between items-center">
           <AnalyticsCard />
