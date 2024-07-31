@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["@uploadcare/blocks/types/jsx"],
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
