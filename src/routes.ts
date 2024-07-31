@@ -4,7 +4,6 @@
  */
 export const publicRoutes = [
   "/",
-
 ];
 
 /**
