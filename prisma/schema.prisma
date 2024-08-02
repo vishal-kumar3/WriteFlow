@@ -13,29 +13,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+//TODO: Add tags
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String    @unique
-  emailVerified DateTime?
-  image         String?
-  coverImage    String?
-  password      String?
-  role          Role      @default(USER)
-  accounts      Account[]
-  about         About[]
-  blogs         Blog[]
-  comments      Comment[]
-  report        Report[]  @relation("IssuedBy")
-  reportedUser    Report[] @relation("ReportedUser")
+  id             String    @id @default(cuid())
+  name           String?
+  email          String    @unique
+  emailVerified  DateTime?
+  image          String?
+  coverImage     String?
+  password       String?
+  role           Role      @default(USER)
+  accounts       Account?
+  about          About?
+  followerCount  Int       @default(0)
+  followingCount Int       @default(0)
+  likedBlogs     Like[]
+  followers      Follows[] @relation("follower")
+  following      Follows[] @relation("following")
+  blogs          Blog[]
+  comments       Comment[]
+  report         Report[]  @relation("IssuedBy")
+  reportedUser   Report[]  @relation("ReportedUser")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+model Follows {
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  @@id([followerId, followingId])
+}
+
 model About {
   id        String   @id @default(cuid())
-  userId    String
+  userId    String   @unique
   bio       String?
   location  String?
   website   String?
@@ -54,7 +69,7 @@ enum Role {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            String
+  userId            String  @unique
   type              String
   provider          String
   providerAccountId String
@@ -76,9 +91,9 @@ model Account {
 
 model Blog {
   id           String    @id @default(cuid())
-  userId       String
+  userId       String    @unique
   title        String
-  content      String
+  content      String?
   isPublished  Boolean   @default(false)
   thumbnail    String?
   coverImage   String?
@@ -97,11 +112,24 @@ model Blog {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Like {
+  id        String   @id @default(cuid())
+  userId    String?  @unique
+  blogId    String?
+  commentId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog    Blog?    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+}
+
 //TODO: Tag model
 
 model Comment {
   id        String   @id @default(cuid())
-  userId    String?
+  userId    String?  @unique
   blogId    String?
   content   String
   // Parent Comment ID
@@ -120,7 +148,7 @@ model Comment {
 
 model Log {
   id      String    @id @default(cuid())
-  userId  String?
+  userId  String?   @unique
   type    String
   message String
   request Request[]
@@ -138,7 +166,7 @@ enum Severity {
 
 model Request {
   id         String  @id @default(cuid())
-  userId     String?
+  userId     String? @unique
   method     String
   path       String
   statusCode Int
@@ -154,7 +182,7 @@ model Request {
 
 model Error {
   id       String   @id @default(cuid())
-  userId   String?
+  userId   String?  @unique
   message  String
   stack    String?
   severity Severity

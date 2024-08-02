@@ -1,4 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import CurrentUserOnly from '@/util/CurrentUserOnly'
 
 
 type Props = {
@@ -7,6 +8,7 @@ type Props = {
   LikedFlows: React.ReactNode
   Bookmarks: React.ReactNode
   DraftFlows: React.ReactNode
+  id: string
 }
 
 type UserTabContentProps = {
@@ -20,23 +22,27 @@ export const UserTabContent = ({value, children} : UserTabContentProps) => {
   )
 }
 
-const TabSwitcher = ({UserFlows, History, LikedFlows, Bookmarks, DraftFlows}: Props) => {
+const TabSwitcher = ({UserFlows, History, LikedFlows, Bookmarks, DraftFlows, id}: Props) => {
     return (
         <Tabs className='' defaultValue='UserFlows'>
             <TabsList className='w-full mx-auto space-x-8 bg-black/5 py-6'>
                 <TabsTrigger className='text-lg' value='UserFlows'>Flows</TabsTrigger>
-                <TabsTrigger className='text-lg' value='DraftFlows'>Draft Flows</TabsTrigger>
-                <TabsTrigger className='text-lg' value='LikedFlows'>Liked Flows</TabsTrigger>
-                <TabsTrigger className='text-lg' value='Bookmarks'>Bookmarks</TabsTrigger>
-                <TabsTrigger className='text-lg' value='History'>History</TabsTrigger>
+                <CurrentUserOnly userId={id}>
+                  <TabsTrigger className='text-lg' value='DraftFlows'>Draft Flows</TabsTrigger>
+                  <TabsTrigger className='text-lg' value='LikedFlows'>Liked Flows</TabsTrigger>
+                  <TabsTrigger className='text-lg' value='Bookmarks'>Bookmarks</TabsTrigger>
+                  <TabsTrigger className='text-lg' value='History'>History</TabsTrigger>
+                </CurrentUserOnly>
             </TabsList>
 
             <div>
               <UserTabContent value='UserFlows'>{UserFlows}</UserTabContent>
-              <UserTabContent value='DraftFlows'>{DraftFlows}</UserTabContent>
-              <UserTabContent value='History'>{History}</UserTabContent>
-              <UserTabContent value='LikedFlows'>{LikedFlows}</UserTabContent>
-              <UserTabContent value='Bookmarks'>{Bookmarks}</UserTabContent>
+              <CurrentUserOnly userId={id}>
+                <UserTabContent value='DraftFlows'>{DraftFlows}</UserTabContent>
+                <UserTabContent value='History'>{History}</UserTabContent>
+                <UserTabContent value='LikedFlows'>{LikedFlows}</UserTabContent>
+                <UserTabContent value='Bookmarks'>{Bookmarks}</UserTabContent>
+              </CurrentUserOnly>
             </div>
         </Tabs>
     )

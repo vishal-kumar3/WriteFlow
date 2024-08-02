@@ -25,8 +25,8 @@ export const ShowBadges = ({badgeArray}: ShowBadgesProps) => {
   return (
     <div className="space-x-2">
       {
-        badgeArray.map((badge: string) => (
-          <Badge>{badge}</Badge>
+        badgeArray.map((badge: string, key:number) => (
+          <Badge key={key}>{badge}</Badge>
         ))
       }
     </div>

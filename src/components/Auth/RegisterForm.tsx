@@ -26,15 +26,14 @@ import { FcGoogle } from "react-icons/fc";
 import SocialLogin from "./SocialLogin";
 import ErrorMessage from "./ErrorMessage";
 import SuccessMessage from "./SuccessMessage";
-import { register } from "@/actions/authActions";
+import { register } from "@/actions/auth.action";
 import { useState } from "react";
 
 type props = {};
 
 const RegisterForm = (props: props) => {
-
-  const [error, setError] = useState<string | undefined>("")
-  const [success, setSuccess] = useState<string | undefined>("")
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -46,16 +45,16 @@ const RegisterForm = (props: props) => {
     mode: "onChange",
   });
 
-  const onSubmit = async(data: z.infer<typeof registerFormSchema>) => {
-    setError("")
-    setSuccess("")
+  const onSubmit = async (data: z.infer<typeof registerFormSchema>) => {
+    setError("");
+    setSuccess("");
 
-    const res = await register(data)
+    const res = await register(data);
 
     // TODO: if success form.reset()
 
-    setError(res.error || "")
-    setSuccess(res.success || "")
+    setError(res.error || "");
+    setSuccess(res.success || "");
   };
 
   return (

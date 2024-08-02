@@ -3,7 +3,14 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { loginFormSchema } from "@/lib/schema";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import {
@@ -20,14 +27,13 @@ import SocialLogin from "./SocialLogin";
 import ErrorMessage from "./ErrorMessage";
 import SuccessMessage from "./SuccessMessage";
 import { useState } from "react";
-import { login } from "@/actions/authActions";
+import { login } from "@/actions/auth.action";
 
 type props = {};
 
 const LoginForm = (props: props) => {
-
-  const [error, setError] = useState<string | undefined>("")
-  const [success, setSuccess] = useState<string | undefined>("")
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -38,14 +44,14 @@ const LoginForm = (props: props) => {
     mode: "onChange",
   });
 
-  const onSubmit = async(data: z.infer<typeof loginFormSchema>) => {
-    setError("")
-    setSuccess("")
+  const onSubmit = async (data: z.infer<typeof loginFormSchema>) => {
+    setError("");
+    setSuccess("");
 
-    const res = await login(data)
+    const res = await login(data);
 
-    setError(res?.error || "")
-    setSuccess(res?.success || "")
+    setError(res?.error || "");
+    setSuccess(res?.success || "");
   };
 
   return (
@@ -106,7 +112,12 @@ const LoginForm = (props: props) => {
         </Form>
       </CardContent>
       <SocialLogin>
-        <p>Don't have an Account? <Link className="text-blue-500" href='/auth/register'>Sign Up</Link></p>
+        <p>
+          Don't have an Account?{" "}
+          <Link className="text-blue-500" href="/auth/register">
+            Sign Up
+          </Link>
+        </p>
       </SocialLogin>
     </Card>
   );

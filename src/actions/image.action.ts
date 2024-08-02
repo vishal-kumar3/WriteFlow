@@ -5,7 +5,6 @@ import { revalidatePath } from "next/cache";
 
 
 export const updateUserCoverImage = async(coverImage: string, userId: string) => {
-  console.log("coverImage", coverImage)
   if(!coverImage) return { error: 'No cover image provided' };
 
   const updatedCoverImage = await prisma.user.update({
@@ -23,7 +22,6 @@ export const updateUserCoverImage = async(coverImage: string, userId: string) =>
 }
 
 export const updateUserAvatarImage = async(avatarImage: string, userId: string) => {
-  console.log("AvatarImage", avatarImage)
 
   if(!avatarImage) return { error: 'No avatar image provided' };
 
