@@ -1,39 +1,74 @@
-import React from 'react'
-import { Badge } from '../ui/badge'
-import { Check, Cross, Plus, X } from 'lucide-react'
-import { Button } from '../ui/button'
-import { FcCancel } from 'react-icons/fc'
-import { Dialog } from '../ui/dialog'
-import { DialogPopup } from './DialogPopup'
+import React from "react";
+import { Badge } from "../ui/badge";
+import { Plus } from "lucide-react";
+import { Button } from "../ui/button";
+import { DialogPopup } from "./DialogPopup";
+import { updateUserAboutSection, UserAbout } from "@/actions/user.action";
+import CurrentUserOnly from "@/util/CurrentUserOnly";
 
-type props = {}
+export type AboutDetails = {
+  label: string;
+  id: string;
+  defaultValue: string;
+  placeholder: string;
+};
 
-const AboutSection = (props: props) => {
+type AboutSectionProps = {
+  userId: string;
+  name: string;
+  bio: string;
+  location: string;
+  website: string;
+  career: string;
+  tags: string[];
+  about: AboutDetails[];
+};
+
+const AboutSection = ({
+  userId,
+  bio,
+  location,
+  website,
+  career,
+  tags,
+  name,
+  about,
+}: AboutSectionProps) => {
   return (
     <>
-      <div className='flex gap-6'>
-        <p className=' text-3xl font-semibold'>Vishal Kumar</p>
-        <div className='flex gap-2 items-center'>
+      <div className="flex gap-6">
+        <p className=" text-3xl font-semibold">{name}</p>
+        <div className="flex gap-2 items-center">
           {/* //TODO: Dialog Popup to choose badges */}
-          <Badge>VishaL</Badge>
-          <Badge>VishaL</Badge>
-          <Badge>VishaL</Badge>
-          <Plus size={20} className='rounded-full hover:bg-black/50 hover:cursor-pointer' />
+          {tags.map((tag: string, index: number) => (
+            <Badge key={index}>{tag}</Badge>
+          ))}
+          <Plus
+            size={20}
+            className="rounded-full hover:bg-black/50 hover:cursor-pointer"
+          />
         </div>
       </div>
-      <div className='pl-4 text-black/70 '>
-        <p>Software Engineer</p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Inventore delectus sunt expedita quaerat cum quia molestiae, fugiat rerum id reprehenderit!
-        </p>
+      <div className="pl-4 text-black/70 ">
+        <p>{career}</p>
+        <p>{bio}</p>
       </div>
-      <div className='flex gap-3 items-center mt-3'>
-        {/* // TODO: Costimize the DialogPopup component */}
-        <DialogPopup></DialogPopup>
-        <Button variant="outline">Settings</Button>
-      </div>
+      <CurrentUserOnly userId={userId}>
+        <div className="flex gap-3 items-center mt-3">
+          {/* // TODO: Costimize the DialogPopup component */}
+          <DialogPopup
+            AboutSectionDetails={about}
+            userId={userId}
+            title="Edit Profile"
+            description="Make changes to your profile here. Click save when you're done."
+            button="Edit Profile"
+            action={updateUserAboutSection}
+          />
+          <Button variant="outline">Settings</Button>
+        </div>
+      </CurrentUserOnly>
     </>
-  )
-}
+  );
+};
 
-export default AboutSection
+export default AboutSection;

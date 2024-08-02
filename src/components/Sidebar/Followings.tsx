@@ -1,10 +1,16 @@
+import prisma from '@/prisma'
 import LinkButton from './LinkButton'
 
-const Followings = ({userId}: {userId: string}) => {
+const Followings = async({userId}: {userId: any}) => {
+
+  const followingUser = await prisma.user.findUnique({
+    where: {
+      id: userId
+    }
+  })
 
   return (
-    <></>
-    // <LinkButton imageUrl={followingUser?.avatarImage} link={`/user/${followingUser?._id}`}>{followingUser?.username}</LinkButton>
+    <LinkButton imageUrl={followingUser?.image!} link={`/user/${followingUser?.id}`}>{followingUser?.name}</LinkButton>
   )
 }
 
