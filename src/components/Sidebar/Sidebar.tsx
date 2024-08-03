@@ -18,6 +18,7 @@ import { Button } from "../ui/button";
 import { signOut } from "next-auth/react";
 import prisma from "@/prisma";
 import Followings from "./Followings";
+import CreateFlowForm from "../form/CreateFlowForm";
 
 const SideBar = async () => {
   const session = await auth();
@@ -34,6 +35,7 @@ const SideBar = async () => {
       }
     }
   })
+
 
   return (
     <div className="h-screen pt-5 px-2 md:flex flex-col justify-between border-r">
@@ -62,23 +64,7 @@ const SideBar = async () => {
               <DialogHeader>
                 <DialogTitle>Write Your Flow</DialogTitle>
               </DialogHeader>
-              <form action="">
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
-                      Title
-                    </Label>
-                    <Input
-                      id="name"
-                      defaultValue="Pedro Duarte"
-                      className="col-span-3"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button type="submit">Create Flow</Button>
-                </DialogFooter>
-              </form>
+              <CreateFlowForm />
             </DialogContent>
           </Dialog>
 
