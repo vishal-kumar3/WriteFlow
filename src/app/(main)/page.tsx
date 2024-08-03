@@ -8,15 +8,16 @@ import { getFlowForHome } from "@/actions/flow.action";
 
 type props = {};
 
-const HomePage = async(props: props) => {
+const HomePage = async ({ searchParams }: { searchParams: { search?: string } }) => {
 
-  const {error, data} = await getFlowForHome();
-  if(error) return <div>{error}</div>
+  const { error, data } = await getFlowForHome(searchParams.search!);
+  if (error) return <div>{error}</div>
 
   return (
     <div className="relative w-full">
-      <form className="sticky z-10 flex top-0 border-b-2 mt-0 w-full px-10 justify-between items-center h-[60px]">
+      <form method="GET" action="/" className="sticky z-10 flex top-0 border-b-2 mt-0 w-full px-10 justify-between items-center h-[60px]">
         <Input
+          name="search"
           className="outline-none max-w-[60%] mx-auto"
           placeholder="Search for Flows..."
           type="text"
