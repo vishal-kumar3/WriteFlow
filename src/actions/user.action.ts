@@ -13,7 +13,7 @@ export type UserAbout = {
 };
 
 export const updateUserAboutSection = async(formData: FormData) => {
-  
+
   const session = await auth()
   if(!session?.user?.id) return { error: 'No user id provided' };
 
@@ -153,3 +153,4 @@ export const followToggle = async(id: string) => {
   }
   return { error: 'Could not follow user' };
 }
+

@@ -8,7 +8,7 @@ import Bookmarks from "@/components/UserProfile/Tabs/Bookmarks";
 import DraftFlows from "@/components/UserProfile/Tabs/DraftFlows";
 import History from "@/components/UserProfile/Tabs/History";
 import LikedFlows from "@/components/UserProfile/Tabs/LikedFlows";
-import UserFlows from "@/components/UserProfile/Tabs/UserFlows";
+import UserFlows, { UserFlowsCardProps, UserFlowsProps } from "@/components/UserProfile/Tabs/UserFlows";
 import TabSwitcher from "@/components/UserProfile/TabSwitcher";
 import prisma from "@/prisma";
 import React from "react";
@@ -20,17 +20,26 @@ type props = {
 const page = async ({ params }: props) => {
   const { userId } = params;
 
-  const session = await auth();
-  const currentUserId = session?.user?.id;
-
   const user = await prisma.user.findUnique({
     where: {
       id: userId,
     },
     include: {
       about: true,
+      blogs: true
     },
   });
+
+  let UserFlowData: UserFlowsCardProps[] = [];
+  let DraftFlowData: UserFlowsCardProps[] = []
+
+  user?.blogs.map((blog) => {
+    if(blog.isPublished){
+      UserFlowData.push(blog)
+    } else {
+      DraftFlowData.push(blog)
+    }
+  })
 
   const AboutSectionDetails: AboutDetails[] = [
     {
@@ -96,15 +105,14 @@ const page = async ({ params }: props) => {
           career={user?.about?.career!}
           tags={["Vishal", "Tag", "Rag"]}
         />
-        {/* <SkillSection /> */}
         <div className=" mt-10">
           <TabSwitcher
             id={user?.id! || userId}
-            UserFlows={<UserFlows />}
+            UserFlows={<UserFlows data={UserFlowData} />}
             History={<History />}
             LikedFlows={<LikedFlows />}
             Bookmarks={<Bookmarks />}
-            DraftFlows={<DraftFlows />}
+            DraftFlows={<DraftFlows data={DraftFlowData} />}
           />
         </div>
       </div>

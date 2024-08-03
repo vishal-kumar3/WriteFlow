@@ -1,35 +1,23 @@
 import React from 'react'
-import { UserFlowsCard } from './UserFlows'
+import { UserFlowsCard, UserFlowsProps } from './UserFlows'
 
-type props = {}
 
-const DraftFlows = (props: props) => {
+const DraftFlows = ({data}: UserFlowsProps) => {
   return (
     <>
-      <UserFlowsCard
-        title="Draft Flows"
-        thumbnail="Card Thumbnail"
-        description="Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ea id obcaecati consequuntur quas rerum, impedit vero amet aut iste eligendi illum ipsum incidunt ducimus voluptates. Nobis, possimus? Magni molestias ducimus labore, in fugiat aperiam repellat aspernatur quisquam illo. Praesentium, omnis."
-        publishDate="Draft Flows Publish Date"
-      />
-      <UserFlowsCard
-        title="Draft Flows"
-        thumbnail="Card Thumbnail"
-        description="Draft Flows Description"
-        publishDate="Draft Flows Publish Date"
-      />
-      <UserFlowsCard
-        title="Draft Flows"
-        thumbnail="Card Thumbnail"
-        description="Draft Flows Description"
-        publishDate="Draft Flows Publish Date"
-      />
-      <UserFlowsCard
-        title="Draft Flows"
-        thumbnail="Card Thumbnail"
-        description="Draft Flows Description"
-        publishDate="Draft Flows Publish Date"
-      />
+      {
+        data.map((card, key) => (
+          <UserFlowsCard
+            key={key}
+            id={card.id}
+            title={card.title}
+            description={card.description}
+            isPublished={card.isPublished}
+            thumbnail={card.thumbnail}
+            createdAt={card.createdAt}
+          />
+        ))
+      }
     </>
   )
 }

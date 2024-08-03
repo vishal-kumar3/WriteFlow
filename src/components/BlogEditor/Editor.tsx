@@ -25,18 +25,17 @@ import { ColorSelector } from "./selectors/color-selector";
 import { useDebouncedCallback } from "use-debounce";
 import { MathSelector } from "./selectors/math-selector";
 import GenerativeMenuSwitch from "./generative/generative-menu-switch";
-import { defaultValue } from "@/app/(main)/blog/[blogId]/page";
+import { defaultValue } from "@/app/(main)/blog/draft/[draftId]/page";
 import EditorCoverImage from "./CoverImage";
 
 interface EditorProps {
   initialValue?: JSONContent;
-  onChange: (value: string) => void;
 }
 
 const extensions = [...defaultExtensions, slashCommand];
 
 
-const Editor = ({ initialValue, onChange }: EditorProps) => {
+const Editor = ({ initialValue }: EditorProps) => {
   const [initialContent, setInitialContent] = useState<null | JSONContent>(defaultValue);
   const [saveStatus, setSaveStatus] = useState("Saved");
   const [charsCount, setCharsCount] = useState();
@@ -160,7 +159,7 @@ const Editor = ({ initialValue, onChange }: EditorProps) => {
         </EditorContent>
         sdfsf
       </EditorRoot>
-      
+
     </div>
   );
 };

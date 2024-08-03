@@ -13,6 +13,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: "ucarecdn.com"
+      },
+      {
+        protocol: 'https',
+        hostname: "plus.unsplash.com",
       }
     ],
   },

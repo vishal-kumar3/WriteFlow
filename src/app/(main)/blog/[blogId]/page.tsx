@@ -1,37 +1,34 @@
-"use client"
-import Editor from '@/components/BlogEditor/Editor'
-import React, { useEffect, useState } from 'react'
+import prisma from "@/prisma";
 
-type props = {}
-
-export const defaultValue = {
-  "type": "doc",
-  "content": [
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": "Wow, this editor instance exports its content as JSON."
-        }
-      ]
-    }
-  ]
+type props = {
+  params: {
+    blogId: string
+  }
 }
 
-const page = (props: props) => {
+const PublishedBlog = async({params}: props) => {
+  const publishedId = params.blogId;
 
-  const [content, setContent] = useState('')
+  const blog = await prisma.blog.findFirst({
+    where: {
+      AND: [
+        { id: publishedId },
+        { isPublished: true}
+      ]
+    },
+    include: {
+      //TODO: include user but not password thing!!!
+      user: true
+    }
+  })
 
-  useEffect(() => {
-    console.log(content)
-  }, [content, setContent])
+  if(!blog) return <div>Blog not found</div>
 
   return (
-    <div className='mx-auto mt-20'>
-      <Editor initialValue={defaultValue} onChange={setContent} />
+    <div>
+      Title: {blog?.title}
     </div>
   )
 }
 
-export default page
+export default PublishedBlog
