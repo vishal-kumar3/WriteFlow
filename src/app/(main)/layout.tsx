@@ -9,6 +9,7 @@ type props = {
 const layout = ({ children }: props) => {
   return (
     <div className="relative flex h-[5000px]">
+      {/* @ts-expect-error Async Server Component */}
       <AuthUserOnly>
         <div className="sticky h-screen top-0 min-w-[17%]">
           <Sidebar />

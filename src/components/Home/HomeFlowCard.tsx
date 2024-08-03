@@ -29,19 +29,31 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "../ui/checkbox";
 import { reportUserOptions } from "./reportOptions";
 import { CheckboxDemo } from "./CheckBox";
+import { FlowData, FlowUser } from "./HomeFlows";
+import { formatDate } from "@/util/DateTime";
+import Image from "next/image";
+import { defaultThumbnail } from "../UserProfile/Tabs/UserFlows";
+import Link from "next/link";
 
-type props = {};
 
-export const UserCard = () => {
+export const UserCard = ({userData, createdAt}: {userData: FlowUser, createdAt: Date}) => {
   return (
     <div className="flex items-center justify-between">
-      <div className="flex items-center gap-4">
-        <div className="size-[40px] bg-red-300 rounded-full"></div>
-        <div className="text-sm leading-tight">
-          <p>User Name</p>
-          <p>Gmail Id | Date</p>
+      <Link href={`/user/${userData.id}`} className="flex items-center gap-4">
+        <div className="size-[50px] bg-red-300 rounded-full">
+          <Image
+            src={userData.image || defaultThumbnail}
+            alt="Picture of the author"
+            width={60}
+            height={60}
+            className="rounded-full w-full h-full object-cover object-center"
+          />
         </div>
-      </div>
+        <div className="text-sm leading-tight space-y-1">
+          <p className="font-semibold text-base">{userData.name}</p>
+          <p>isko change krna hoga {userData.email} | {formatDate(createdAt)}</p>
+        </div>
+      </Link>
       <Popover>
         <PopoverTrigger>
           <Tally3 className=" rotate-90" />
@@ -87,33 +99,42 @@ const ReportUserCard = () => {
 
 
 
+
 // TODO: Add top comment
-const HomeFlowCard = (props: props) => {
+const HomeFlowCard = ({flow}: FlowData) => {
   return (
     <div className="border-2 rounded-lg m-10 p-4">
-      <UserCard />
+      <UserCard userData={flow.user} createdAt={flow.createdAt} />
       <Card className="border-none">
-        <div className="flex">
+        <div className="flex w-full">
           <CardHeader className="p-0">
-            <CardTitle className="font-bold line-clamp-2 text-lg px-2 pt-2">
-              TITLE
-            </CardTitle>
-            <CardDescription className="px-2 line-clamp-4">
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dicta
-              quia vel, ad recusandae quo molestiae tempora illum numquam
-              possimus debitis.lorem20 Lorem ipsum dolor sit amet, consectetur
-              adipisicing elit. Veritatis, obcaecati! lorem Lorem ipsum dolor
-              sit amet consectetur adipisicing elit. Est, id?
-            </CardDescription>
+            <Link href={`/blog/${flow.id}`}>
+              <CardTitle className="font-bold line-clamp-2 text-lg px-2 pt-2">
+                {flow.title}
+              </CardTitle>
+              <CardDescription className="px-2 w-full line-clamp-4">
+                {flow.description}
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit, maiores itaque autem pariatur facilis tenetur, eius tempore ea dicta sapiente repudiandae dignissimos id et, cumque ab asperiores vel. Atque, reiciendis.
+              </CardDescription>
+            </Link>
           </CardHeader>
           {/* //TODO: Image */}
-          <CardContent className="min-w-[250px] min-h-[150px] rounded-lg bg-blue-300"></CardContent>
+          <CardContent className="min-w-[250px] min-h-[150px] rounded-lg bg-blue-300 p-0 overflow-hidden">
+  <div className="relative w-full h-full">
+    <Image
+      src={flow.thumbnail || defaultThumbnail}
+      alt="Picture of the author"
+      layout="fill"
+      className="object-cover"
+    />
+  </div>
+</CardContent>
         </div>
         <CardDescription className="px-2">
           ye vo sb Discussed and Liked this
         </CardDescription>
         <CardFooter className="flex px-2 justify-between items-center">
-          <div>Discuss . 101 Likes . 219 reads</div>
+          <div>Discuss . {flow.likeCount} Likes . {flow.noOfViews} reads</div>
           <div className="flex">
             <Badge>Holla</Badge>
             <Badge>Holla</Badge>
