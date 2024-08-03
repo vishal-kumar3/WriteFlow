@@ -1,5 +1,7 @@
 import React from 'react'
 import HomeFlowCard from './HomeFlowCard'
+import { auth } from '@/auth'
+import prisma from '@/prisma'
 
 type HomeFlowDataProps = {
   data: FlowData[]
@@ -25,13 +27,34 @@ export type FlowData = {
   user: FlowUser
 }
 
-const HomeFlows = ({ data }: HomeFlowDataProps) => {
+const HomeFlows = async({ data }: HomeFlowDataProps) => {
+
+  const session = await auth()
+  let userBookmarks: {id:string}[] = []
+
+  if(session){
+    const user = await prisma.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+      select: {
+        bookmarks: {
+          select: {
+            id: true
+          }
+        }
+      }
+    })
+
+    userBookmarks = user?.bookmarks || []
+  }
+
 
   return (
     <div className="max-w-[70%]">
       {
         data.map((flow, key) => (
-          <HomeFlowCard key={key} flow={flow} />
+          <HomeFlowCard key={key} userBookmark={userBookmarks} flow={flow} />
         ))
       }
     </div>

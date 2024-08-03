@@ -36,7 +36,7 @@ import { defaultThumbnail } from "../UserProfile/Tabs/UserFlows";
 import Link from "next/link";
 
 
-export const UserCard = ({userData, createdAt}: {userData: FlowUser, createdAt: Date}) => {
+export const UserCard = ({ userData, createdAt }: { userData: FlowUser, createdAt: Date }) => {
   return (
     <div className="flex items-center justify-between">
       <Link href={`/user/${userData.id}`} className="flex items-center gap-4">
@@ -90,7 +90,7 @@ const ReportUserCard = () => {
             />
           ))}
           <Input type="text" className="outline-none" placeholder="Please specify other issue"></Input>
-      <Button variant="destructive">Submit Report</Button>
+          <Button variant="destructive">Submit Report</Button>
         </div>
       </DialogContent>
     </Dialog>
@@ -101,7 +101,12 @@ const ReportUserCard = () => {
 
 
 // TODO: Add top comment
-const HomeFlowCard = ({flow}: FlowData) => {
+const HomeFlowCard = ({ flow, userBookmark }: {flow: FlowData, userBookmark: {id: string}[]}) => {
+  let isBookmarked = false;
+  userBookmark.map((bookmark) => {
+    if (bookmark.id === flow.id) isBookmarked = true;
+  })
+
   return (
     <div className="border-2 rounded-lg m-10 p-4">
       <UserCard userData={flow.user} createdAt={flow.createdAt} />
@@ -120,27 +125,31 @@ const HomeFlowCard = ({flow}: FlowData) => {
           </CardHeader>
           {/* //TODO: Image */}
           <CardContent className="min-w-[250px] min-h-[150px] rounded-lg bg-blue-300 p-0 overflow-hidden">
-  <div className="relative w-full h-full">
-    <Image
-      src={flow.thumbnail || defaultThumbnail}
-      alt="Picture of the author"
-      layout="fill"
-      className="object-cover"
-    />
-  </div>
-</CardContent>
+            <div className="relative w-full h-full">
+              <Image
+                src={flow.thumbnail || defaultThumbnail}
+                alt="Picture of the author"
+                layout="fill"
+                className="object-cover"
+              />
+            </div>
+          </CardContent>
         </div>
         <CardDescription className="px-2">
           ye vo sb Discussed and Liked this
         </CardDescription>
         <CardFooter className="flex px-2 justify-between items-center">
           <div>Discuss . {flow.likeCount} Likes . {flow.noOfViews} reads</div>
-          <div className="flex">
+          <div className="flex items-center">
             <Badge>Holla</Badge>
             <Badge>Holla</Badge>
             <Badge>Holla</Badge>
-            <Bookmark />
-            <BookmarkCheck />
+
+            <Button >
+              {
+                isBookmarked ? <BookmarkCheck /> : <Bookmark />
+              }
+            </Button>
           </div>
         </CardFooter>
       </Card>
