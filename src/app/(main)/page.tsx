@@ -1,13 +1,18 @@
-import React from "react";
 import { Input } from "@/components/ui/input";
 import { ModeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import { Bell } from "lucide-react";
-import HomeFlowCard from "@/components/Home/HomeFlowCard";
 import RightSidebar from "@/components/RightSidebar/RightSidebar";
+import AuthUserOnly from "@/util/AuthUserOnly";
+import HomeFlows from "@/components/Home/HomeFlows";
+import { getFlowForHome } from "@/actions/flow.action";
 
 type props = {};
 
-const page = (props: props) => {
+const HomePage = async(props: props) => {
+
+  const {error, data} = await getFlowForHome();
+  if(error) return <div>{error}</div>
+
   return (
     <div className="relative w-full">
       <form className="sticky z-10 flex top-0 border-b-2 mt-0 w-full px-10 justify-between items-center h-[60px]">
@@ -16,25 +21,23 @@ const page = (props: props) => {
           placeholder="Search for Flows..."
           type="text"
         />
-
         <div className="flex items-center gap-3">
           <ModeToggle />
           <Bell />
         </div>
       </form>
 
-      <div className="flex">
-        <div className="max-w-[70%]">
-          <HomeFlowCard />
-          <HomeFlowCard />
-          <HomeFlowCard />
-          <HomeFlowCard />
-        </div>
-        <RightSidebar />
+      <div className="flex justify-center">
+        <HomeFlows data={data!} />
+        {/* @ts-expect-error Async Server Component */}
+        <AuthUserOnly>
+          {/* @ts-expect-error Async Server Component */}
+          <RightSidebar />
+        </AuthUserOnly>
       </div>
 
     </div>
   );
 };
 
-export default page;
+export default HomePage;

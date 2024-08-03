@@ -44,7 +44,7 @@ export const ShowBadges = ({badgeArray}: ShowBadgesProps) => {
 export const defaultThumbnail = "https://plus.unsplash.com/premium_photo-1664008628916-3b72a2136e22?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
 export const UserFlowsCard = ({id, title, tags, thumbnail, description, isPublished, createdAt}: UserFlowsCardProps) =>{
-  const url = `/blog/${!isPublished && 'draft/'}${id}`
+  const url = `/blog/${!isPublished ? 'draft/' : ''}${id}`
   return (
     <Link href={url}>
       <Card className="border-none pt-2">
