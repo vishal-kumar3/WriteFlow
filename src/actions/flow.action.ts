@@ -3,6 +3,7 @@
 import { auth } from "@/auth"
 import { FlowData } from "@/components/Home/HomeFlows"
 import prisma from "@/prisma"
+import { revalidatePath } from "next/cache"
 
 export const createFlow = async (formData: FormData) => {
 
@@ -106,4 +107,161 @@ export const getDraftFlow = async (userId: string | undefined) => {
 
   if (!drafts) return { error: "No drafts found" }
   return { data: drafts }
+}
+
+export const toggleBookmark = async (flowId: string) => {
+  const session = await auth()
+  if (!session) return { error: "You are not logged in" }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      bookmarks: {
+        select: {
+          id: true
+        }
+      }
+    }
+  })
+
+  if (!user) return { error: "User not found" }
+
+  const isBookmarked = user.bookmarks.find((bookmark) => bookmark.id === flowId)
+
+  if (isBookmarked) {
+    const removedFromBookmark = await prisma.user.update({
+      where: {
+        id: session.user.id
+      },
+      data: {
+        bookmarks: {
+          disconnect: {
+            id: flowId
+          }
+        }
+      }
+    })
+
+    if(!removedFromBookmark) return {error: "Unexpected error while removing bookmark!!!"}
+    revalidatePath('/')
+    return {success: "Bookmark removed!!!"}
+
+  } else {
+    const bookmarked = await prisma.user.update({
+      where: {
+        id: session.user.id
+      },
+      data: {
+        bookmarks: {
+          connect: {
+            id: flowId
+          }
+        }
+      }
+    })
+
+    if(!bookmarked) return {error: "Unexpected error while bookmarking!!!"}
+    revalidatePath('/')
+    return {success: "Bookmarked!!!"}
+  }
+}
+
+export const updateContent = async (flowId: string, userId:string, content: string) => {
+  const session = await auth()
+  if (!session) return { error: "You are not logged in" }
+
+  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+
+  const updatedFlow = await prisma.blog.update({
+    where: {
+      id: flowId,
+      userId: session.user.id,
+      isPublished: false
+    },
+    data: {
+      content
+    }
+  })
+
+  if (!updatedFlow) {
+    return { error: "Unexpected error while updating flow content!!!" }
+  } else {
+    return { success: "Flow content updated!!!" }
+  }
+}
+
+export const updateTitle = async (flowId: string, userId: string, title: string) => {
+  if(title === '') return
+
+  const session = await auth()
+  if (!session) return { error: "You are not logged in" }
+
+  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+
+  const updatedFlow = await prisma.blog.update({
+    where: {
+      id: flowId,
+      userId: session.user.id,
+      isPublished: false
+    },
+    data: {
+      title
+    }
+  })
+
+  if (!updatedFlow) {
+    return { error: "Unexpected error while updating flow title and description!!!" }
+  } else {
+    return { success: "Flow title and description updated!!!" }
+  }
+}
+
+export const updateDescription = async (flowId: string, userId: string, description: string) => {
+  const session = await auth()
+  if (!session) return { error: "You are not logged in" }
+
+  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+
+  const updatedFlow = await prisma.blog.update({
+    where: {
+      id: flowId,
+      userId: session.user.id,
+      isPublished: false
+    },
+    data: {
+      description
+    }
+  })
+
+  if (!updatedFlow) {
+    return { error: "Unexpected error while updating flow description!!!" }
+  } else {
+    return { success: "Flow description updated!!!" }
+  }
+}
+
+export const publishFlow = async (flowId: string, userId: string) => {
+  const session = await auth()
+  if (!session) return { error: "You are not logged in" }
+
+  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+
+  const updatedFlow = await prisma.blog.update({
+    where: {
+      id: flowId,
+      userId: session.user.id,
+      isPublished: false
+    },
+    data: {
+      isPublished: true
+    }
+  })
+
+  if (!updatedFlow) {
+    return { error: "Unexpected error while publishing flow!!!" }
+  } else {
+    return { success: "Flow published!!!" }
+  }
 }

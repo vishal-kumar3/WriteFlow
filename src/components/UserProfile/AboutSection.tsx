@@ -53,6 +53,7 @@ const AboutSection = ({
         <p>{career}</p>
         <p>{bio}</p>
       </div>
+      {/* @ts-expect-error Async Server Component */}
       <CurrentUserOnly userId={userId}>
         <div className="flex gap-3 items-center mt-3">
           {/* // TODO: Costimize the DialogPopup component */}

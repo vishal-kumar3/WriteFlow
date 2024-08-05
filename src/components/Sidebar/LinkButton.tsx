@@ -19,7 +19,7 @@ const LinkButton = ({icon, action, link, imageUrl, children}: props) => {
           await action()
         }
       }}
-      key={link} className='transition-all text-sm ease-in hover:bg-[#f5f5f5] flex items-center gap-3 px-2 py-[5px] rounded-md hover:shadow-lg' 
+      key={link} className='transition-all text-sm ease-in hover:bg-[#f5f5f5] dark:hover:bg-white/20 flex items-center gap-3 px-2 py-[5px] rounded-md hover:shadow-lg'
 			href={link || "/"}>
 		  <div className='flex justify-center'>
 		  	<div className='size-[35px] overflow-hidden'></div>

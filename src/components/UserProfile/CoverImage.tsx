@@ -8,12 +8,13 @@ import React from "react";
 
 type props = {
   coverImage: string;
-  id: string;
+  userId?: string | null;
+  flowId?: string | null
+  uploadImage: (url: string, id: string) => Promise<{ error: string; success?: undefined; } | { success: string; error?: undefined; }>;
+  flowMode: boolean;
 };
 
-const CoverImage = async ({ coverImage, id }: props) => {
-  const session = await auth();
-
+const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImage }: props) => {
   return (
     <div className="mt-5 group relative">
       <Image
@@ -23,12 +24,15 @@ const CoverImage = async ({ coverImage, id }: props) => {
         width={900}
         alt="Holla"
       />
-      <CurrentUserOnly userId={id}>
+      {/* @ts-expect-error Async Server Component */}
+      <CurrentUserOnly userId={userId}>
         <div className="absolute right-5 bottom-5">
           <FileUploader
             ctx_name="CoverImage"
-            id={id!}
-            uploadImage={updateUserCoverImage}
+            userId={userId}
+            flowId={flowId}
+            uploadImage={uploadImage}
+            flowMode={flowMode}
           />
         </div>
       </CurrentUserOnly>
