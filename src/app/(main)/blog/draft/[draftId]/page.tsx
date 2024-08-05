@@ -11,12 +11,12 @@ type props = {
   }
 }
 
-const page = async({params}: props) => {
+const page = async ({ params }: props) => {
   const { draftId } = params
-  if(!draftId) return <div>No draft id provided</div>
+  if (!draftId) return <div>No draft id provided</div>
 
   const session = await auth()
-  if(!session) return <div>User not logged in</div>
+  if (!session) return <div>User not logged in</div>
 
   const DraftFlowData = await prisma.blog.findUnique({
     where: {
@@ -26,17 +26,16 @@ const page = async({params}: props) => {
     }
   })
 
-  if(!DraftFlowData) return <div>No draft found</div>
+  if (!DraftFlowData) return <div>No draft found</div>
   return (
-    <div className="py-20 mx-auto max-w-[80%]">
-        {/* //TODO: Header yaha pe */}
-        <CoverImage
-          coverImage={DraftFlowData.coverImage || DefaultCoverImage}
-          uploadImage={updateFlowCoverImage}
-          flowId={draftId}
-          userId={session.user.id}
-          flowMode={true}
-        />
+    <div className="relative py-20 mx-auto max-w-[80%]">
+      <CoverImage
+        coverImage={DraftFlowData.coverImage || DefaultCoverImage}
+        uploadImageAction={updateFlowCoverImage}
+        flowId={draftId}
+        userId={session.user.id}
+        flowMode={true}
+      />
       <RichEditor
         {...DraftFlowData}
       />
@@ -44,9 +43,9 @@ const page = async({params}: props) => {
   )
 }
 
+
+
 export default page
-
-
 
 
 

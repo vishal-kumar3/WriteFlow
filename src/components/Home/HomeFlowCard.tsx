@@ -130,7 +130,7 @@ const HomeFlowCard = ({ flow, userBookmark }: { flow: FlowData, userBookmark: { 
               <Image
                 src={flow.thumbnail || defaultThumbnail}
                 alt="Picture of the author"
-                layout="fill"
+                fill
                 className="object-cover"
               />
             </div>

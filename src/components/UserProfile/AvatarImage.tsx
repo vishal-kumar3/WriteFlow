@@ -45,7 +45,8 @@ const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt }: p
           <FileUploader
             ctx_name="AvatarImage"
             userId={userId!}
-            uploadImage={updateUserAvatarImage}
+            uploadImageAction={updateUserAvatarImage}
+            flowMode={false}
           />
         </div>
       </CurrentUserOnly>

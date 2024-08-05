@@ -19,7 +19,7 @@ const PublishedBlog = async({params}: props) => {
       user: true
     }
   })
-  console.log(blog)
+  
   if(!blog) return <div>Blog not found</div>
 
   return (
