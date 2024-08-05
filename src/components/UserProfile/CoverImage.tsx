@@ -10,11 +10,11 @@ type props = {
   coverImage: string;
   userId?: string | null;
   flowId?: string | null
-  uploadImage: (url: string, id: string) => Promise<{ error: string; success?: undefined; } | { success: string; error?: undefined; }>;
+  uploadImageAction: (url: string, id: string) => Promise<{ error: string; success?: undefined; } | { success: string; error?: undefined; }>;
   flowMode: boolean;
 };
 
-const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImage }: props) => {
+const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAction }: props) => {
   return (
     <div className="mt-5 group relative">
       <Image
@@ -31,7 +31,7 @@ const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImage }:
             ctx_name="CoverImage"
             userId={userId}
             flowId={flowId}
-            uploadImage={uploadImage}
+            uploadImageAction={uploadImageAction}
             flowMode={flowMode}
           />
         </div>

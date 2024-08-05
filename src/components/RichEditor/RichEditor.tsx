@@ -8,6 +8,7 @@ import { useDebouncedCallback } from 'use-debounce'
 import { publishFlow, updateContent, updateDescription, updateTitle } from '@/actions/flow.action'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { DraftPublishSidebar } from './DraftPublishSidebar'
 
 type EditorProps = {
   id: string
@@ -15,14 +16,35 @@ type EditorProps = {
   title: string
   description: string | null
   content: string | null
+  thumbnail: string | null
   coverImage: string | null
   tags: string[]
   updatedAt: Date
 }
 
-const RichEditor = ({ id, userId, title, description, content, coverImage, tags, updatedAt } : EditorProps) => {
 
+export const FlowPublishButton = ({flowId, userId}: {flowId: string, userId: string}) => {
   const router = useRouter()
+  return (
+    <Button
+      className=''
+      type='submit'
+      onClick={async () => {
+        const { error, success } = await publishFlow(flowId, userId)
+        if (error) toast.error(error)
+        else if (success) {
+          toast.success(success)
+          router.replace(`/blog/${flowId}`)
+        }
+      }}
+    >
+      Publish
+    </Button>
+  )
+}
+
+const RichEditor = ({ id, userId, title, description, content, coverImage, thumbnail, tags, updatedAt } : EditorProps) => {
+
   const [flowTitle, setFlowTitle] = useState(title || '')
   const [flowDescription, setFlowDescription] = useState(description || '')
   const [flowContent, setFlowContent] = useState(content || '')
@@ -41,14 +63,6 @@ const RichEditor = ({ id, userId, title, description, content, coverImage, tags,
     immediatelyRender: false
   })
 
-  const titleRef = useRef(null);
-
-  useEffect(() => {
-    if (titleRef.current) {
-      titleRef.current.innerHTML = flowTitle;
-    }
-  }, [flowTitle]);
-
   const debounce = useDebouncedCallback(async (update: string, userId: string, action: any) => {
     if(update === '' || !update) return
     const { error, success } = await action(id, userId, update)
@@ -58,7 +72,6 @@ const RichEditor = ({ id, userId, title, description, content, coverImage, tags,
   }, 1000)
 
   const handleTitle = (e: any) => {
-    console.log(e.target.innerHTML)
     setFlowTitle(e.target.innerHTML)
     debounce(e.target.innerHTML, userId, updateTitle)
   }
@@ -76,31 +89,19 @@ const RichEditor = ({ id, userId, title, description, content, coverImage, tags,
       <p
         contentEditable
         dangerouslySetInnerHTML={{ __html: flowTitle || "Here Is The Title!!!" }}
-        ref={titleRef}
         onInput={handleTitle}
-        className="text-center pb-2 w-full focus:outline-none border-x text-6xl font-bold px-20"
+        className="text-center py-5 pb-8 w-full focus:outline-none border-x text-6xl font-bold px-20"
       />
       <q
         contentEditable
         dangerouslySetInnerHTML={{ __html: flowDescription || 'Write Description Here!!!' }}
         onInput={handleDescription}
-        className="text-center pb-4 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem]"
+        className="text-center pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem]"
       />
       <EditorContent editor={editor} />
-      <Button
-        className='w-[25%] mt-5'
-        type='submit'
-        onClick={async() => {
-          const { error, success } = await publishFlow(id, userId)
-          if(error) toast.error(error)
-          else if(success) {
-            toast.success(success)
-            router.replace(`/blog/${id}`)
-          }
-        }}
-      >
-        Publish (Isko header me rkhna h)
-      </Button>
+      <div className='absolute top-5 right-0 flex items-center'>
+        <DraftPublishSidebar userId={userId} flowId={id} thumbnail={thumbnail} />
+      </div>
     </div>
   )
 }

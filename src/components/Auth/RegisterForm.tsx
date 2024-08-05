@@ -51,8 +51,7 @@ const RegisterForm = (props: props) => {
 
     const res = await register(data);
 
-    // TODO: if success form.reset()
-
+    if(res.success) form.reset()
     setError(res.error || "");
     setSuccess(res.success || "");
   };

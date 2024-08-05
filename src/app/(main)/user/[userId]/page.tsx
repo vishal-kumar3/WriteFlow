@@ -41,7 +41,7 @@ const page = async ({ params }: props) => {
   let DraftFlowData: UserFlowsCardProps[] = []
 
   user?.blogs.map((blog) => {
-    if(blog.isPublished){
+    if (blog.isPublished) {
       UserFlowData.push(blog)
     } else {
       DraftFlowData.push(blog)
@@ -89,7 +89,7 @@ const page = async ({ params }: props) => {
         <CoverImage
           userId={user?.id!}
           coverImage={user?.coverImage || DefaultCoverImage}
-          uploadImage={updateUserCoverImage}
+          uploadImageAction={updateUserCoverImage}
           flowMode={false}
         />
         <AvatarImage

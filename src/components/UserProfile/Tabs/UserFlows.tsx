@@ -74,7 +74,7 @@ export const UserFlowsCard = ({id, title, tags, thumbnail, description, isPublis
 
 const UserFlows = ({data}: UserFlowsProps) => {
   return (
-    <div className="">
+    <>
       {
         data.map((card: UserFlowsCardProps, key:number) => (
           <UserFlowsCard
@@ -89,7 +89,7 @@ const UserFlows = ({data}: UserFlowsProps) => {
           />
         ))
       }
-    </div>
+    </>
   )
 }
 
