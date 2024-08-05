@@ -19,6 +19,7 @@ import { signOut } from "next-auth/react";
 import prisma from "@/prisma";
 import Followings from "./Followings";
 import CreateFlowForm from "../form/CreateFlowForm";
+import SidebarButton from "./SidebarButton";
 
 const SideBar = async () => {
   const session = await auth();
@@ -57,7 +58,16 @@ const SideBar = async () => {
             <DialogTrigger asChild>
               {/* //TODO: Baad me isko dekhna h */}
               {/* <LinkButton icon={""} link={`#`}> */}
-                <Button>Holla</Button>
+              <button
+                className="transition-all text-sm ease-in hover:bg-[#f5f5f5] dark:hover:bg-white/20 flex items-center gap-3 px-4 py-[5px] rounded-md hover:shadow-lg"
+              >
+                <div className="flex gap-2 justify-center">
+                  <div className="size-[35px] overflow-hidden">
+                    Icon Here
+                  </div>
+                  <p className="w-[100%]">Create Flow</p>
+                </div>
+              </button>
               {/* </LinkButton> */}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">

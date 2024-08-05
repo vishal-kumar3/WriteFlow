@@ -12,12 +12,12 @@ import { auth } from "@/auth";
 
 type props = {
   avatarImage: string;
-  id: string;
+  userId: string;
   followingCnt: number;
   followerCnt: number;
 };
 
-const AvatarImage = async({ avatarImage, id, followingCnt, followerCnt }: props) => {
+const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt }: props) => {
   const session = await auth()
 
   // TODO: user.action.ts me daal do or without login page access ho jaye vaise kr do
@@ -25,7 +25,7 @@ const AvatarImage = async({ avatarImage, id, followingCnt, followerCnt }: props)
     where: {
       followerId_followingId: {
         followerId: session?.user.id!,
-        followingId: id
+        followingId: userId
       }
     }
   })
@@ -39,11 +39,12 @@ const AvatarImage = async({ avatarImage, id, followingCnt, followerCnt }: props)
         height={180}
         alt="userImage"
       />
-      <CurrentUserOnly userId={id}>
+      {/* @ts-expect-error Async Server Component */}
+      <CurrentUserOnly userId={userId}>
         <div className="absolute top-[90%] left-[9%]">
           <FileUploader
             ctx_name="AvatarImage"
-            id={id!}
+            userId={userId!}
             uploadImage={updateUserAvatarImage}
           />
         </div>
@@ -51,8 +52,9 @@ const AvatarImage = async({ avatarImage, id, followingCnt, followerCnt }: props)
       <div className="flex gap-4 items-center mt-2 ml-[calc(200px+6%)]">
         <p>{followerCnt} Followers</p>
         <p>{followingCnt} Followings</p>
-        <HideForCurrentUser userId={id} >
-          <FollowButton isAlreadyFollowing={isAlreadyFollowing} id={id} />
+        {/* @ts-expect-error Async Server Component */}
+        <HideForCurrentUser userId={userId} >
+          <FollowButton isAlreadyFollowing={isAlreadyFollowing} id={userId} />
         </HideForCurrentUser>
       </div>
     </div>

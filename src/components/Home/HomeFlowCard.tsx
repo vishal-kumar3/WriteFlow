@@ -34,6 +34,7 @@ import { formatDate } from "@/util/DateTime";
 import Image from "next/image";
 import { defaultThumbnail } from "../UserProfile/Tabs/UserFlows";
 import Link from "next/link";
+import ToggleBookmark from "./ToggleBookmark";
 
 
 export const UserCard = ({ userData, createdAt }: { userData: FlowUser, createdAt: Date }) => {
@@ -101,7 +102,7 @@ const ReportUserCard = () => {
 
 
 // TODO: Add top comment
-const HomeFlowCard = ({ flow, userBookmark }: {flow: FlowData, userBookmark: {id: string}[]}) => {
+const HomeFlowCard = ({ flow, userBookmark }: { flow: FlowData, userBookmark: { id: string }[] }) => {
   let isBookmarked = false;
   userBookmark.map((bookmark) => {
     if (bookmark.id === flow.id) isBookmarked = true;
@@ -145,11 +146,7 @@ const HomeFlowCard = ({ flow, userBookmark }: {flow: FlowData, userBookmark: {id
             <Badge>Holla</Badge>
             <Badge>Holla</Badge>
 
-            <Button >
-              {
-                isBookmarked ? <BookmarkCheck /> : <Bookmark />
-              }
-            </Button>
+            <ToggleBookmark flowId={flow.id} isBookmarked={isBookmarked} />
           </div>
         </CardFooter>
       </Card>

@@ -1,3 +1,4 @@
+import { updateUserCoverImage } from "@/actions/image.action";
 import { auth } from "@/auth";
 import AboutSection, {
   AboutDetails,
@@ -17,6 +18,12 @@ type props = {
   params: { userId: string };
 };
 
+export const DefaultCoverImage =
+  "https://images.unsplash.com/photo-1650513737281-882e597ee5e5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
+export const DefaultAvatarImage =
+  "https://images.unsplash.com/photo-1707912079134-becf5a3598e2?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
+
 const page = async ({ params }: props) => {
   const { userId } = params;
 
@@ -26,7 +33,7 @@ const page = async ({ params }: props) => {
     },
     include: {
       about: true,
-      blogs: true
+      blogs: true,
     },
   });
 
@@ -74,24 +81,22 @@ const page = async ({ params }: props) => {
     },
   ];
 
-  const coverImage =
-    "https://images.unsplash.com/photo-1650513737281-882e597ee5e5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
-  const avatarImage =
-    "https://images.unsplash.com/photo-1707912079134-becf5a3598e2?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
   return (
-    <div className="bg-[#f5f5f5] mx-auto w-[90%] rounded-t-2xl">
+    <div className="bg-[#f5f5f5] dark:bg-blue-400/50 mx-auto w-[90%] rounded-t-2xl">
       <div className="relative">
         <CoverImage
-          id={user?.id!}
-          coverImage={user?.coverImage || coverImage}
+          userId={user?.id!}
+          coverImage={user?.coverImage || DefaultCoverImage}
+          uploadImage={updateUserCoverImage}
+          flowMode={false}
         />
         <AvatarImage
           followerCnt={user?.followerCount!}
           followingCnt={user?.followingCount!}
-          id={user?.id!}
-          avatarImage={user?.image || avatarImage}
+          userId={user?.id!}
+          avatarImage={user?.image || DefaultAvatarImage}
         />
       </div>
       <div className="mt-8 mx-[6%] max-w-[90%] flex flex-col justify-between">

@@ -6,15 +6,19 @@ import { toast } from "sonner";
 
 
 type FileUploadProps = {
-  uploadImage: (url:string, id:string) => Promise<{ error: string; success?: undefined; } | { success: string; error?: undefined; }>;
-  id: string,
+  uploadImage: (url:string, userId:string) => Promise<{ error: string; success?: undefined; } | { success: string; error?: undefined; }>
+  userId?: string | null
   ctx_name: string
+  flowId?: string | null
+  flowMode: boolean
 }
 
 const uploadCareUrl = 'https://ucarecdn.com/'
 
-const FileUploader = ({uploadImage, id, ctx_name}: FileUploadProps) => {
+const FileUploader = ({ uploadImage, userId, ctx_name, flowId, flowMode}: FileUploadProps) => {
   const [isMounted, setIsMounted] = useState(false);
+
+  const id = flowMode ? flowId : userId;
 
   useEffect(() => {
     setIsMounted(true);
@@ -33,7 +37,7 @@ const FileUploader = ({uploadImage, id, ctx_name}: FileUploadProps) => {
         pubkey="3fa57431f8c491457434"
         onFileUploadSuccess={async(file) => {
           const url = `${uploadCareUrl}${file.uuid}/`
-          const {error, success} = await uploadImage(url, id);
+          const { error, success } = await uploadImage(url, id);
           if(error){
             toast.error(error);
           }else{
