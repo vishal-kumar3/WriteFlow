@@ -15,7 +15,7 @@ const HomePage = async ({ searchParams }: { searchParams: { search?: string } })
 
   return (
     <div className="relative w-full">
-      <form method="GET" action="/" className="sticky z-10 flex top-0 border-b-2 mt-0 w-full px-10 justify-between items-center h-[60px]">
+      <form method="GET" action="/" className="sticky bg-background z-10 flex top-0 border-b-2 mt-0 w-full px-10 justify-between items-center h-[60px]">
         <Input
           name="search"
           className="outline-none max-w-[60%] mx-auto"

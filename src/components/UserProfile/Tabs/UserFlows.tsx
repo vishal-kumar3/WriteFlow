@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { formatDate } from "@/util/DateTime";
+import { formatDateAgo } from "@/util/DateTime";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -29,11 +29,11 @@ type ShowBadgesProps = {
   // action: () => void;
 }
 
-export const ShowBadges = ({badgeArray}: ShowBadgesProps) => {
+export const ShowBadges = ({ badgeArray }: ShowBadgesProps) => {
   return (
     <div className="space-x-2">
       {
-        badgeArray.map((badge: string, key:number) => (
+        badgeArray.map((badge: string, key: number) => (
           <Badge className="m-0" key={key}>{badge}</Badge>
         ))
       }
@@ -43,7 +43,7 @@ export const ShowBadges = ({badgeArray}: ShowBadgesProps) => {
 
 export const defaultThumbnail = "https://plus.unsplash.com/premium_photo-1664008628916-3b72a2136e22?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
 
-export const UserFlowsCard = ({id, title, tags, thumbnail, description, isPublished, createdAt}: UserFlowsCardProps) =>{
+export const UserFlowsCard = ({ id, title, tags, thumbnail, description, isPublished, createdAt }: UserFlowsCardProps) => {
   const url = `/blog/${!isPublished ? 'draft/' : ''}${id}`
   return (
     <Link href={url}>
@@ -64,7 +64,7 @@ export const UserFlowsCard = ({id, title, tags, thumbnail, description, isPublis
           <CardTitle className="line-clamp-1 ">{!isPublished && <Badge variant="secondary" className=" text-sm">Draft</Badge>} {title}</CardTitle>
           {/* //TODO: Yaha Tags ko add krna h */}
           <ShowBadges badgeArray={tags || []} />
-          <CardDescription>{formatDate(createdAt)}</CardDescription>
+          <CardDescription>{formatDateAgo(createdAt)}</CardDescription>
           <CardDescription className="line-clamp-3">{description}</CardDescription>
         </CardHeader>
       </Card>
@@ -72,11 +72,11 @@ export const UserFlowsCard = ({id, title, tags, thumbnail, description, isPublis
   );
 };
 
-const UserFlows = ({data}: UserFlowsProps) => {
+const UserFlows = ({ data }: UserFlowsProps) => {
   return (
     <>
       {
-        data.map((card: UserFlowsCardProps, key:number) => (
+        data.map((card: UserFlowsCardProps, key: number) => (
           <UserFlowsCard
             key={key}
             id={card.id}

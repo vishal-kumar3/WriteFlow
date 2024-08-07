@@ -33,15 +33,15 @@ const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt }: p
   return (
     <div className="">
       <Image
-        className="rounded-full size-[180px] object-cover absolute top-[40%] left-[6%]"
+        className="rounded-full size-[220px] object-cover absolute top-[20%] left-[3%]"
         src={avatarImage}
-        width={180}
-        height={180}
+        width={220}
+        height={220}
         alt="userImage"
       />
       {/* @ts-expect-error Async Server Component */}
       <CurrentUserOnly userId={userId}>
-        <div className="absolute top-[90%] left-[9%]">
+        <div className="absolute top-[90%] left-[7%]">
           <FileUploader
             ctx_name="AvatarImage"
             userId={userId!}

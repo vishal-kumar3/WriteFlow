@@ -23,7 +23,7 @@ export const login = async (data: z.infer<typeof loginFormSchema>) => {
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
-    
+
     return { success: "Logged In Successfully" };
   } catch (error) {
     if (error instanceof AuthError) {
@@ -48,7 +48,7 @@ export const register = async (data: z.infer<typeof registerFormSchema>) => {
     return { error: "Invalid Fields" };
   }
 
-  const { email, password, name } = data;
+  const { email, password, name, username } = data;
 
   const userExists = await prisma.user.findUnique({
     where: {
@@ -57,7 +57,17 @@ export const register = async (data: z.infer<typeof registerFormSchema>) => {
   });
 
   if (userExists) {
-    return { error: "User Already Exists" };
+    return { error: "Email Already Exists" };
+  }
+
+  const usernameExists = await prisma.user.findUnique({
+    where: {
+      username,
+    },
+  });
+
+  if(usernameExists){
+    return { error: "Username Already Exists" };
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -65,6 +75,7 @@ export const register = async (data: z.infer<typeof registerFormSchema>) => {
   const user = await prisma.user.create({
     data: {
       email,
+      username,
       password: hashedPassword,
       name,
     },

@@ -30,7 +30,7 @@ import { Checkbox } from "../ui/checkbox";
 import { reportUserOptions } from "./reportOptions";
 import { CheckboxDemo } from "./CheckBox";
 import { FlowData, FlowUser } from "./HomeFlows";
-import { formatDate } from "@/util/DateTime";
+import { formatDateAgo } from "@/util/DateTime";
 import Image from "next/image";
 import { defaultThumbnail } from "../UserProfile/Tabs/UserFlows";
 import Link from "next/link";
@@ -52,7 +52,7 @@ export const UserCard = ({ userData, createdAt }: { userData: FlowUser, createdA
         </div>
         <div className="text-sm leading-tight space-y-1">
           <p className="font-semibold text-base">{userData.name}</p>
-          <p>isko change krna hoga {userData.email} | {formatDate(createdAt)}</p>
+          <p>isko change krna hoga {userData.email} | {formatDateAgo(createdAt)}</p>
         </div>
       </Link>
       <Popover>
@@ -60,7 +60,7 @@ export const UserCard = ({ userData, createdAt }: { userData: FlowUser, createdA
           <Tally3 className=" rotate-90" />
         </PopoverTrigger>
         <PopoverContent className="flex flex-col gap-1">
-          <ReportUserCard />
+          <ReportUserCard reportOptions={reportUserOptions} type="user" />
           <Button variant="ghost">Report Post</Button>
         </PopoverContent>
       </Popover>
@@ -68,18 +68,18 @@ export const UserCard = ({ userData, createdAt }: { userData: FlowUser, createdA
   );
 };
 
-const ReportUserCard = () => {
+export const ReportUserCard = ({ reportOptions, type }: { reportOptions: { label: string; description: string }[], type: "user" | "post" }) => {
   return (
     <Dialog>
       <DialogTrigger>
-        <Button variant="ghost">Report User</Button>
+        <Button variant="ghost">Report {type}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="mx-auto">Report User</DialogTitle>
+          <DialogTitle className="mx-auto">Report {type}</DialogTitle>
           <DialogDescription className="text-center">
             Help us keep our community safe and respectful. Please select the
-            reason for reporting this user:
+            reason for reporting this {type}:
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2 justify-center">

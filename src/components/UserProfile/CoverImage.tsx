@@ -10,11 +10,12 @@ type props = {
   coverImage: string;
   userId?: string | null;
   flowId?: string | null
-  uploadImageAction: (url: string, id: string) => Promise<{ error: string; success?: undefined; } | { success: string; error?: undefined; }>;
-  flowMode: boolean;
+  uploadImageAction?: (url: string, id: string) => Promise<{ error: string; success?: undefined; } | { success: string; error?: undefined; }>;
+  flowMode?: boolean;
+  disabled?: boolean;
 };
 
-const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAction }: props) => {
+const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAction, disabled }: props) => {
   return (
     <div className="mt-5 group relative">
       <Image
@@ -24,18 +25,25 @@ const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAct
         width={900}
         alt="Holla"
       />
-      {/* @ts-expect-error Async Server Component */}
-      <CurrentUserOnly userId={userId}>
-        <div className="absolute right-5 bottom-5">
-          <FileUploader
-            ctx_name="CoverImage"
-            userId={userId}
-            flowId={flowId}
-            uploadImageAction={uploadImageAction}
-            flowMode={flowMode}
-          />
-        </div>
-      </CurrentUserOnly>
+
+
+      {
+        !disabled && (
+          // @ts-expect-error Async Server Component
+          <CurrentUserOnly userId={userId!}>
+            <div className="absolute right-5 bottom-5">
+              <FileUploader
+                ctx_name="CoverImage"
+                userId={userId}
+                flowId={flowId}
+                uploadImageAction={uploadImageAction!}
+                flowMode={flowMode!}
+              />
+            </div>
+          </CurrentUserOnly>
+
+        )
+      }
     </div>
   );
 };

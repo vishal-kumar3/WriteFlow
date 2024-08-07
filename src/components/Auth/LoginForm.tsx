@@ -113,7 +113,7 @@ const LoginForm = (props: props) => {
       </CardContent>
       <SocialLogin>
         <p>
-          Don't have an Account?{" "}
+          Don&apos;t have an Account?{" "}
           <Link className="text-blue-500" href="/auth/register">
             Sign Up
           </Link>
