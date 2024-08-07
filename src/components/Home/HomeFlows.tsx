@@ -18,7 +18,6 @@ export type FlowData = {
   id: string
   title: string,
   description: string | null,
-  tags: string[],
   thumbnail: string | null,
   likeCount: number,
   noOfComments: number,

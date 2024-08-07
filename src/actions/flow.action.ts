@@ -194,6 +194,7 @@ export const updateContent = async (flowId: string, userId:string, content: stri
 
 export const updateTitle = async (flowId: string, userId: string, title: string) => {
   if(title === '') return
+  title = title.replace(/\s{2,}/g, ' ')
 
   const session = await auth()
   if (!session) return { error: "You are not logged in" }
@@ -212,9 +213,10 @@ export const updateTitle = async (flowId: string, userId: string, title: string)
   })
 
   if (!updatedFlow) {
-    return { error: "Unexpected error while updating flow title and description!!!" }
+    return { error: "Unexpected error while updating flow title!!!" }
   } else {
-    return { success: "Flow title and description updated!!!" }
+    revalidatePath(`/blog/draft/${flowId}`)
+    return { success: "Flow title updated!!!" }
   }
 }
 
@@ -242,7 +244,13 @@ export const updateDescription = async (flowId: string, userId: string, descript
   }
 }
 
-export const publishFlow = async (flowId: string, userId: string) => {
+export const publishFlow = async (
+  flowId: string,
+  userId: string,
+  tags: string[],
+  isCommentOff: boolean,
+  slug: string
+) => {
   const session = await auth()
   if (!session) return { error: "You are not logged in" }
 
@@ -255,13 +263,118 @@ export const publishFlow = async (flowId: string, userId: string) => {
       isPublished: false
     },
     data: {
-      isPublished: true
+      isPublished: true,
+      isCommentOff,
+      slug,
+      tags: {
+        connectOrCreate: tags.map((tag) => ({
+          where: {
+            tag
+          },
+          create: {
+            tag
+          }
+        }))
+      }
     }
   })
+
 
   if (!updatedFlow) {
     return { error: "Unexpected error while publishing flow!!!" }
   } else {
-    return { success: "Flow published!!!" }
+    return { success: "Flow published!!!", data: updatedFlow.id }
   }
+}
+
+export const likeFlow = async (flowId: string, userId: string) => {
+  const session = await auth()
+  if(!session) return {error: "You are not logged in"}
+
+  const likeWhereUniqueInput = {
+		userId_blogId_commentId: {
+			userId: session.user.id!,
+			blogId: flowId,
+			commentId: null,
+		},
+	};
+
+  const alreadyLiked = await prisma.like.findUnique({
+    where: likeWhereUniqueInput
+  })
+
+  if(alreadyLiked) {
+    const unLike = await prisma.$transaction([
+			prisma.like.delete({
+				where: {
+					blogId: flowId,
+					userId: session.user.id,
+				},
+			}),
+			prisma.blog.update({
+				where: {
+					id: flowId,
+					isPublished: true,
+				},
+				data: {
+					likeCount: {
+						decrement: 1,
+					},
+				},
+			}),
+		]);
+
+    if(!unLike) return {error: "Unexpected error while unliking flow!!!"}
+    revalidatePath(`/blog/${flowId}`)
+    return {success: "Flow unliked!!!"}
+  } else {
+    const like = await prisma.$transaction([
+			prisma.like.create({
+				data: {
+					blogId: flowId,
+					userId: session.user.id,
+				},
+			}),
+			prisma.blog.update({
+				where: {
+					id: flowId,
+					isPublished: true,
+				},
+				data: {
+					likeCount: {
+						increment: 1,
+					},
+				},
+			}),
+		]);
+
+    if(!like) return {error: "Unexpected error while liking flow!!!"}
+    revalidatePath(`/blog/${flowId}`)
+    return {success: "Flow liked!!!"}
+  }
+}
+
+export const isBookmarked = async (flowId: string) => {
+  const session = await auth()
+  if(!session) return {error: "You are not logged in"}
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      bookmarks: {
+        select: {
+          id: true
+        }
+      }
+    }
+  })
+
+  if(!user) return {error: "User not found"}
+
+  const isBookmarked = user.bookmarks.find((bookmark) => bookmark.id === flowId)
+
+  if(isBookmarked) return {data: true}
+  else return {data: false}
 }

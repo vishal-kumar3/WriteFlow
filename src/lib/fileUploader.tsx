@@ -19,20 +19,28 @@ const FileUploader = ({ uploadImageAction, userId, ctx_name, flowId, flowMode }:
   const [isMounted, setIsMounted] = useState(false);
 
   const id = flowMode ? flowId : userId;
-
   useEffect(() => {
     setIsMounted(true);
   }, [])
 
+
   if (!isMounted) {
     return null;
   }
+  // } else{
+  //   const uploadcare = document.querySelector("lr-drop-area button span")
+  //   if(uploadcare){
+  //     uploadcare.textContent = "Upload"
+  //     console.log(uploadcare.textContent)
+  //   }
+  // }
 
   return (
 
     <div>
       <label htmlFor=""></label>
       <FileUploaderRegular
+
         ctxName={ctx_name}
         pubkey="3fa57431f8c491457434"
         onFileUploadSuccess={async (file) => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
 import { Button } from '../ui/button'
-import { formatDate } from '@/util/DateTime'
+import { formatDateAgo } from '@/util/DateTime'
 import Link from 'next/link'
 import { Dot, DotIcon } from 'lucide-react'
 import { DotFilledIcon, DotsHorizontalIcon } from '@radix-ui/react-icons'
@@ -18,7 +18,7 @@ export type HomeDraftProps = {
   data: HomeDraftDataProps[]
 }
 
-const HomeDraftCard = ({data}: HomeDraftProps) => {
+const HomeDraftCard = ({ data }: HomeDraftProps) => {
   return (
     <Card className=' '>
       <CardHeader className='flex flex-row mb-2 justify-between items-center'>
@@ -31,7 +31,7 @@ const HomeDraftCard = ({data}: HomeDraftProps) => {
           <Link key={index} href={`/blog/draft/${draft.id}`}>
             <CardContent >
               <CardTitle className='line-clamp-1 text-lg'>{draft.title}</CardTitle>
-              <CardDescription>Last edited {formatDate(draft.updatedAt)}</CardDescription>
+              <CardDescription>Last edited {formatDateAgo(draft.updatedAt)}</CardDescription>
             </CardContent>
           </Link>
         ))

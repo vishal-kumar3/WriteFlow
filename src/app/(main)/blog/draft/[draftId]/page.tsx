@@ -23,6 +23,9 @@ const page = async ({ params }: props) => {
       userId: session.user.id,
       id: draftId,
       isPublished: false,
+    },
+    include: {
+      tags: true
     }
   })
 

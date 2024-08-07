@@ -39,6 +39,7 @@ const RegisterForm = (props: props) => {
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
       email: "",
+      username: "",
       password: "",
       name: "",
     },
@@ -75,6 +76,24 @@ const RegisterForm = (props: props) => {
                     <Input
                       type="text"
                       placeholder="Enter your name..."
+                      disabled={form.formState.isSubmitting}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter your username..."
                       disabled={form.formState.isSubmitting}
                       {...field}
                     />
