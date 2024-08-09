@@ -15,7 +15,7 @@ export type UserFlowsCardProps = {
   title: string;
   description: string | null;
   isPublished: boolean;
-  tags: string[];
+  tags: { tag: string }[];
   thumbnail: string | null;
   createdAt: Date;
 };
@@ -63,7 +63,7 @@ export const UserFlowsCard = ({ id, title, tags, thumbnail, description, isPubli
           {/* //TODO: Draft badge ko align krna h */}
           <CardTitle className="line-clamp-1 ">{!isPublished && <Badge variant="secondary" className=" text-sm">Draft</Badge>} {title}</CardTitle>
           {/* //TODO: Yaha Tags ko add krna h */}
-          <ShowBadges badgeArray={tags || []} />
+          <ShowBadges badgeArray={tags?.map((tag) => tag.tag) || []} />
           <CardDescription>{formatDateAgo(createdAt)}</CardDescription>
           <CardDescription className="line-clamp-3">{description}</CardDescription>
         </CardHeader>

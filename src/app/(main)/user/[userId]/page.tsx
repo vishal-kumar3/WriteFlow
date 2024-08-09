@@ -33,7 +33,11 @@ const page = async ({ params }: props) => {
     },
     include: {
       about: true,
-      blogs: true,
+      blogs: {
+        include: {
+          tags: true,
+        }
+      },
     },
   });
 

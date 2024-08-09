@@ -5,7 +5,7 @@ import Image from "next/image";
 import { foramtDateTime, formatDateAgo } from "@/util/DateTime";
 import { auth } from "@/auth";
 import FlowButtons from "./_component/FlowButtons";
-import { isBookmarked } from "@/actions/flow.action";
+import { isBookmarked, viewFlow } from "@/actions/flow.action";
 import { Dot } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
@@ -20,12 +20,20 @@ const PublishedBlog = async ({ params }: props) => {
   const session = await auth()
   const publishedId = params.blogId;
 
-  const isAlreadyLiked = await prisma.like.findUnique({
-    where: {
+  if(!session) return <div>You are not loggedIn</div>
+
+  const likeWhereUniqueInput = {
+    userId_blogId: {
+      userId: session?.user.id!,
       blogId: publishedId,
-      userId: session?.user.id!
-    }
+    },
+  };
+
+  const isAlreadyLiked = await prisma.blogLike.findUnique({
+    where: likeWhereUniqueInput
   })
+
+  const addViewToFlow = await viewFlow(publishedId)
 
   const blog = await prisma.blog.findUnique({
     where: {
@@ -35,9 +43,22 @@ const PublishedBlog = async ({ params }: props) => {
     include: {
       //TODO: include user but not password thing!!!
       user: true,
-      Comment: true,
+      Comment: {
+        include: {
+          user: true
+        }
+      },
     }
   })
+
+  let currentUser = null;
+  if(session){
+    currentUser = await prisma.user.findUnique({
+      where: {
+        id: session.user.id!
+      }
+    })
+  }
 
   const isAlreadyBookmarked = await isBookmarked(publishedId)
 
@@ -63,16 +84,19 @@ const PublishedBlog = async ({ params }: props) => {
           <div className="text-xl">{foramtDateTime(blog.updatedAt)}</div>
         </Link>
         <p className="text-center italic outline-none pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem] resize-none">{blog.description}</p>
-        <div className="prose prose-lg border border-t-0 max-w-[100%] px-10" dangerouslySetInnerHTML={{ __html: blog.content! }}>
+        <div className="prose prose-lg border border-t-0 max-w-[100%] px-10 dark:text-white" dangerouslySetInnerHTML={{ __html: blog.content! }}>
         </div>
       </div>
       <FlowButtons
         flowId={blog.id}
         userId={session?.user.id!}
+        currentUser={currentUser}
+        isCommentOff={blog.isCommentOff}
         likeData={{
           isAlreadyLiked: isAlreadyLiked ? true : false,
           likesCnt: blog.likeCount
         }}
+        comment={blog.Comment}
         commentCnt={blog.noOfComments}
         isBookmarked={isAlreadyBookmarked.data}
       />
