@@ -14,29 +14,29 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(cuid())
-  username       String   @unique
-  name           String?
-  email          String    @unique
-  emailVerified  DateTime?
-  image          String?
-  coverImage     String?
-  password       String?
-  role           Role      @default(USER)
-  accounts       Account?
-  about          About?
-  followerCount  Int       @default(0)
-  followingCount Int       @default(0)
-  likedBlogIds       BlogLike[]
-  likedCommentIds    CommentLike[]
-  followers      Follows[] @relation("follower")
-  following      Follows[] @relation("following")
-  blogs          Blog[]
-  bookmarks      Blog[]    @relation("bookmarkedBy")
-  history        View[]
-  comments       Comment[]
-  report         Report[]  @relation("IssuedBy")
-  reportedUser   Report[]  @relation("ReportedUser")
+  id              String        @id @default(cuid())
+  username        String        @unique
+  name            String?
+  email           String        @unique
+  emailVerified   DateTime?
+  image           String?
+  coverImage      String?
+  password        String?
+  role            Role          @default(USER)
+  accounts        Account?
+  about           About?
+  followerCount   Int           @default(0)
+  followingCount  Int           @default(0)
+  likedBlogIds    BlogLike[]
+  likedCommentIds CommentLike[]
+  followers       Follows[]     @relation("follower")
+  following       Follows[]     @relation("following")
+  blogs           Blog[]
+  bookmarks       Blog[]        @relation("bookmarkedBy")
+  history         View[]
+  comments        Comment[]
+  report          Report[]      @relation("IssuedBy")
+  reportedUser    Report[]      @relation("ReportedUser")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -93,25 +93,25 @@ model Account {
 }
 
 model Blog {
-  id           String    @id @default(cuid())
+  id           String     @id @default(cuid())
   slug         String?    @unique
   userId       String
   title        String
   description  String?
   content      String?
-  isPublished  Boolean   @default(false)
+  isPublished  Boolean    @default(false)
   thumbnail    String?
   coverImage   String?
-  isCommentOff Boolean   @default(false)
-  likeCount    Int       @default(0)
-  noOfComments Int       @default(0)
-  noOfViews    Int       @default(0)
+  isCommentOff Boolean    @default(false)
+  likeCount    Int        @default(0)
+  noOfComments Int        @default(0)
+  noOfViews    Int        @default(0)
   viewedBy     View[]
-  bookmarkedBy User[]    @relation("bookmarkedBy")
+  bookmarkedBy User[]     @relation("bookmarkedBy")
   likedBy      BlogLike[]
   tags         Tag[]
   Comment      Comment[]
-  Report       Report[]  @relation("ReportedBlog")
+  Report       Report[]   @relation("ReportedBlog")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -121,8 +121,8 @@ model Blog {
 
 model View {
   id        String   @id @default(cuid())
-  userId    String?
-  blogId    String?
+  userId    String
+  blogId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -154,7 +154,6 @@ model CommentLike {
   @@id([userId, commentId])
 }
 
-
 //TODO: Tag model
 model Tag {
   id        String   @id @default(cuid())
@@ -175,11 +174,11 @@ model Comment {
   updatedAt DateTime @updatedAt
 
   likedBy  CommentLike[]
-  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  blog     Blog?     @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  parent   Comment?  @relation("CommentParent", fields: [parentId], references: [id], onDelete: Cascade)
-  children Comment[] @relation("CommentParent")
-  Report   Report[]  @relation("ReportedComment")
+  user     User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog     Blog?         @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  parent   Comment?      @relation("CommentParent", fields: [parentId], references: [id], onDelete: Cascade)
+  children Comment[]     @relation("CommentParent")
+  Report   Report[]      @relation("ReportedComment")
 }
 
 model Log {

@@ -12,6 +12,7 @@ export type FlowUser = {
   name: string | null;
   email: string;
   image: string | null;
+  username: string;
 }
 
 export type FlowData = {
@@ -36,7 +37,7 @@ const HomeFlows = async({ data }: HomeFlowDataProps) => {
       where: {
         id: session.user.id,
       },
-      select: {
+      include: {
         bookmarks: {
           select: {
             id: true

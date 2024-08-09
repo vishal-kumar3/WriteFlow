@@ -1,315 +1,336 @@
-"use server"
+'use server';
 
-import { auth } from "@/auth"
-import { FlowData } from "@/components/Home/HomeFlows"
-import prisma from "@/prisma"
-import { revalidatePath } from "next/cache"
+import { auth } from '@/auth';
+import { FlowData } from '@/components/Home/HomeFlows';
+import prisma from '@/prisma';
+import { revalidatePath } from 'next/cache';
 
 export const createFlow = async (formData: FormData) => {
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-  const session = await auth()
-  if (!session) return { error: "You are not logged in" }
+	const title = formData.get('title') as string;
+	if (!title) return { error: 'Title is required' };
 
-  const title = formData.get("title") as string
-  if (!title) return { error: "Title is required" }
+	const createdFlow = await prisma.blog.create({
+		data: {
+			title,
+			user: {
+				connect: {
+					id: session.user.id!,
+				},
+			},
+		},
+	});
 
-  const createdFlow = await prisma.blog.create({
-    data: {
-      title,
-      user: {
-        connect: {
-          id: session.user.id!
-        }
-      }
-    },
-  })
-
-  if (!createdFlow) {
-    return { error: "Unexpected error while creating flow!!!" }
-  } else {
-    return { success: `${createdFlow.title} is created!!!`, id: createdFlow.id }
-  }
-}
+	if (!createdFlow) {
+		return { error: 'Unexpected error while creating flow!!!' };
+	} else {
+		return {
+			success: `${createdFlow.title} is created!!!`,
+			id: createdFlow.id,
+		};
+	}
+};
 
 export const getFlowWithId = async (id: string) => {
-  if (!id) return { error: "Flow id is required" }
+	if (!id) return { error: 'Flow id is required' };
 
-  const flow = await prisma.blog.findUnique({
-    where: {
-      id: id
-    }
-  })
+	const flow = await prisma.blog.findUnique({
+		where: {
+			id: id,
+		},
+	});
 
-  if (!flow) {
-    return { error: "Flow not found" }
-  } else {
-    return { data: flow }
-  }
-}
+	if (!flow) {
+		return { error: 'Flow not found' };
+	} else {
+		return { data: flow };
+	}
+};
 
 export const getFlowForHome = async (filter: string = '') => {
-
-  const flows: FlowData[] = await prisma.blog.findMany({
-    where: {
-      isPublished: true,
-      OR: [
-        {
-          title: {
-            contains: filter,
-            mode: 'insensitive',
-          },
-        },
-        {
-          description: {
-        contains: filter,
-        mode: 'insensitive',
-      },
-        },
-        {
-          user: {
-            name: {
-              contains: filter,
-              mode: 'insensitive'
-            }
-          }
-        }
-      ]
-    },
-    include: {
-      user: {
+	const flows: FlowData[] = await prisma.blog.findMany({
+		where: {
+			isPublished: true,
+			OR: [
+				{
+					title: {
+						contains: filter,
+						mode: 'insensitive',
+					},
+				},
+				{
+					description: {
+						contains: filter,
+						mode: 'insensitive',
+					},
+				},
+				{
+					user: {
+						name: {
+							contains: filter,
+							mode: 'insensitive',
+						},
+					},
+				},
+			],
+		},
+		include: {
+			user: {
+				select: {
+					id: true,
+					name: true,
+					email: true,
+					image: true,
+					username: true,
+				},
+			},
+      tags: {
         select: {
-          id: true,
-          name: true,
-          email: true,
-          image: true,
+          tag: true
         }
       }
-    }
-  })
+		},
+	});
 
-  if (!flows) return { error: "No flows found" }
-  return { data: flows }
-}
+	if (!flows) return { error: 'No flows found' };
+	return { data: flows };
+};
 
 export const getDraftFlow = async (userId: string | undefined) => {
-  if (!userId) return { error: "User id is required" }
-  const session = await auth()
-  if(!session) return {error: "You are not logged in"}
+	if (!userId) return { error: 'User id is required' };
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+	if (session.user.id !== userId)
+		return { error: "Nope you can't do this here!!!" };
 
-  const drafts = await prisma.blog.findMany({
-    where: {
-      userId: userId,
-      isPublished: false
-    }
-  })
+	const drafts = await prisma.blog.findMany({
+		where: {
+			userId: userId,
+			isPublished: false,
+		},
+	});
 
-  if (!drafts) return { error: "No drafts found" }
-  return { data: drafts }
-}
+	if (!drafts) return { error: 'No drafts found' };
+	return { data: drafts };
+};
 
 export const toggleBookmark = async (flowId: string) => {
-  const session = await auth()
-  if (!session) return { error: "You are not logged in" }
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.user.id
-    },
-    select: {
-      bookmarks: {
-        select: {
-          id: true
-        }
-      }
-    }
-  })
+	const user = await prisma.user.findUnique({
+		where: {
+			id: session.user.id,
+		},
+		select: {
+			bookmarks: {
+				select: {
+					id: true,
+				},
+			},
+		},
+	});
 
-  if (!user) return { error: "User not found" }
+	if (!user) return { error: 'User not found' };
 
-  const isBookmarked = user.bookmarks.find((bookmark) => bookmark.id === flowId)
+	const isBookmarked = user.bookmarks.find(
+		(bookmark) => bookmark.id === flowId
+	);
 
-  if (isBookmarked) {
-    const removedFromBookmark = await prisma.user.update({
-      where: {
-        id: session.user.id
-      },
-      data: {
-        bookmarks: {
-          disconnect: {
-            id: flowId
-          }
-        }
-      }
-    })
+	if (isBookmarked) {
+		const removedFromBookmark = await prisma.user.update({
+			where: {
+				id: session.user.id,
+			},
+			data: {
+				bookmarks: {
+					disconnect: {
+						id: flowId,
+					},
+				},
+			},
+		});
 
-    if(!removedFromBookmark) return {error: "Unexpected error while removing bookmark!!!"}
-    revalidatePath('/')
-    return {success: "Bookmark removed!!!"}
+		if (!removedFromBookmark)
+			return { error: 'Unexpected error while removing bookmark!!!' };
+		revalidatePath('/');
+		return { success: 'Bookmark removed!!!' };
+	} else {
+		const bookmarked = await prisma.user.update({
+			where: {
+				id: session.user.id,
+			},
+			data: {
+				bookmarks: {
+					connect: {
+						id: flowId,
+					},
+				},
+			},
+		});
 
-  } else {
-    const bookmarked = await prisma.user.update({
-      where: {
-        id: session.user.id
-      },
-      data: {
-        bookmarks: {
-          connect: {
-            id: flowId
-          }
-        }
-      }
-    })
+		if (!bookmarked) return { error: 'Unexpected error while bookmarking!!!' };
+		revalidatePath('/');
+		return { success: 'Bookmarked!!!' };
+	}
+};
 
-    if(!bookmarked) return {error: "Unexpected error while bookmarking!!!"}
-    revalidatePath('/')
-    return {success: "Bookmarked!!!"}
-  }
-}
+export const updateContent = async (
+	flowId: string,
+	userId: string,
+	content: string
+) => {
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-export const updateContent = async (flowId: string, userId:string, content: string) => {
-  const session = await auth()
-  if (!session) return { error: "You are not logged in" }
+	if (session.user.id !== userId)
+		return { error: "Nope you can't do this here!!!" };
 
-  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+	const updatedFlow = await prisma.blog.update({
+		where: {
+			id: flowId,
+			userId: session.user.id,
+			isPublished: false,
+		},
+		data: {
+			content,
+		},
+	});
 
-  const updatedFlow = await prisma.blog.update({
-    where: {
-      id: flowId,
-      userId: session.user.id,
-      isPublished: false
-    },
-    data: {
-      content
-    }
-  })
+	if (!updatedFlow) {
+		return { error: 'Unexpected error while updating flow content!!!' };
+	} else {
+		return { success: 'Flow content updated!!!' };
+	}
+};
 
-  if (!updatedFlow) {
-    return { error: "Unexpected error while updating flow content!!!" }
-  } else {
-    return { success: "Flow content updated!!!" }
-  }
-}
+export const updateTitle = async (
+	flowId: string,
+	userId: string,
+	title: string
+) => {
+	if (title === '') return;
+	title = title.replace(/\s{2,}/g, ' ');
 
-export const updateTitle = async (flowId: string, userId: string, title: string) => {
-  if(title === '') return
-  title = title.replace(/\s{2,}/g, ' ')
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-  const session = await auth()
-  if (!session) return { error: "You are not logged in" }
+	if (session.user.id !== userId)
+		return { error: "Nope you can't do this here!!!" };
 
-  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+	const updatedFlow = await prisma.blog.update({
+		where: {
+			id: flowId,
+			userId: session.user.id,
+			isPublished: false,
+		},
+		data: {
+			title,
+		},
+	});
 
-  const updatedFlow = await prisma.blog.update({
-    where: {
-      id: flowId,
-      userId: session.user.id,
-      isPublished: false
-    },
-    data: {
-      title
-    }
-  })
+	if (!updatedFlow) {
+		return { error: 'Unexpected error while updating flow title!!!' };
+	} else {
+		revalidatePath(`/blog/draft/${flowId}`);
+		return { success: 'Flow title updated!!!' };
+	}
+};
 
-  if (!updatedFlow) {
-    return { error: "Unexpected error while updating flow title!!!" }
-  } else {
-    revalidatePath(`/blog/draft/${flowId}`)
-    return { success: "Flow title updated!!!" }
-  }
-}
+export const updateDescription = async (
+	flowId: string,
+	userId: string,
+	description: string
+) => {
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-export const updateDescription = async (flowId: string, userId: string, description: string) => {
-  const session = await auth()
-  if (!session) return { error: "You are not logged in" }
+	if (session.user.id !== userId)
+		return { error: "Nope you can't do this here!!!" };
 
-  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+	const updatedFlow = await prisma.blog.update({
+		where: {
+			id: flowId,
+			userId: session.user.id,
+			isPublished: false,
+		},
+		data: {
+			description,
+		},
+	});
 
-  const updatedFlow = await prisma.blog.update({
-    where: {
-      id: flowId,
-      userId: session.user.id,
-      isPublished: false
-    },
-    data: {
-      description
-    }
-  })
-
-  if (!updatedFlow) {
-    return { error: "Unexpected error while updating flow description!!!" }
-  } else {
-    return { success: "Flow description updated!!!" }
-  }
-}
+	if (!updatedFlow) {
+		return { error: 'Unexpected error while updating flow description!!!' };
+	} else {
+		return { success: 'Flow description updated!!!' };
+	}
+};
 
 export const publishFlow = async (
-  flowId: string,
-  userId: string,
-  tags: string[],
-  isCommentOff: boolean,
-  slug: string
+	flowId: string,
+	userId: string,
+	tags: string[],
+	isCommentOff: boolean,
+	slug: string
 ) => {
-  const session = await auth()
-  if (!session) return { error: "You are not logged in" }
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-  if(session.user.id !== userId) return {error: "Nope you can't do this here!!!"}
+	if (session.user.id !== userId)
+		return { error: "Nope you can't do this here!!!" };
 
-  const updatedFlow = await prisma.blog.update({
-    where: {
-      id: flowId,
-      userId: session.user.id,
-      isPublished: false
-    },
-    data: {
-      isPublished: true,
-      isCommentOff,
-      slug,
-      tags: {
-        connectOrCreate: tags.map((tag) => ({
-          where: {
-            tag
-          },
-          create: {
-            tag
-          }
-        }))
-      }
-    }
-  })
+	const updatedFlow = await prisma.blog.update({
+		where: {
+			id: flowId,
+			userId: session.user.id,
+			isPublished: false,
+		},
+		data: {
+			isPublished: true,
+			isCommentOff,
+			slug,
+			tags: {
+				connectOrCreate: tags.map((tag) => ({
+					where: {
+						tag,
+					},
+					create: {
+						tag,
+					},
+				})),
+			},
+		},
+	});
 
-
-  if (!updatedFlow) {
-    return { error: "Unexpected error while publishing flow!!!" }
-  } else {
-    return { success: "Flow published!!!", data: updatedFlow.id }
-  }
-}
+	if (!updatedFlow) {
+		return { error: 'Unexpected error while publishing flow!!!' };
+	} else {
+		return { success: 'Flow published!!!', data: updatedFlow.id };
+	}
+};
 
 export const likeFlow = async (flowId: string, userId: string) => {
-  const session = await auth()
-  if(!session) return {error: "You are not logged in"}
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-  const likeWhereUniqueInput = {
-		userId_blogId_commentId: {
+	const likeWhereUniqueInput = {
+		userId_blogId: {
 			userId: session.user.id!,
 			blogId: flowId,
-			commentId: null,
 		},
 	};
 
-  const alreadyLiked = await prisma.like.findUnique({
-    where: likeWhereUniqueInput
-  })
+	const alreadyLiked = await prisma.blogLike.findUnique({
+		where: likeWhereUniqueInput,
+	});
 
-  if(alreadyLiked) {
-    const unLike = await prisma.$transaction([
-			prisma.like.delete({
-				where: {
-					blogId: flowId,
-					userId: session.user.id,
-				},
+	if (alreadyLiked) {
+		const unLike = await prisma.$transaction([
+			prisma.blogLike.delete({
+				where: likeWhereUniqueInput,
 			}),
 			prisma.blog.update({
 				where: {
@@ -324,15 +345,15 @@ export const likeFlow = async (flowId: string, userId: string) => {
 			}),
 		]);
 
-    if(!unLike) return {error: "Unexpected error while unliking flow!!!"}
-    revalidatePath(`/blog/${flowId}`)
-    return {success: "Flow unliked!!!"}
-  } else {
-    const like = await prisma.$transaction([
-			prisma.like.create({
+		if (!unLike) return { error: 'Unexpected error while unliking flow!!!' };
+		revalidatePath(`/blog/${flowId}`);
+		return { success: 'Flow unliked!!!' };
+	} else {
+		const like = await prisma.$transaction([
+			prisma.blogLike.create({
 				data: {
 					blogId: flowId,
-					userId: session.user.id,
+					userId: session.user.id!,
 				},
 			}),
 			prisma.blog.update({
@@ -348,33 +369,215 @@ export const likeFlow = async (flowId: string, userId: string) => {
 			}),
 		]);
 
-    if(!like) return {error: "Unexpected error while liking flow!!!"}
-    revalidatePath(`/blog/${flowId}`)
-    return {success: "Flow liked!!!"}
-  }
+		if (!like) return { error: 'Unexpected error while liking flow!!!' };
+		revalidatePath(`/blog/${flowId}`);
+		return { success: 'Flow liked!!!' };
+	}
+};
+
+export const isAlreadyViewed = async (flowId: string, userId: string) => {
+  const alreadyViewed = await prisma.view.findMany({
+    where: {
+        userId: userId,
+        blogId: flowId,
+    },
+  })
+
+  if (alreadyViewed.length >= 1) return { data: true };
+  else return { data: false };
+}
+
+export const viewFlow = async ( flowId: string ) => {
+  if(!flowId) return { error: 'Flow Id is required' };
+  const session = await auth();
+  if( !session ) return { error: 'You are not logged in' };
+
+  const { data }  = await isAlreadyViewed(flowId, session.user.id!);
+
+  if(data) return { success: 'Already viewed' };
+  const view = prisma.$transaction([
+    prisma.view.create({
+      data: {
+        userId: session.user.id!,
+        blogId: flowId,
+      }
+    }),
+    prisma.blog.update({
+      where: {
+        id: flowId,
+      },
+      data: {
+        noOfViews: {
+          increment: 1,
+        }
+      }
+    })
+  ])
+
+  if(!view) return { error: 'Unexpected error while viewing flow!!!' };
+  revalidatePath(`/user/${session.user.id}`);
+  return { success: 'Flow viewed!!!' };
 }
 
 export const isBookmarked = async (flowId: string) => {
-  const session = await auth()
-  if(!session) return {error: "You are not logged in"}
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.user.id
-    },
-    select: {
-      bookmarks: {
-        select: {
-          id: true
-        }
-      }
-    }
-  })
+	const user = await prisma.user.findUnique({
+		where: {
+			id: session.user.id,
+		},
+		select: {
+			bookmarks: {
+				select: {
+					id: true,
+				},
+			},
+		},
+	});
 
-  if(!user) return {error: "User not found"}
+	if (!user) return { error: 'User not found' };
 
-  const isBookmarked = user.bookmarks.find((bookmark) => bookmark.id === flowId)
+	const isBookmarked = user.bookmarks.find(
+		(bookmark) => bookmark.id === flowId
+	);
 
-  if(isBookmarked) return {data: true}
-  else return {data: false}
-}
+	if (isBookmarked) return { data: true };
+	else return { data: false };
+};
+
+export const commentFlow = async (formData: FormData) => {
+	const content = formData.get('content') as string;
+	const flowId = formData.get('flowId') as string;
+	const parentId = formData.get('parentId') as string | null;
+
+	if (!flowId) return { error: 'Flow Post Id Is Required' };
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
+
+	const createdComment = await prisma.comment.create({
+		data: {
+			blogId: flowId,
+			userId: session.user.id!,
+			content,
+			parentId,
+		},
+	});
+
+	if (!createdComment)
+		return { error: 'Unexpected error while commenting flow!!!' };
+	revalidatePath(`/blog/${flowId}`);
+	return { success: 'Commented!!!' };
+};
+
+export const alreadyLikedComment = async (commentId: string) => {
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
+
+	const likeWhereUniqueInput = {
+		userId_commentId: {
+			userId: session.user.id!,
+			commentId: commentId,
+		},
+	};
+
+	const alreadyLiked = await prisma.commentLike.findUnique({
+		where: likeWhereUniqueInput,
+	});
+
+	if (alreadyLiked) return { data: true };
+	else return { data: false };
+};
+
+export const likeComment = async (flowId: string, commentId: string) => {
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
+
+	const likeWhereUniqueInput = {
+		userId_commentId: {
+			userId: session.user.id!,
+			commentId: commentId,
+		},
+	};
+
+	const alreadyLiked = await prisma.commentLike.findUnique({
+		where: likeWhereUniqueInput,
+	});
+
+	if (alreadyLiked) {
+		const unLike = await prisma.$transaction([
+			prisma.commentLike.delete({
+				where: likeWhereUniqueInput,
+			}),
+			prisma.comment.update({
+				where: {
+					id: commentId,
+				},
+				data: {
+					likeCount: {
+						decrement: 1,
+					},
+				},
+			}),
+		]);
+
+		if (!unLike) return { error: 'Unexpected error while unliking flow!!!' };
+		revalidatePath(`/blog/${flowId}`);
+		return { success: 'Flow unliked!!!', data: false };
+	} else {
+		const like = await prisma.$transaction([
+			prisma.commentLike.create({
+				data: {
+					commentId: commentId,
+					userId: session.user.id!,
+				},
+			}),
+			prisma.comment.update({
+				where: {
+					id: commentId,
+				},
+				data: {
+					likeCount: {
+						increment: 1,
+					},
+				},
+			}),
+		]);
+
+		if (!like) return { error: 'Unexpected error while liking flow!!!' };
+		revalidatePath(`/blog/${flowId}`);
+		return { success: 'Flow liked!!!', data: true };
+	}
+};
+
+export const getComments = async (flowId: string) => {
+	if (!flowId) return { error: 'Flow Post Id Is Required' };
+
+	const comments = await prisma.comment.findMany({
+		where: {
+			blogId: flowId,
+		},
+	});
+
+	if (!comments) return { error: 'No comments found' };
+	return { data: comments };
+};
+
+export const deleteComment = async (commentId: string, flowId: string) => {
+	console.log(commentId);
+	if (!commentId) return { error: 'Comment Id Is Required' };
+	const session = await auth();
+	if (!session) return { error: 'You are not logged in' };
+
+	const deletedComment = await prisma.comment.deleteMany({
+		where: {
+			id: commentId,
+			userId: session.user.id,
+		},
+	});
+
+	if (deletedComment.count === 0)
+		return { error: "You can't delete this comment!!!" };
+	revalidatePath(`/blog/${flowId}`);
+	return { success: 'Comment deleted!!!' };
+};

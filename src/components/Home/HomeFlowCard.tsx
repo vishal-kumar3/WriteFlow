@@ -52,7 +52,7 @@ export const UserCard = ({ userData, createdAt }: { userData: FlowUser, createdA
         </div>
         <div className="text-sm leading-tight space-y-1">
           <p className="font-semibold text-base">{userData.name}</p>
-          <p>isko change krna hoga {userData.email} | {formatDateAgo(createdAt)}</p>
+          <p>@{userData.username} | {formatDateAgo(createdAt)}</p>
         </div>
       </Link>
       <Popover>
@@ -108,6 +108,7 @@ const HomeFlowCard = ({ flow, userBookmark }: { flow: FlowData, userBookmark: { 
     if (bookmark.id === flow.id) isBookmarked = true;
   })
 
+  console.log(flow)
   return (
     <div className="border-2 rounded-lg m-10 p-4">
       <UserCard userData={flow.user} createdAt={flow.createdAt} />
@@ -142,10 +143,13 @@ const HomeFlowCard = ({ flow, userBookmark }: { flow: FlowData, userBookmark: { 
         <CardFooter className="flex px-2 justify-between items-center">
           <div>Discuss . {flow.likeCount} Likes . {flow.noOfViews} reads</div>
           <div className="flex items-center">
-            <Badge>Holla</Badge>
-            <Badge>Holla</Badge>
-            <Badge>Holla</Badge>
-
+            {
+              flow.tags.map((tag: {tag: string}, key: number) => (
+                <form key={key} method="GET" action="/">
+                  <Badge variant="default" className="mr-2">{tag.tag}</Badge>
+                </form>
+              ))
+            }
             <ToggleBookmark flowId={flow.id} isBookmarked={isBookmarked} />
           </div>
         </CardFooter>

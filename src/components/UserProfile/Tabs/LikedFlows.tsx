@@ -10,12 +10,16 @@ const LikedFlows = async(props: props) => {
   const session = await auth()
   if (!session) return <div>You are not loggedIn</div>
 
-  const LikedFlowData = await prisma.like.findMany({
+  const LikedFlowData = await prisma.blogLike.findMany({
     where: {
       userId: session.user.id
     },
-    select: {
-      blog: true
+    include: {
+      blog: {
+        include: {
+          tags: true,
+        },
+      },
     }
   })
 
@@ -24,16 +28,16 @@ const LikedFlows = async(props: props) => {
   return (
     <>
       {
-        LikedFlowData?.blog?.map((card: UserFlowsCardProps, key: number) => (
+        LikedFlowData?.map((card, key: number) => (
           <UserFlowsCard
             key={key}
-            id={card.id}
-            title={card.title}
-            tags={card.tags}
-            isPublished={card.isPublished}
-            description={card.description}
-            createdAt={card.createdAt}
-            thumbnail={card.thumbnail}
+            id={card.blog.id}
+            title={card.blog.title}
+            tags={card.blog.tags}
+            isPublished={card.blog.isPublished}
+            description={card.blog.description}
+            createdAt={card.blog.createdAt}
+            thumbnail={card.blog.thumbnail}
           />
         ))
       }

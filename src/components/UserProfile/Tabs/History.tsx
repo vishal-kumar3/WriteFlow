@@ -17,21 +17,23 @@ const History = async(props: props) => {
     }
   })
 
+  console.log("HistoryData:- ", HistoryData)
+
   if(HistoryData.length === 0) return <div>No History Found</div>
 
   return (
     <>
       {
-        HistoryData?.blog?.map((card: UserFlowsCardProps, key: number) => (
+        HistoryData?.map(({blog}: UserFlowsCardProps, key: number) => (
           <UserFlowsCard
             key={key}
-            id={card.id}
-            title={card.title}
-            tags={card.tags}
-            isPublished={card.isPublished}
-            description={card.description}
-            createdAt={card.createdAt}
-            thumbnail={card.thumbnail}
+            id={blog.id}
+            title={blog.title}
+            tags={blog.tags}
+            isPublished={blog.isPublished}
+            description={blog.description}
+            createdAt={blog.createdAt}
+            thumbnail={blog.thumbnail}
           />
         ))
       }
