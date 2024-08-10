@@ -17,16 +17,14 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "../ui/checkbox";
 import { reportUserOptions } from "./reportOptions";
 import { CheckboxDemo } from "./CheckBox";
 import { FlowData, FlowUser } from "./HomeFlows";
@@ -35,9 +33,10 @@ import Image from "next/image";
 import { defaultThumbnail } from "../UserProfile/Tabs/UserFlows";
 import Link from "next/link";
 import ToggleBookmark from "./ToggleBookmark";
+import { reportFlow, reportUser } from "@/actions/report.action";
 
 
-export const UserCard = ({ userData, createdAt }: { userData: FlowUser, createdAt: Date }) => {
+export const UserCard = ({ userData, createdAt, flowId }: { userData: FlowUser, createdAt: Date, flowId: string }) => {
   return (
     <div className="flex items-center justify-between">
       <Link href={`/user/${userData.id}`} className="flex items-center gap-4">
@@ -60,15 +59,15 @@ export const UserCard = ({ userData, createdAt }: { userData: FlowUser, createdA
           <Tally3 className=" rotate-90" />
         </PopoverTrigger>
         <PopoverContent className="flex flex-col gap-1">
-          <ReportUserCard reportOptions={reportUserOptions} type="user" />
-          <Button variant="ghost">Report Post</Button>
+          <ReportUserCard reportedUserId={userData.id} reportedBlogId={flowId} reportOptions={reportUserOptions} type="post" />
         </PopoverContent>
       </Popover>
     </div>
   );
 };
 
-export const ReportUserCard = ({ reportOptions, type }: { reportOptions: { label: string; description: string }[], type: "user" | "post" }) => {
+// TODO: Need to remove the post from that user only who reported it
+export const ReportUserCard = ({ reportOptions, type, reportedUserId, reportedBlogId }: { reportOptions: { label: string; description: string }[], type: "user" | "post", reportedUserId: string, reportedBlogId: string }) => {
   return (
     <Dialog>
       <DialogTrigger>
@@ -82,17 +81,37 @@ export const ReportUserCard = ({ reportOptions, type }: { reportOptions: { label
             reason for reporting this {type}:
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-2 justify-center">
-          {reportUserOptions.map((options, key) => (
+        <form action={async (formData: FormData) => {
+          "use server"
+          let title = '';
+          formData.forEach((value, key) => {
+            value === "on" ? title += key + " " : "";
+          })
+
+          const report = {
+            reportedUserId: formData.get("reportedUserId") as string,
+            reportedBlogId: formData.get("reportedBlogId") as string,
+            title: title,
+            issue: formData.get("issue") as string
+          }
+
+          const { error, success } = await reportFlow(report);
+          console.log(error, success);
+        }} className="flex flex-col gap-2 justify-center">
+          {reportOptions.map((options, key) => (
             <CheckboxDemo
               key={key}
               id={options.label}
               label={options.description}
             />
           ))}
-          <Input type="text" className="outline-none" placeholder="Please specify other issue"></Input>
-          <Button variant="destructive">Submit Report</Button>
-        </div>
+          <input type="text" className="hidden" value={reportedUserId} name="reportedUserId" />
+          <input type="text" className="hidden" value={reportedBlogId} name="reportedBlogId" />
+          <Input name="issue" type="text" className="outline-none" placeholder="Please specify other issue"></Input>
+          <DialogClose>
+            <Button variant="destructive">Submit Report</Button>
+          </DialogClose>
+        </form>
       </DialogContent>
     </Dialog>
   );
@@ -108,10 +127,9 @@ const HomeFlowCard = ({ flow, userBookmark }: { flow: FlowData, userBookmark: { 
     if (bookmark.id === flow.id) isBookmarked = true;
   })
 
-  console.log(flow)
   return (
     <div className="border-2 rounded-lg m-10 p-4">
-      <UserCard userData={flow.user} createdAt={flow.createdAt} />
+      <UserCard userData={flow.user} createdAt={flow.createdAt} flowId={flow.id} />
       <Card className="border-none">
         <div className="flex w-full">
           <CardHeader className="p-0">
@@ -144,7 +162,7 @@ const HomeFlowCard = ({ flow, userBookmark }: { flow: FlowData, userBookmark: { 
           <div>Discuss . {flow.likeCount} Likes . {flow.noOfViews} reads</div>
           <div className="flex items-center">
             {
-              flow.tags.map((tag: {tag: string}, key: number) => (
+              flow.tags.map((tag: { tag: string }, key: number) => (
                 <form key={key} method="GET" action="/">
                   <Badge variant="default" className="mr-2">{tag.tag}</Badge>
                 </form>
