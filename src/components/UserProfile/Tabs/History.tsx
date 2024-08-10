@@ -17,8 +17,6 @@ const History = async(props: props) => {
     }
   })
 
-  console.log("HistoryData:- ", HistoryData)
-
   if(HistoryData.length === 0) return <div>No History Found</div>
 
   return (

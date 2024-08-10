@@ -11,7 +11,6 @@ type props = {
 
 const ToggleBookmark = ({isBookmarked, flowId}: props) => {
   const submitToggleBookmark = async() => {
-    console.log("submitToggleBookmark")
     const { error, success } = await toggleBookmark(flowId)
 
     if(error) toast.error(error)

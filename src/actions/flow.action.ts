@@ -50,8 +50,35 @@ export const getFlowWithId = async (id: string) => {
 };
 
 export const getFlowForHome = async (filter: string = '') => {
+  const session = await auth()
+  let reportFilter: string[] = []
+  if(session){
+    const user = await prisma.user.findUnique({
+      where:{
+        id: session.user.id
+      },
+      select: {
+        report: {
+          select: {
+            reportedBlogId: true
+          }
+        }
+      }
+    })
+
+    user?.report.map((report) => {
+      report.reportedBlogId && reportFilter.push(report.reportedBlogId)
+    })
+  }
+
+
 	const flows: FlowData[] = await prisma.blog.findMany({
 		where: {
+      NOT: {
+        id: {
+          in: reportFilter
+        }
+      },
 			isPublished: true,
 			OR: [
 				{
@@ -564,7 +591,6 @@ export const getComments = async (flowId: string) => {
 };
 
 export const deleteComment = async (commentId: string, flowId: string) => {
-	console.log(commentId);
 	if (!commentId) return { error: 'Comment Id Is Required' };
 	const session = await auth();
 	if (!session) return { error: 'You are not logged in' };
