@@ -7,6 +7,33 @@
   --uc-primary-oklch-light: 59% 0.22 264;
 }
 
+/* For Slash Command DropDown */
+.dropdown-menu {
+  @apply bg-white border border-gray-200 rounded-lg shadow-lg p-2 flex flex-col gap-1;
+}
+
+.dropdown-button {
+  @apply flex items-center w-full text-left p-2 hover:bg-gray-100 rounded-lg;
+}
+
+.is-selected {
+  @apply bg-gray-200;
+}
+
+/* For Tiptap image */
+.tiptap > img {
+    display: block;
+    height: auto;
+    margin: 1.5rem 0;
+    max-width: 100%;
+
+}
+
+.tiptap > .ProseMirror-selectednode:hover {
+  outline: 3px solid #6A00F5;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;
