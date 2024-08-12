@@ -1,6 +1,7 @@
 import { auth } from '@/auth'
 import prisma from '@/prisma'
-import { UserFlowsCard, UserFlowsCardProps } from './UserFlows'
+import { HistoryWithBlog } from '@/types/ViewType'
+import { UserFlowsCard } from './UserFlows'
 
 type props = {}
 
@@ -8,7 +9,7 @@ const History = async(props: props) => {
   const session = await auth()
   if (!session) return <div>You are not loggedIn</div>
 
-  const HistoryData = await prisma.view.findMany({
+  const HistoryData: HistoryWithBlog[] = await prisma.view.findMany({
     where: {
       userId: session.user.id,
     },
@@ -17,21 +18,21 @@ const History = async(props: props) => {
     }
   })
 
-  if(HistoryData.length === 0) return <div>No History Found</div>
+  if(HistoryData?.length === 0) return <div>No History Found</div>
 
   return (
     <>
       {
-        HistoryData?.map(({blog}: UserFlowsCardProps, key: number) => (
+        HistoryData?.map((HistoryView: HistoryWithBlog, key: number) => (
           <UserFlowsCard
             key={key}
-            id={blog.id}
-            title={blog.title}
-            tags={blog.tags}
-            isPublished={blog.isPublished}
-            description={blog.description}
-            createdAt={blog.createdAt}
-            thumbnail={blog.thumbnail}
+            id={HistoryView?.blog?.id!}
+            title={HistoryView?.blog?.title!}
+            // tags={HistoryView?.blog?.tags!}
+            isPublished={HistoryView?.blog?.isPublished!}
+            description={HistoryView?.blog?.description!}
+            createdAt={HistoryView?.blog?.createdAt!}
+            thumbnail={HistoryView?.blog?.thumbnail!}
           />
         ))
       }

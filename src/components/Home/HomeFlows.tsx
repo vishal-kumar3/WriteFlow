@@ -2,38 +2,17 @@ import React from 'react'
 import HomeFlowCard from './HomeFlowCard'
 import { auth } from '@/auth'
 import prisma from '@/prisma'
+import { FlowForHome } from '@/app/(main)/page'
+import { UserWithBookmarkId } from '@/types/UserType'
 
-type HomeFlowDataProps = {
-  data: FlowData[]
-}
 
-export type FlowUser = {
-  id: string;
-  name: string | null;
-  email: string;
-  image: string | null;
-  username: string;
-}
-
-export type FlowData = {
-  id: string
-  title: string,
-  description: string | null,
-  thumbnail: string | null,
-  likeCount: number,
-  noOfComments: number,
-  noOfViews: number,
-  createdAt: Date,
-  user: FlowUser
-}
-
-const HomeFlows = async({ data }: HomeFlowDataProps) => {
+const HomeFlows = async ({ data }: { data: FlowForHome}) => {
 
   const session = await auth()
   let userBookmarks: {id:string}[] = []
 
   if(session){
-    const user = await prisma.user.findUnique({
+    const user: UserWithBookmarkId = await prisma.user.findUnique({
       where: {
         id: session.user.id,
       },

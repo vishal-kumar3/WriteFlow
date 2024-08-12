@@ -1,8 +1,8 @@
 'use server';
 
 import { auth } from '@/auth';
-import { FlowData } from '@/components/Home/HomeFlows';
 import prisma from '@/prisma';
+import { BlogWithUserAndTagsHome } from '@/types/BlogType';
 import { revalidatePath } from 'next/cache';
 
 export const deleteFlow = async (flowId: string) => {
@@ -89,7 +89,7 @@ export const getFlowForHome = async (filter: string = '') => {
   }
 
 
-  const flows: FlowData[] = await prisma.blog.findMany({
+  const flows: BlogWithUserAndTagsHome[] = await prisma.blog.findMany({
     where: {
       NOT: {
         id: {
@@ -627,6 +627,9 @@ export const getComments = async (flowId: string) => {
     where: {
       blogId: flowId,
     },
+    include: {
+      user: true,
+    }
   });
 
   if (!comments) return { error: 'No comments found' };

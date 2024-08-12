@@ -1,5 +1,4 @@
 import { updateUserCoverImage } from "@/actions/image.action";
-import { auth } from "@/auth";
 import AboutSection, {
   AboutDetails,
 } from "@/components/UserProfile/AboutSection";
@@ -9,9 +8,10 @@ import Bookmarks from "@/components/UserProfile/Tabs/Bookmarks";
 import DraftFlows from "@/components/UserProfile/Tabs/DraftFlows";
 import History from "@/components/UserProfile/Tabs/History";
 import LikedFlows from "@/components/UserProfile/Tabs/LikedFlows";
-import UserFlows, { UserFlowsCardProps, UserFlowsProps } from "@/components/UserProfile/Tabs/UserFlows";
+import UserFlows, { UserFlowsCardProps } from "@/components/UserProfile/Tabs/UserFlows";
 import TabSwitcher from "@/components/UserProfile/TabSwitcher";
 import prisma from "@/prisma";
+import { UserWithFlowsAndTagsAndAbout } from "@/types/UserType";
 import React from "react";
 
 type props = {
@@ -27,7 +27,7 @@ export const DefaultAvatarImage =
 const page = async ({ params }: props) => {
   const { userId } = params;
 
-  const user = await prisma.user.findUnique({
+  const user: UserWithFlowsAndTagsAndAbout = await prisma.user.findUnique({
     where: {
       id: userId,
     },

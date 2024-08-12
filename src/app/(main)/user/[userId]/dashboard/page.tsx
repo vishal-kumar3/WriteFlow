@@ -8,9 +8,7 @@ import {
 } from "@/components/ui/card";
 import React from "react";
 
-type props = {};
-
-export const AnalyticsCard = () => {
+const AnalyticsCard = () => {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -21,7 +19,7 @@ export const AnalyticsCard = () => {
   );
 };
 
-export const InfoCard = () => {
+const InfoCard = () => {
   return (
     <Card className="min-w-[30%]">
       <CardHeader>
@@ -42,7 +40,7 @@ export const InfoCard = () => {
   )
 }
 
-export const RecentArticle = () => {
+const RecentArticle = () => {
   return (
     <Card className="min-w-[65%]">
       <CardHeader>
@@ -57,7 +55,7 @@ export const RecentArticle = () => {
   )
 }
 
-const DashboardPage = (props: props) => {
+const DashboardPage = () => {
   return (
     <div className="m-10">
       <div className="border-b">

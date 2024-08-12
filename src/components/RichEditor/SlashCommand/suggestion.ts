@@ -1,6 +1,13 @@
-import { ReactRenderer } from '@tiptap/react';
-import tippy from 'tippy.js';
+import { Editor, ReactRenderer } from '@tiptap/react';
+import tippy, { Instance as TippyInstance } from 'tippy.js';
 import CommandList from './CommandsList';
+import React from 'react';
+
+interface CommandListProps {
+  items: { title: string }[];
+  command: (item: any) => void;
+  editor: Editor;
+}
 
 const suggestion = {
   items: ({ query }: { query: string }) => {
@@ -35,12 +42,12 @@ const suggestion = {
   },
 
   render: () => {
-    let component: ReactRenderer<typeof CommandList>;
-    let popup: any;
+    let component: ReactRenderer<React.ForwardRefExoticComponent<CommandListProps>>;
+    let popup: TippyInstance[];
 
     return {
-      onStart: (props: any) => {
-        component = new ReactRenderer(CommandList, {
+      onStart: (props: CommandListProps & { clientRect: DOMRect }) => {
+        component = new ReactRenderer(CommandList as React.ForwardRefExoticComponent<CommandListProps>, {
           props,
           editor: props.editor,
         });
@@ -50,7 +57,7 @@ const suggestion = {
         }
 
         popup = tippy('body', {
-          getReferenceClientRect: props.clientRect,
+          getReferenceClientRect: () => props.clientRect, // Use a function that returns the DOMRect
           appendTo: () => document.body,
           content: component.element,
           showOnCreate: true,
@@ -60,7 +67,7 @@ const suggestion = {
         });
       },
 
-      onUpdate(props: any) {
+      onUpdate(props: CommandListProps & { clientRect: DOMRect }) {
         component.updateProps(props);
 
         if (!props.clientRect) {
@@ -68,7 +75,7 @@ const suggestion = {
         }
 
         popup[0].setProps({
-          getReferenceClientRect: props.clientRect,
+          getReferenceClientRect: () => props.clientRect, // Use a function that returns the DOMRect
         });
       },
 
@@ -76,12 +83,9 @@ const suggestion = {
         const { event } = props;
 
         if (event.key === 'ArrowUp' || event.key === 'ArrowDown' || event.key === 'Enter') {
-          // Ensure component.ref is defined and has the onKeyDown method
           const commandListRef = component.ref as any;
-          console.log('commandListRef', commandListRef);
 
           if (commandListRef?.onKeyDown) {
-            console.log('commandListRef.onKeyDown', commandListRef.onKeyDown);
             return commandListRef.onKeyDown(props);
           }
         }
