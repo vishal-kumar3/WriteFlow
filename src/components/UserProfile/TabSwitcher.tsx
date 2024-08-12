@@ -25,7 +25,7 @@ export const UserTabContent = ({ value, children }: UserTabContentProps) => {
 const TabSwitcher = ({id, UserFlows, History, LikedFlows, Bookmarks, DraftFlows}: Props) => {
   return (
     <Tabs className='' defaultValue='UserFlows'>
-      <TabsList className='w-full mx-auto space-x-8 bg-black/5 py-6'>
+      <TabsList className='w-full mx-auto space-x-8 bg-black/5 dark:bg-black/20 py-6'>
                 <TabsTrigger className='text-lg' value='UserFlows'>Flows</TabsTrigger>
                 {/* @ts-expect-error Async Server Component */}
                 <CurrentUserOnly userId={id}>

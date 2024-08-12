@@ -19,7 +19,7 @@ const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAct
   return (
     <div className="mt-5 group relative">
       <Image
-        className="h-[230px] w-full rounded-t-2xl object-cover object-center"
+        className="h-[250px] w-full rounded-t-2xl object-cover object-center"
         src={coverImage}
         height={800}
         width={900}

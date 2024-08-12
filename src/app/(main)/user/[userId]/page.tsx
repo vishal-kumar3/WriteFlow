@@ -88,7 +88,7 @@ const page = async ({ params }: props) => {
 
 
   return (
-    <div className="bg-[#f5f5f5] dark:bg-blue-400/50 mx-auto w-[90%] rounded-t-2xl">
+    <div className="bg-[#f5f5f5] dark:bg-white/10 mx-auto w-[90%] pb-5 rounded-2xl">
       <div className="relative">
         <CoverImage
           userId={user?.id!}

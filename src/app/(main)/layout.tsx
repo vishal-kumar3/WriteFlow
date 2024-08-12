@@ -8,14 +8,14 @@ type props = {
 
 const layout = ({ children }: props) => {
   return (
-    <div className="relative flex h-[5000px]">
+    <div className="relative flex">
       {/* @ts-expect-error Async Server Component */}
       <AuthUserOnly>
         <div className="sticky h-screen top-0 min-w-[17%]">
           <Sidebar />
         </div>
       </AuthUserOnly>
-      <div className="w-full">{children}</div>
+      <div className="w-full pb-5">{children}</div>
     </div>
   );
 };

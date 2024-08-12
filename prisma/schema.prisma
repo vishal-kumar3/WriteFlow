@@ -156,11 +156,12 @@ model CommentLike {
 
 //TODO: Tag model
 model Tag {
-  id        String   @id @default(cuid())
-  tag       String   @unique
-  posts     Blog[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(cuid())
+  tag        String   @unique
+  posts      Blog[]
+  postsCount Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Comment {

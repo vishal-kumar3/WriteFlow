@@ -19,7 +19,7 @@ const FollowButton = ({id, isAlreadyFollowing}: props) => {
       }else {
         toast.success(success)
       }
-    }} className="px-5 bg-blue-400">{isAlreadyFollowing ? "Unfollow" : "Follow"}</Button>
+    }} className="px-5 bg-blue-400 hover:bg-blue-500">{isAlreadyFollowing ? "Unfollow" : "Follow"}</Button>
   )
 }
 

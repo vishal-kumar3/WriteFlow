@@ -37,7 +37,7 @@ const AboutSection = ({
   return (
     <>
       <div className="flex gap-6">
-        <p className=" text-3xl font-semibold">{name}</p>
+        <p className=" text-3xl font-semibold dark:text-white">{name}</p>
         <div className="flex gap-2 items-center">
           {/* //TODO: Dialog Popup to choose badges */}
           {tags.map((tag: string, index: number) => (
@@ -49,7 +49,7 @@ const AboutSection = ({
           />
         </div>
       </div>
-      <div className="pl-4 text-black/70 ">
+      <div className="pl-4 text-black/70 dark:text-white/70 ">
         <p>{career}</p>
         <p>{bio}</p>
       </div>

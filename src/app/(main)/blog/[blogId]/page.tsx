@@ -9,6 +9,13 @@ import { isBookmarked, viewFlow } from "@/actions/flow.action";
 import { Dot } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/ThemeToggle/ThemeToggle";
+import FollowButton from "@/components/UserProfile/FollowButton";
+import { isAlreadyFollowing } from "@/actions/user.action";
+import AuthUserOnly from "@/util/AuthUserOnly";
+import HideForCurrentUser from "@/util/HideForCurrentUser";
 
 type props = {
   params: {
@@ -66,23 +73,37 @@ const PublishedBlog = async ({ params }: props) => {
 
   return (
     <div className="h-full relative max-w-[80%] mx-auto">
-      <div className="my-20">
+      <div className="sticky top-5 flex justify-between bg-gray-100 dark:bg-white/10 p-2 px-8 rounded-lg items-center">
+        <div className="flex gap-5 items-center">
+          <Link href={`/user/${blog.user.id}`}>
+            <Avatar>
+              <AvatarImage src={blog.user.image!} alt="@shadcn" />
+              <AvatarFallback>{blog.user.username}</AvatarFallback>
+            </Avatar>
+          </Link>
+          <Link href={`/user/${blog.user.id}`} className="font-bold text-xl">@{blog.user.username}</Link>
+          <p className="text-lg">{foramtDateTime(blog.updatedAt)}</p>
+        </div>
+        <div className="flex gap-5 items-center">
+          {/* @ts-expect-error Async Server Component */}
+          <AuthUserOnly>
+            {/* @ts-expect-error Async Server Component */}
+            <HideForCurrentUser userId={blog.user.id}>
+              <FollowButton isAlreadyFollowing={async() => {
+                "use server"
+                return await isAlreadyFollowing(blog.user.id)
+              }} id={blog.user.id} />
+            </HideForCurrentUser>
+          </AuthUserOnly>
+          <ModeToggle />
+        </div>
+      </div>
+      <div className="my-10">
         <CoverImage
           coverImage={blog.coverImage || DefaultCoverImage}
           disabled={false}
         />
         <p className="outline-none text-center py-5 pb-8 w-full focus:outline-none border-x text-5xl font-bold px-20 resize-none">{blog.title}</p>
-        <Link href={`/user/${blog.userId}`} className="flex items-center w-full border-x pb-8 justify-center gap-8 ">
-          <div className="flex gap-3 items-center">
-            <Image src={blog.user.image!} alt="Profile Image" width={80} height={80} className="size-[60px] object-cover object-center rounded-full" />
-            <div className="">
-              <div className="text-md">{blog.user.name}</div>
-              <div className="text-md">@{blog.user.username}</div>
-            </div>
-          </div>
-          <Dot className="text-zinc-500" />
-          <div className="text-xl">{foramtDateTime(blog.updatedAt)}</div>
-        </Link>
         <p className="text-center italic outline-none pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem] resize-none">{blog.description}</p>
         <div className="prose prose-lg border border-t-0 max-w-[100%] px-10 dark:text-white" dangerouslySetInnerHTML={{ __html: blog.content! }}>
         </div>

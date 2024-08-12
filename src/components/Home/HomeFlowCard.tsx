@@ -164,7 +164,10 @@ const HomeFlowCard = ({ flow, userBookmark }: { flow: FlowData, userBookmark: { 
             {
               flow.tags.map((tag: { tag: string }, key: number) => (
                 <form key={key} method="GET" action="/">
-                  <Badge variant="default" className="mr-2">{tag.tag}</Badge>
+                  <input type="hidden" name="search" value={tag.tag} />
+                  <button type="submit">
+                    <Badge variant="default" className="mr-2">{tag.tag}</Badge>
+                  </button>
                 </form>
               ))
             }
