@@ -26,7 +26,7 @@ export const InfoCard = () => {
     <Card className="min-w-[30%]">
       <CardHeader>
         <div className="size-[40px] rounded-full bg-blue-400"></div>
-        <h1 className="font-semibold">Name's Flow Info</h1>
+        <h1 className="font-semibold">Name&apos;s Flow Info</h1>
         <div className="text-sm text-muted-foreground flex justify-around px-2 py-3 bg-slate-200/40 rounded-md">
           <div>
             <div>_</div>
