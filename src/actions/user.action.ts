@@ -12,6 +12,29 @@ export type UserAbout = {
   career: string;
 };
 
+export const isAlreadyFollowing = async(id: string) => {
+  const session = await auth()
+  if(!session?.user?.id) return { error: 'No user id provided' };
+
+  const currentUserId: string = session.user.id
+
+  if(!id) return { error: "invalid user Id"}
+
+  const alreadyFollowing = await prisma.follows.findUnique({
+    where: {
+      followerId_followingId: {
+        followerId: currentUserId,
+        followingId: id
+      }
+    }
+  })
+
+  if(alreadyFollowing){
+    return true
+  }
+  return false
+}
+
 export const updateUserAboutSection = async(formData: FormData) => {
 
   const session = await auth()
@@ -153,4 +176,3 @@ export const followToggle = async(id: string) => {
   }
   return { error: 'Could not follow user' };
 }
-
