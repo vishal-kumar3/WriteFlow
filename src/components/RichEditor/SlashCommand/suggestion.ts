@@ -63,7 +63,7 @@ const suggestion = {
           showOnCreate: true,
           interactive: true,
           trigger: 'manual',
-          placement: 'bottom-start',
+          placement: 'bottom-end',
         });
       },
 
