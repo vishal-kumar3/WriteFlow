@@ -18,17 +18,7 @@ type props = {
 };
 
 const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt }: props) => {
-  const session = await auth()
-
   // TODO: user.action.ts me daal do or without login page access ho jaye vaise kr do
-  const isAlreadyFollowing = await prisma.follows.findUnique({
-    where: {
-      followerId_followingId: {
-        followerId: session?.user.id!,
-        followingId: userId
-      }
-    }
-  })
 
   return (
     <div className="">
@@ -55,7 +45,7 @@ const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt }: p
         <p>{followingCnt} Followings</p>
         {/* @ts-expect-error Async Server Component */}
         <HideForCurrentUser userId={userId} >
-          <FollowButton isAlreadyFollowing={isAlreadyFollowing} id={userId} />
+          <FollowButton id={userId} />
         </HideForCurrentUser>
       </div>
     </div>

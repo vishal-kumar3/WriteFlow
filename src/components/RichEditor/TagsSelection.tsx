@@ -70,9 +70,12 @@ export function TagsSelection({ selectedTags, setSelectedTags }: { selectedTags:
               placeholder="Select Tags"
               value={inputTag}
               onChangeCapture={(e) => {
+                const target = e.target as HTMLInputElement; // Type assertion
+
                 // Space not allowed
-                if (e.target.value.includes(' ')) return
-                setInputTag((e.target.value).toLowerCase())
+                if (target.value.includes(' ')) return;
+
+                setInputTag(target.value.toLowerCase());
               }}
             />
             <CommandList className="">

@@ -4,21 +4,22 @@ import { auth } from "@/auth"
 import RichEditor from "@/components/RichEditor/RichEditor"
 import CoverImage from "@/components/UserProfile/CoverImage"
 import prisma from "@/prisma"
+import { BlogWithTags } from "@/types/BlogType"
 
-type props = {
+type DraftPageProps = {
   params: {
     draftId: string
   }
 }
 
-const page = async ({ params }: props) => {
+const DraftPage = async ({ params }: DraftPageProps) => {
   const { draftId } = params
   if (!draftId) return <div>No draft id provided</div>
 
   const session = await auth()
   if (!session) return <div>User not logged in</div>
 
-  const DraftFlowData = await prisma.blog.findUnique({
+  const DraftFlowData: BlogWithTags = await prisma.blog.findUnique({
     where: {
       userId: session.user.id,
       id: draftId,
@@ -48,4 +49,4 @@ const page = async ({ params }: props) => {
 
 
 
-export default page
+export default DraftPage

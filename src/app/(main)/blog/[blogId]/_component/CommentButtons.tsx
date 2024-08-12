@@ -1,13 +1,17 @@
 "use client"
 import { alreadyLikedComment, deleteComment, likeComment } from '@/actions/flow.action'
 import { HeartFilledIcon } from '@radix-ui/react-icons'
-import { Heart, HeartCrack, Trash } from 'lucide-react'
+import { Heart, Trash } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
-type props = {}
+export type CommentButtonsProps = {
+  flowId: string
+  commentId: string
+  likeCount: number
+}
 
-export const CommentButtons = ({ commentId, flowId, likeCount }: { flowId: string, commentId: string, likeCount: number }) => {
+export const CommentButtons = ({ commentId, flowId, likeCount }: CommentButtonsProps) => {
   const [alreadyLiked, setAlreadyLiked] = useState(false)
 
   useEffect(() => {

@@ -15,7 +15,7 @@ export type UserFlowsCardProps = {
   title: string;
   description: string | null;
   isPublished: boolean;
-  tags: { tag: string }[];
+  tags?: { tag: string }[];
   thumbnail: string | null;
   createdAt: Date;
 };

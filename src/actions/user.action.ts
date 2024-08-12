@@ -30,9 +30,9 @@ export const isAlreadyFollowing = async(id: string) => {
   })
 
   if(alreadyFollowing){
-    return true
+    return { data: true }
   }
-  return false
+  return { data: false }
 }
 
 export const updateUserAboutSection = async(formData: FormData) => {
@@ -138,7 +138,7 @@ export const followToggle = async(id: string) => {
 
     if(!unfollow) return { error: 'Could not unfollow user' };
     revalidatePath(`/user/${id}`);
-    return { success: 'User unfollowed successfully' };
+    return { success: 'User unfollowed successfully', data: false };
   }
   else {
     const follow = await prisma.$transaction([
@@ -172,7 +172,6 @@ export const followToggle = async(id: string) => {
 
     if(!follow) return { error: 'Could not follow user' };
     revalidatePath(`/user/${id}`);
-    return { success: 'User followed successfully' };
+    return { success: 'User followed successfully', data: true };
   }
-  return { error: 'Could not follow user' };
 }

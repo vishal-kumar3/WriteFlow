@@ -1,21 +1,22 @@
 import CoverImage from "@/components/UserProfile/CoverImage";
 import prisma from "@/prisma";
 import { DefaultCoverImage } from "../../user/[userId]/page";
-import Image from "next/image";
-import { foramtDateTime, formatDateAgo } from "@/util/DateTime";
+import { foramtDateTime } from "@/util/DateTime";
 import { auth } from "@/auth";
 import FlowButtons from "./_component/FlowButtons";
 import { isBookmarked, viewFlow } from "@/actions/flow.action";
-import { Dot } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import FollowButton from "@/components/UserProfile/FollowButton";
 import { isAlreadyFollowing } from "@/actions/user.action";
 import AuthUserOnly from "@/util/AuthUserOnly";
 import HideForCurrentUser from "@/util/HideForCurrentUser";
+import { BlogWithUserAndComments } from "@/types/BlogType";
+import { User } from "@/types/UserType";
+import { ActionResponse } from "@/types/ActionResponse";
+import { Like } from "@/types/LikeType";
 
 type props = {
   params: {
@@ -36,13 +37,13 @@ const PublishedBlog = async ({ params }: props) => {
     },
   };
 
-  const isAlreadyLiked = await prisma.blogLike.findUnique({
+  const isAlreadyLiked: Like = await prisma.blogLike.findUnique({
     where: likeWhereUniqueInput
   })
 
-  const addViewToFlow = await viewFlow(publishedId)
+  await viewFlow(publishedId)
 
-  const blog = await prisma.blog.findUnique({
+  const blog: BlogWithUserAndComments = await prisma.blog.findUnique({
     where: {
       id: publishedId,
       isPublished: true
@@ -58,7 +59,9 @@ const PublishedBlog = async ({ params }: props) => {
     }
   })
 
-  let currentUser = null;
+  if (!blog) return <div>Blog not found</div>
+
+  let currentUser: User = null;
   if(session){
     currentUser = await prisma.user.findUnique({
       where: {
@@ -67,9 +70,8 @@ const PublishedBlog = async ({ params }: props) => {
     })
   }
 
-  const isAlreadyBookmarked = await isBookmarked(publishedId)
+  const isAlreadyBookmarked : ActionResponse = await isBookmarked(publishedId)
 
-  if (!blog) return <div>Blog not found</div>
 
   return (
     <div className="h-full relative max-w-[80%] mx-auto">
@@ -89,10 +91,7 @@ const PublishedBlog = async ({ params }: props) => {
           <AuthUserOnly>
             {/* @ts-expect-error Async Server Component */}
             <HideForCurrentUser userId={blog.user.id}>
-              <FollowButton isAlreadyFollowing={async() => {
-                "use server"
-                return await isAlreadyFollowing(blog.user.id)
-              }} id={blog.user.id} />
+              <FollowButton id={blog.user.id} />
             </HideForCurrentUser>
           </AuthUserOnly>
           <ModeToggle />

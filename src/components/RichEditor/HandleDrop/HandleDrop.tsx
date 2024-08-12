@@ -88,7 +88,8 @@ async function uploadImage(file: File): Promise<string> {
   })
 
   if(!result){
-    return toast.error('There was a problem uploading your image, please try again.');
+    toast.error('There was a problem uploading your image, please try again.');
+    throw new Error('Image upload failed');
   }
 
   console.log(result)

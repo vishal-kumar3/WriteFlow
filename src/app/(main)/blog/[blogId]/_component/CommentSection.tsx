@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
   Sheet,
   SheetClose,
@@ -11,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { Delete, DeleteIcon, Heart, MessageCircleMore, Send, Trash } from "lucide-react"
+import { MessageCircleMore, Send } from "lucide-react"
 
 
 import {
@@ -20,10 +19,18 @@ import {
   AvatarImage,
 } from "@/components/ui/avatar"
 import { commentFlow } from "@/actions/flow.action"
-import { User } from "@prisma/client"
 import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page"
 import { CommentButtons } from "./CommentButtons"
+import { CommentWithUser } from "@/types/CommentType"
+import { User } from "@/types/UserType"
 
+type CommentProps = {
+  disabled?: boolean
+  comment?: CommentWithUser
+  flowId: string
+  avatarImage?: string | null
+  username?: string
+}
 
 // TODO: Comment Block pe hover pe CommentFlow dikhna chahiye!!!
 export const Comment = ({
@@ -32,7 +39,7 @@ export const Comment = ({
   flowId,
   avatarImage,
   username,
-}: {disabled?: boolean, comment?: commentType, flowId: string, avatarImage: string | null, username: string}) => {
+}: CommentProps) => {
   return (
     <div className="flex gap-2 items-center">
       <Avatar>
@@ -69,20 +76,13 @@ export const Comment = ({
   )
 }
 
-export type commentType = {
-  id: string;
-  userId: string | null;
-  blogId: string | null;
-  content: string;
-  parentId: string | null;
-  likeCount: number;
-  user: User
-  createdAt: Date;
-  updatedAt: Date;
+export type CommentSectionProps = {
+  comment: CommentWithUser[]
+  flowId: string
+  currentUser: User
 }
 
-
-export function CommentSection({comment, flowId, currentUser }: {comment: commentType[], flowId: string, currentUser: User | null}) {
+export function CommentSection({ comment, flowId, currentUser }: CommentSectionProps) {
 
 
   return (
@@ -106,7 +106,7 @@ export function CommentSection({comment, flowId, currentUser }: {comment: commen
         <div className="flex mt-5 flex-col gap-2">
           {
             comment.map((comment, index) => (
-              <Comment avatarImage={comment.user.image} username={comment.user.username} key={index} disabled comment={comment} flowId={flowId} />
+              <Comment avatarImage={comment?.user?.image} username={comment?.user?.username} key={index} disabled comment={comment} flowId={flowId} />
             ))
           }
         </div>

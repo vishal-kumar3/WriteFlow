@@ -3,9 +3,9 @@ import { likeFlow, toggleBookmark } from '@/actions/flow.action'
 import { Bookmark, BookmarkCheck, EllipsisVertical, Heart, HeartOff, MessageCircleMore, ShareIcon } from 'lucide-react'
 import React from 'react'
 import { toast } from 'sonner'
-import { CommentSection, commentType } from './CommentSection'
-import { Comment, User } from '@prisma/client'
-import { CommentBlock } from './CommentBlock'
+import { CommentSection } from './CommentSection'
+import { CommentWithUser } from '@/types/CommentType'
+import { User } from '@/types/UserType'
 
 type props = {
   flowId: string,
@@ -16,8 +16,8 @@ type props = {
   }
   isBookmarked: boolean | undefined
   commentCnt: number
-  comment: Comment[]
-  currentUser: User | null
+  comment: CommentWithUser[]
+  currentUser: User
   isCommentOff: boolean
 }
 
@@ -42,7 +42,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
       {
         !isCommentOff && (
           <div className="flex gap-2 items-center">
-            <CommentSection currentUser={currentUser} flowId={flowId} comment={comment as commentType[]} />
+            <CommentSection currentUser={currentUser} flowId={flowId} comment={comment} />
             <div>
               {commentCnt}
             </div>

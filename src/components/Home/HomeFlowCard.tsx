@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { Bookmark, BookmarkCheck, Dot, Tally3 } from "lucide-react";
+import { Tally3 } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -27,16 +27,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { reportUserOptions } from "./reportOptions";
 import { CheckboxDemo } from "./CheckBox";
-import { FlowData, FlowUser } from "./HomeFlows";
 import { formatDateAgo } from "@/util/DateTime";
 import Image from "next/image";
 import { defaultThumbnail } from "../UserProfile/Tabs/UserFlows";
 import Link from "next/link";
 import ToggleBookmark from "./ToggleBookmark";
-import { reportFlow, reportUser } from "@/actions/report.action";
+import { reportFlow } from "@/actions/report.action";
+import { BlogWithUserAndTagsHome } from "@/types/BlogType";
+import { FlowUser } from "@/types/UserType";
 
 
-export const UserCard = ({ userData, createdAt, flowId }: { userData: FlowUser, createdAt: Date, flowId: string }) => {
+export type UserCardProps = {
+  userData: FlowUser;
+  createdAt: Date;
+  flowId: string;
+}
+
+export const UserCard = ({ userData, createdAt, flowId }: UserCardProps) => {
+
+  if(!userData) return null;
+
   return (
     <div className="flex items-center justify-between">
       <Link href={`/user/${userData.id}`} className="flex items-center gap-4">
@@ -118,10 +128,16 @@ export const ReportUserCard = ({ reportOptions, type, reportedUserId, reportedBl
 };
 
 
-
+type HomeFlowCardProps = {
+  flow: BlogWithUserAndTagsHome;
+  userBookmark: { id: string }[];
+}
 
 // TODO: Add top comment
-const HomeFlowCard = ({ flow, userBookmark }: { flow: FlowData, userBookmark: { id: string }[] }) => {
+const HomeFlowCard = ({ flow, userBookmark }: HomeFlowCardProps) => {
+
+  if(!flow) return null;
+
   let isBookmarked = false;
   userBookmark.map((bookmark) => {
     if (bookmark.id === flow.id) isBookmarked = true;

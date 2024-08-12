@@ -5,12 +5,23 @@ import RightSidebar from "@/components/RightSidebar/RightSidebar";
 import AuthUserOnly from "@/util/AuthUserOnly";
 import HomeFlows from "@/components/Home/HomeFlows";
 import { getFlowForHome } from "@/actions/flow.action";
+import { BlogWithUserAndTagsHome } from "@/types/BlogType";
 
-type props = {};
 
-const HomePage = async ({ searchParams }: { searchParams: { search?: string } }) => {
+type HomePageProps = {
+  searchParams: { search?: string }
+}
 
-  const { error, data } = await getFlowForHome(searchParams.search!);
+export type FlowForHome = BlogWithUserAndTagsHome[]
+
+type getFlowHomeProps = {
+  error?: string | null
+  data?: FlowForHome
+}
+
+const HomePage = async ({ searchParams }: HomePageProps) => {
+
+  const { error, data } : getFlowHomeProps = await getFlowForHome(searchParams.search!);
   if (error) return <div>{error}</div>
 
   return (
