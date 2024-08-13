@@ -43,7 +43,7 @@ const suggestion = {
 
   render: () => {
     let component: ReactRenderer<React.ForwardRefExoticComponent<CommandListProps>>;
-    let popup: TippyInstance[];
+    let popup: TippyInstance | TippyInstance[];
 
     return {
       onStart: (props: CommandListProps & { clientRect: DOMRect }) => {
@@ -56,15 +56,20 @@ const suggestion = {
           return;
         }
 
-        popup = tippy('body', {
+        popup = tippy(props.editor.options.element, {
           getReferenceClientRect: () => props.clientRect, // Use a function that returns the DOMRect
           appendTo: () => document.body,
           content: component.element,
           showOnCreate: true,
           interactive: true,
           trigger: 'manual',
-          placement: 'bottom-end',
+          placement: 'bottom-start',
         });
+
+        // Ensure popup is always treated as an array
+        if (!Array.isArray(popup)) {
+          popup = [popup];
+        }
       },
 
       onUpdate(props: CommandListProps & { clientRect: DOMRect }) {
@@ -74,9 +79,11 @@ const suggestion = {
           return;
         }
 
-        popup[0].setProps({
-          getReferenceClientRect: () => props.clientRect, // Use a function that returns the DOMRect
-        });
+        if (Array.isArray(popup) && popup[0]) {
+          popup[0].setProps({
+            getReferenceClientRect: () => props.clientRect, // Use a function that returns the DOMRect
+          });
+        }
       },
 
       onKeyDown(props: any) {
@@ -91,7 +98,9 @@ const suggestion = {
         }
 
         if (event.key === 'Escape') {
-          popup[0].hide();
+          if (Array.isArray(popup) && popup[0]) {
+            popup[0].hide();
+          }
           return true;
         }
 
@@ -99,7 +108,9 @@ const suggestion = {
       },
 
       onExit() {
-        popup[0].destroy();
+        if (Array.isArray(popup) && popup[0]) {
+          popup[0].destroy();
+        }
         component.destroy();
       },
     };
