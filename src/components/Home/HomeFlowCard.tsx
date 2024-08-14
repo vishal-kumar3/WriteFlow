@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Card,
   CardContent,
@@ -8,124 +7,12 @@ import {
   CardTitle,
 } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { Tally3 } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { reportUserOptions } from "./reportOptions";
-import { CheckboxDemo } from "./CheckBox";
-import { formatDateAgo } from "@/util/DateTime";
 import Image from "next/image";
 import { defaultThumbnail } from "../UserProfile/Tabs/UserFlows";
 import Link from "next/link";
 import ToggleBookmark from "./ToggleBookmark";
-import { reportFlow } from "@/actions/report.action";
 import { BlogWithUserAndTagsHome } from "@/types/BlogType";
-import { FlowUser } from "@/types/UserType";
-
-
-export type UserCardProps = {
-  userData: FlowUser;
-  createdAt: Date;
-  flowId: string;
-}
-
-export const UserCard = ({ userData, createdAt, flowId }: UserCardProps) => {
-
-  if(!userData) return null;
-
-  return (
-    <div className="flex items-center justify-between">
-      <Link href={`/user/${userData.id}`} className="flex items-center gap-4">
-        <div className="size-[50px] bg-red-300 rounded-full">
-          <Image
-            src={userData.image || defaultThumbnail}
-            alt="Picture of the author"
-            width={60}
-            height={60}
-            className="rounded-full w-full h-full object-cover object-center"
-          />
-        </div>
-        <div className="text-sm leading-tight space-y-1">
-          <p className="font-semibold text-base">{userData.name}</p>
-          <p>@{userData.username} | {formatDateAgo(createdAt)}</p>
-        </div>
-      </Link>
-      <Popover>
-        <PopoverTrigger>
-          <Tally3 className=" rotate-90" />
-        </PopoverTrigger>
-        <PopoverContent className="flex flex-col gap-1">
-          <ReportUserCard reportedUserId={userData.id} reportedBlogId={flowId} reportOptions={reportUserOptions} type="post" />
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
-};
-
-// TODO: Need to remove the post from that user only who reported it
-export const ReportUserCard = ({ reportOptions, type, reportedUserId, reportedBlogId }: { reportOptions: { label: string; description: string }[], type: "user" | "post", reportedUserId: string, reportedBlogId: string }) => {
-  return (
-    <Dialog>
-      <DialogTrigger>
-        <Button variant="ghost">Report {type}</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="mx-auto">Report {type}</DialogTitle>
-          <DialogDescription className="text-center">
-            Help us keep our community safe and respectful. Please select the
-            reason for reporting this {type}:
-          </DialogDescription>
-        </DialogHeader>
-        <form action={async (formData: FormData) => {
-          "use server"
-          let title = '';
-          formData.forEach((value, key) => {
-            value === "on" ? title += key + " " : "";
-          })
-
-          const report = {
-            reportedUserId: formData.get("reportedUserId") as string,
-            reportedBlogId: formData.get("reportedBlogId") as string,
-            title: title,
-            issue: formData.get("issue") as string
-          }
-
-          const { error, success } = await reportFlow(report);
-          console.log(error, success);
-        }} className="flex flex-col gap-2 justify-center">
-          {reportOptions.map((options, key) => (
-            <CheckboxDemo
-              key={key}
-              id={options.label}
-              label={options.description}
-            />
-          ))}
-          <input type="text" className="hidden" value={reportedUserId} name="reportedUserId" />
-          <input type="text" className="hidden" value={reportedBlogId} name="reportedBlogId" />
-          <Input name="issue" type="text" className="outline-none" placeholder="Please specify other issue"></Input>
-          <DialogClose>
-            <Button variant="destructive">Submit Report</Button>
-          </DialogClose>
-        </form>
-      </DialogContent>
-    </Dialog>
-  );
-};
+import { UserCard } from "./Cards/UserCard";
 
 
 type HomeFlowCardProps = {

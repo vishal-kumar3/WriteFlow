@@ -210,7 +210,7 @@ export const toggleBookmark = async (flowId: string) => {
 
     if (!removedFromBookmark)
       return { error: 'Unexpected error while removing bookmark!!!' };
-    revalidatePath('/');
+    revalidatePath(`/user/${session.user.id}`);
     return { success: 'Bookmark removed!!!' };
   } else {
     const bookmarked = await prisma.user.update({
@@ -227,7 +227,7 @@ export const toggleBookmark = async (flowId: string) => {
     });
 
     if (!bookmarked) return { error: 'Unexpected error while bookmarking!!!' };
-    revalidatePath('/');
+    revalidatePath(`/user/${session.user.id}`);
     return { success: 'Bookmarked!!!' };
   }
 };
@@ -382,9 +382,12 @@ export const publishFlow = async (
   }
 };
 
+// export const likeFlow = async (previousState: any, likeFlowData: { flowId: string, userId: string }) => {
 export const likeFlow = async (flowId: string, userId: string) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
+
+  // const {flowId, userId} = likeFlowData
 
   const likeWhereUniqueInput = {
     userId_blogId: {
@@ -416,7 +419,8 @@ export const likeFlow = async (flowId: string, userId: string) => {
     ]);
 
     if (!unLike) return { error: 'Unexpected error while unliking flow!!!' };
-    revalidatePath(`/blog/${flowId}`);
+    // revalidatePath(`/blog/${flowId}`);
+    revalidatePath(`/user/${session.user.id}`);
     return { success: 'Flow unliked!!!' };
   } else {
     const like = await prisma.$transaction([
@@ -440,7 +444,8 @@ export const likeFlow = async (flowId: string, userId: string) => {
     ]);
 
     if (!like) return { error: 'Unexpected error while liking flow!!!' };
-    revalidatePath(`/blog/${flowId}`);
+    // revalidatePath(`/blog/${flowId}`);
+    revalidatePath(`/user/${session.user.id}`);
     return { success: 'Flow liked!!!' };
   }
 };
