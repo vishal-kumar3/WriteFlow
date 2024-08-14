@@ -34,26 +34,32 @@ type reportFlowProps = {
 	issue: string;
 };
 
-export const reportFlow = async ({
-	reportedUserId,
-	reportedBlogId,
-	title,
-	issue,
-}: reportFlowProps) => {
+export const reportFlow = async (formData: FormData) => {
+  let title = '';
+  formData.forEach((value, key) => {
+    value === "on" ? title += key + " " : "";
+  })
+
+  const reportData = {
+    reportedUserId: formData.get("reportedUserId") as string,
+    reportedBlogId: formData.get("reportedBlogId") as string,
+    issue: formData.get("issue") as string
+  }
+
 	const session = await auth();
 	if (!session) return { error: 'Not authenticated' };
 
 	const report = await prisma.report.create({
 		data: {
 			title: title,
-			issue: issue,
-			reportedUserId: reportedUserId,
-      reportedBlogId: reportedBlogId,
+			issue: reportData.issue,
+			reportedUserId: reportData.reportedUserId,
+      reportedBlogId: reportData.reportedBlogId,
 			createdBy: session.user.id!,
 		},
 	});
 
-	if (!report) return { error: 'Failed to report user' };
+	if (!report) return { error: 'Failed to report flow' };
   revalidatePath('/')
-	return { success: 'User reported successfully' };
+	return { success: 'Flow reported successfully' };
 };
