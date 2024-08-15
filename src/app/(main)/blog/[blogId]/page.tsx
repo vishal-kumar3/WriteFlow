@@ -91,7 +91,7 @@ const PublishedBlog = async ({ params }: props) => {
           <AuthUserOnly>
             {/* @ts-expect-error Async Server Component */}
             <HideForCurrentUser userId={blog.user.id}>
-              <FollowButton id={blog.user.id} />
+              <FollowButton username={blog.user.username} id={blog.user.id} />
             </HideForCurrentUser>
           </AuthUserOnly>
           <ModeToggle />

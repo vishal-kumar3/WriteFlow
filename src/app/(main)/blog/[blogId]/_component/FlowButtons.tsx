@@ -1,6 +1,6 @@
 "use client"
 import { likeFlow, toggleBookmark } from '@/actions/flow.action'
-import { Bookmark, BookmarkCheck, EllipsisVertical, Heart, HeartOff, MessageCircleMore, ShareIcon, Tally3 } from 'lucide-react'
+import { Bookmark, BookmarkCheck, EllipsisVertical, Heart, HeartOff, ShareIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useActionState, useOptimistic, useTransition } from "react";
 import { CommentSection } from './CommentSection'
@@ -18,6 +18,7 @@ import 'dotenv/config'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ReportUserCard } from '@/components/Home/Cards/ReportUserCard';
 import { reportPostOptions } from '@/components/Home/reportOptions';
+import CopyButton from '@/util/CopyButton';
 
 type likeDataProps = {
   isAlreadyLiked: boolean,
@@ -36,9 +37,6 @@ type props = {
 }
 
 const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, commentCnt, comment, currentUser }: props) => {
-
-  // const [state, LikeAction, isLikePending ] = useActionState(likeFlow, null);
-  // const [isLikePending, startLike] = useTransition()
 
   const [optimisticLikeData, addOptimisticLikeData] = useOptimistic(
     likeData,
@@ -62,11 +60,6 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
       <div className="flex gap-2 items-center justify-center">
         <button
           onClick={async () => {
-            // LikeAction({flowId, userId})
-            // startLike(() => {
-            //   likeFlow(flowId, userId)
-            // })
-
             addOptimisticLikeData({
               likesCnt: likeData.isAlreadyLiked ? likeData.likesCnt - 1 : likeData.likesCnt + 1,
               isAlreadyLiked: !likeData.isAlreadyLiked
@@ -77,9 +70,6 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
             if (error) return toast.error(error)
           }}
         >
-          {/* {
-            isLikePending ? <MessageCircleMore /> : null
-          } */}
           {
             optimisticLikeData.isAlreadyLiked ? <HeartOff /> : <Heart />
           }
@@ -98,11 +88,6 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
       }
       <button
         onClick={async () => {
-          // const { error, success } = await toggleBookmark(flowId)
-
-          // if(error) return toast.error(error)
-          // else return toast.success(success)
-
           addOptimisticIsBookmark(!isBookmarked)
           toast.success(isBookmarked ? "Flow Unbookmarked" : "Flow Bookmarked")
 
@@ -119,10 +104,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
           <ShareIcon className='hover:cursor-pointer' />
         </HoverCardTrigger>
         <HoverCardContent className='flex w-fit gap-2 items-center'>
-          <Button onClick={() => {
-            navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_HOST}/blog/${flowId}`)
-            toast.success("Copied to clipboard")
-          }} variant={'ghost'} >S</Button>
+          <CopyButton copyLink={`/blog/${flowId}`} >S</CopyButton>
           <Button variant={'ghost'} >W</Button>
           <Button variant={'ghost'} >I</Button>
           <Button variant={'ghost'} >X</Button>

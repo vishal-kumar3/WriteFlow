@@ -1,9 +1,9 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -54,9 +54,9 @@ export function DialogPopup({
               />
             </div>
           ))}
-          <DialogFooter>
+          <DialogClose asChild>
             <Button type="submit">Save changes</Button>
-          </DialogFooter>
+          </DialogClose>
         </form>
       </DialogContent>
     </Dialog>

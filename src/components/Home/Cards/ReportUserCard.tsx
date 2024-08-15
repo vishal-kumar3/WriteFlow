@@ -9,7 +9,8 @@ export const ReportUserCard = ({ reportOptions, type, reportedUserId, reportedBl
   return (
     <Dialog>
       <DialogTrigger>
-        <Button variant="ghost">Report {type}</Button>
+        <div className="hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Report {type}</div>
+        {/* <Button className="w-full" variant="ghost">Report {type}</Button> */}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -28,8 +29,8 @@ export const ReportUserCard = ({ reportOptions, type, reportedUserId, reportedBl
             />
           ))}
           {/* // TODO: ye userId or blogId to direct bhi send kr skte h iske liye input ka jrurat nhi */}
-          <input type="text" className="hidden" value={reportedUserId} name="reportedUserId" />
-          <input type="text" className="hidden" value={reportedBlogId} name="reportedBlogId" />
+          <input type="text" className="hidden" hidden readOnly value={reportedUserId} name="reportedUserId" />
+          <input type="text" className="hidden" hidden readOnly value={reportedBlogId} name="reportedBlogId" />
           <Input name="issue" type="text" className="outline-none" placeholder="Please specify other issue"></Input>
           <DialogClose>
             <Button variant="destructive">Submit Report</Button>

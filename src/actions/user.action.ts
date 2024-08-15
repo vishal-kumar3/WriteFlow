@@ -175,3 +175,61 @@ export const followToggle = async(id: string) => {
     return { success: 'User followed successfully', data: true };
   }
 }
+
+
+export const getFollowers = async(id: string) => {
+  const followers = await prisma.follows.findMany({
+    where: {
+      followingId: id
+    },
+    include: {
+      follower: true
+    }
+  })
+
+  if(!followers) return { error: 'Could not get followers' };
+  return { data: followers }
+}
+
+export const getFollowing = async(id: string) => {
+  const following = await prisma.follows.findMany({
+    where: {
+      followerId: id
+    },
+    include: {
+      following: true
+    }
+  })
+
+  if(!following) return { error: 'Could not get following' };
+  return { data: following }
+}
+
+export const getTopUsers = async(filter: string = '') => {
+
+  const users = await prisma.user.findMany({
+    where: {
+      OR: [
+        {
+          name: {
+            contains: filter,
+            mode: 'insensitive'
+          }
+        },
+        {
+          username: {
+            contains: filter,
+            mode: 'insensitive'
+          }
+        }
+      ]
+    },
+    orderBy: {
+      followerCount: 'desc'
+    },
+    take: 5
+  })
+
+  if(!users) return { error: 'Could not get top users' };
+  return { data: users }
+}
