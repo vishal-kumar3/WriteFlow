@@ -21,7 +21,7 @@ type getFlowHomeProps = {
 
 const HomePage = async ({ searchParams }: HomePageProps) => {
 
-  const { error, data } : getFlowHomeProps = await getFlowForHome(searchParams.search!);
+  const { error, data } : getFlowHomeProps = await getFlowForHome(searchParams.search || '');
   if (error) return <div>{error}</div>
 
   return (

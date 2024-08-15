@@ -15,9 +15,10 @@ type props = {
   userId: string;
   followingCnt: number;
   followerCnt: number;
+  username: string;
 };
 
-const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt }: props) => {
+const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt, username }: props) => {
   // TODO: user.action.ts me daal do or without login page access ho jaye vaise kr do
 
   return (
@@ -40,12 +41,12 @@ const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt }: p
           />
         </div>
       </CurrentUserOnly>
-      <div className="flex gap-4 items-center mt-2 ml-[calc(200px+6%)]">
+      <div className="flex text-lg gap-8 items-center mt-2 ml-[calc(200px+6%)]">
         <p>{followerCnt} Followers</p>
         <p>{followingCnt} Followings</p>
         {/* @ts-expect-error Async Server Component */}
         <HideForCurrentUser userId={userId} >
-          <FollowButton id={userId} />
+          <FollowButton username={username} id={userId} />
         </HideForCurrentUser>
       </div>
     </div>

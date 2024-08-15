@@ -32,6 +32,7 @@ type CommentProps = {
   addOptimisticComment?: (comment: CommentWithUser) => void
   flowId: string
   currentUser?: User
+  auth: boolean
 }
 
 // TODO: Comment Block pe hover pe CommentFlow dikhna chahiye!!!
@@ -40,7 +41,8 @@ export const Comment = ({
   optimisticComment,
   flowId,
   currentUser,
-  addOptimisticComment
+  addOptimisticComment,
+  auth,
 }: CommentProps) => {
   return (
     <div className="flex gap-2 items-center">
@@ -74,7 +76,7 @@ export const Comment = ({
           }
         </div>
         {
-          disabled && <CommentButtons likeCount={optimisticComment?.likeCount!} flowId={flowId} commentId={optimisticComment?.id!} />
+          disabled && <CommentButtons auth={auth} likeCount={optimisticComment?.likeCount!} flowId={flowId} commentId={optimisticComment?.id!} />
         }
         {/* <CommentButtons /> */}
       </form>
@@ -114,14 +116,14 @@ export function CommentSection({ comment, flowId, currentUser }: CommentSectionP
             Kindly follow the guidelines to keep the comment section clean and respectful.
           </SheetDescription>
         </SheetHeader>
-        <Comment addOptimisticComment={addOptimisticComment} currentUser={currentUser} flowId={flowId} />
+        <Comment auth={true} disabled={false} addOptimisticComment={addOptimisticComment} currentUser={currentUser} flowId={flowId} />
 
         {/* yaha se sara comment start hoga */}
 
         <div className="flex mt-5 flex-col gap-2">
           {
             comment.map((comment, index) => (
-              <Comment key={index} currentUser={comment?.user} optimisticComment={comment} flowId={flowId} />
+              <Comment auth={comment?.user?.id === currentUser?.id} key={index} disabled={true} currentUser={comment?.user} optimisticComment={comment} flowId={flowId} />
             ))
           }
         </div>

@@ -45,7 +45,6 @@ export const reportFlow = async (formData: FormData) => {
     reportedBlogId: formData.get("reportedBlogId") as string,
     issue: formData.get("issue") as string
   }
-
 	const session = await auth();
 	if (!session) return { error: 'Not authenticated' };
 

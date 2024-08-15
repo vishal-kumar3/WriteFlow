@@ -1,9 +1,7 @@
-import React from "react";
 import { Badge } from "../ui/badge";
-import { Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { DialogPopup } from "./DialogPopup";
-import { updateUserAboutSection, UserAbout } from "@/actions/user.action";
+import { updateUserAboutSection } from "@/actions/user.action";
 import CurrentUserOnly from "@/util/CurrentUserOnly";
 
 export type AboutDetails = {
@@ -43,10 +41,10 @@ const AboutSection = ({
           {tags.map((tag: string, index: number) => (
             <Badge key={index}>{tag}</Badge>
           ))}
-          <Plus
+          {/* <Plus
             size={20}
             className="rounded-full hover:bg-black/50 hover:cursor-pointer"
-          />
+          /> */}
         </div>
       </div>
       <div className="pl-4 text-black/70 dark:text-white/70 ">

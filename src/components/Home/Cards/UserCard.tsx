@@ -7,6 +7,9 @@ import Link from "next/link";
 import { reportUserOptions } from "../reportOptions";
 import { Tally3 } from "lucide-react";
 import { ReportUserCard } from "./ReportUserCard";
+import FollowButton from "@/components/UserProfile/FollowButton";
+import CopyButton from "@/util/CopyButton";
+import { auth } from "@/auth";
 
 export type UserCardProps = {
   userData: FlowUser;
@@ -14,9 +17,10 @@ export type UserCardProps = {
   flowId: string;
 }
 
-export const UserCard = ({ userData, createdAt, flowId }: UserCardProps) => {
+export const UserCard = async({ userData, createdAt, flowId }: UserCardProps) => {
 
   if (!userData) return null;
+  const session = await auth()
 
   return (
     <div className="flex items-center justify-between">
@@ -40,6 +44,12 @@ export const UserCard = ({ userData, createdAt, flowId }: UserCardProps) => {
           <Tally3 className=" rotate-90" />
         </PopoverTrigger>
         <PopoverContent className="flex flex-col gap-1">
+          <CopyButton copyLink={`/blog/${flowId}`}>Copy Link</CopyButton>
+          {
+            session?.user?.id !== userData.id && (
+              <FollowButton id={userData.id} username={userData.username} />
+            )
+          }
           <ReportUserCard reportedUserId={userData.id} reportedBlogId={flowId} reportOptions={reportUserOptions} type="post" />
         </PopoverContent>
       </Popover>

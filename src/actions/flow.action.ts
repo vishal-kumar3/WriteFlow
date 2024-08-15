@@ -4,6 +4,7 @@ import { auth } from '@/auth';
 import prisma from '@/prisma';
 import { BlogWithUserAndTagsHome } from '@/types/BlogType';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export const deleteFlow = async (flowId: string) => {
   const session = await auth()
@@ -21,7 +22,7 @@ export const deleteFlow = async (flowId: string) => {
   return { success: 'Flow deleted!!!' }
 }
 
-export const createFlow = async (formData: FormData) => {
+export const createFlow = async (initialState: any, formData: FormData) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
 
@@ -42,6 +43,7 @@ export const createFlow = async (formData: FormData) => {
   if (!createdFlow) {
     return { error: 'Unexpected error while creating flow!!!' };
   } else {
+    // redirect(`/blog/draft/${createdFlow.id}`);
     return {
       success: `${createdFlow.title} is created!!!`,
       id: createdFlow.id,
