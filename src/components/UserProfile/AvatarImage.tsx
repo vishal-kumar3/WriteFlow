@@ -6,7 +6,7 @@ import { updateUserAvatarImage } from "@/actions/image.action";
 import HideForCurrentUser from "@/util/HideForCurrentUser";
 import CurrentUserOnly from "@/util/CurrentUserOnly";
 import { followToggle } from "@/actions/user.action";
-import FollowButton from "./FollowButton";
+import FollowButtonServerWraper from "./FollowButtonServerWraper";
 import prisma from "@/prisma";
 import { auth } from "@/auth";
 
@@ -46,7 +46,7 @@ const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt, use
         <p>{followingCnt} Followings</p>
         {/* @ts-expect-error Async Server Component */}
         <HideForCurrentUser userId={userId} >
-          <FollowButton username={username} id={userId} />
+          <FollowButtonServerWraper username={username} id={userId} />
         </HideForCurrentUser>
       </div>
     </div>

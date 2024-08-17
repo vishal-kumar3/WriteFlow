@@ -4,7 +4,6 @@ import { auth } from '@/auth';
 import prisma from '@/prisma';
 import { BlogWithUserAndTagsHome } from '@/types/BlogType';
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 export const deleteFlow = async (flowId: string) => {
   const session = await auth()

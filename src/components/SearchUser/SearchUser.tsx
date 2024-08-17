@@ -1,27 +1,19 @@
-"use client"
-import React, { useEffect, useState } from 'react'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
-import { getTopUsers } from '@/actions/user.action'
 import SearchUserCard from '../Friends/SearchUserCard'
-import { useSearchParams } from 'next/navigation'
 import { User } from '@/types/UserType'
 
 type props = {
+  data: User[]
 }
 
-const SearchUser = (props: props) => {
-
-  const searchParams = useSearchParams()
-  const searchQuery = searchParams.get('search') || ''
-  const [data, setData] = useState<User[]>([])
-
-  useEffect(() => {
-    getTopUsers(searchQuery).then(({error, data}) => {
-      if(error) return console.error(error)
-      setData(data || [])
-    })
-  }, [searchQuery])
+const SearchUser = ({data}: props) => {
+  // useEffect(() => {
+  //   getTopUsers(searchQuery).then(({error, data}) => {
+  //     if(error) return console.error(error)
+  //     setData(data || [])
+  //   })
+  // }, [searchQuery])
   // const {error, data} =  getTopUsers(searchQuery)
   // if(error) return <div>{error}</div>
   // console.log("data:- ", data)

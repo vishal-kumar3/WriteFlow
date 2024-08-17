@@ -7,7 +7,7 @@ import Link from "next/link";
 import { reportUserOptions } from "../reportOptions";
 import { Tally3 } from "lucide-react";
 import { ReportUserCard } from "./ReportUserCard";
-import FollowButton from "@/components/UserProfile/FollowButton";
+import FollowButtonServerWraper from "@/components/UserProfile/FollowButtonServerWraper";
 import CopyButton from "@/util/CopyButton";
 import { auth } from "@/auth";
 
@@ -47,7 +47,7 @@ export const UserCard = async({ userData, createdAt, flowId }: UserCardProps) =>
           <CopyButton copyLink={`/blog/${flowId}`}>Copy Link</CopyButton>
           {
             session?.user?.id !== userData.id && (
-              <FollowButton id={userData.id} username={userData.username} />
+              <FollowButtonServerWraper id={userData.id} username={userData.username} />
             )
           }
           <ReportUserCard reportedUserId={userData.id} reportedBlogId={flowId} reportOptions={reportUserOptions} type="post" />

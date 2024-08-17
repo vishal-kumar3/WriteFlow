@@ -28,7 +28,7 @@ const SideBar = async () => {
   return (
     <div className="h-screen pt-5 px-2 md:flex flex-col justify-between border-r">
       <div className="md:flex flex-col justify-center text-sm gap-5">
-        <Link href="/" className="mx-auto">
+        <Link href='/?search=' className="mx-auto">
           Write Flow
         </Link>
 

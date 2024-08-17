@@ -34,7 +34,7 @@ type reportFlowProps = {
 	issue: string;
 };
 
-export const reportFlow = async (formData: FormData) => {
+export const reportFlow = async (initialState:any, formData: FormData) => {
   let title = '';
   formData.forEach((value, key) => {
     value === "on" ? title += key + " " : "";
