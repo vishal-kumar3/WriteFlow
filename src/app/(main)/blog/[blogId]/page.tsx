@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ModeToggle } from "@/components/ThemeToggle/ThemeToggle";
-import FollowButton from "@/components/UserProfile/FollowButton";
+import FollowButtonServerWraper from "@/components/UserProfile/FollowButtonServerWraper";
 import { isAlreadyFollowing } from "@/actions/user.action";
 import AuthUserOnly from "@/util/AuthUserOnly";
 import HideForCurrentUser from "@/util/HideForCurrentUser";
@@ -91,7 +91,7 @@ const PublishedBlog = async ({ params }: props) => {
           <AuthUserOnly>
             {/* @ts-expect-error Async Server Component */}
             <HideForCurrentUser userId={blog.user.id}>
-              <FollowButton username={blog.user.username} id={blog.user.id} />
+              <FollowButtonServerWraper username={blog.user.username} id={blog.user.id} />
             </HideForCurrentUser>
           </AuthUserOnly>
           <ModeToggle />

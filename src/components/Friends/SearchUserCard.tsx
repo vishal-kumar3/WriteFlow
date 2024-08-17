@@ -15,7 +15,7 @@ import {
 import { Button } from "../ui/button"
 import { User } from "@/types/UserType"
 import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page"
-import FollowButton from "../UserProfile/FollowButton"
+import FollowButtonServerWraper from "../UserProfile/FollowButtonServerWraper"
 import Link from "next/link"
 import HideForCurrentUser from "@/util/HideForCurrentUser"
 
@@ -42,7 +42,7 @@ const SearchUserCard = ({userData}: props) => {
         </div>
       </CardHeader>
 
-        <FollowButton id={userData?.id!} username={userData?.username!} />
+        <FollowButtonServerWraper id={userData?.id!} username={userData?.username!} />
     </Card>
   )
 }

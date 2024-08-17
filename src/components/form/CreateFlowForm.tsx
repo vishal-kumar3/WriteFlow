@@ -29,12 +29,12 @@ const CreateFlowForm = (props: props) => {
 
   return (
     <div id='createFlowForm'>
-      <Dialog open={isOpen}>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           {/* //TODO: Baad me isko dekhna h */}
           <button
             onClick={() => setIsOpen(true)}
-            className="transition-all text-sm ease-in hover:bg-[#f5f5f5] dark:hover:bg-white/20 flex items-center gap-3 px-4 py-[5px] rounded-md hover:shadow-lg"
+            className="transition-all w-full text-sm ease-in hover:bg-[#f5f5f5] dark:hover:bg-white/20 flex items-center gap-3 px-4 py-[5px] rounded-md hover:shadow-lg"
           >
             <div className="flex gap-2 justify-center">
               <div className="size-[35px] overflow-hidden">

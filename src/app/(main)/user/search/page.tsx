@@ -1,16 +1,21 @@
+import { getTopUsers } from '@/actions/user.action'
 import RightSidebar from '@/components/RightSidebar/RightSidebar'
 import SearchUser from '@/components/SearchUser/SearchUser'
 import AuthUserOnly from '@/util/AuthUserOnly'
-import React from 'react'
 
-type props = {}
+type Props = {
+  searchParams: { search?: string }
+}
 
-const page = (props: props) => {
+const Page = async({ searchParams }: Props) => {
+  const searchQuery = searchParams.search;
+
+  const {error, data} = await getTopUsers(searchQuery)
 
   return (
     <div className='w-full mx-auto'>
       <div className='flex justify-center'>
-        <SearchUser />
+        <SearchUser data={data!} />
 
         {/* @ts-expect-error Async Server Component */}
         <AuthUserOnly>
@@ -22,4 +27,4 @@ const page = (props: props) => {
   )
 }
 
-export default page
+export default Page

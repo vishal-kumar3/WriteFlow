@@ -65,7 +65,7 @@ export const Comment = ({
               name="content"
               value={optimisticComment?.content}
               placeholder="Enter your comment here..."
-              className="disabled:text-lg disabled:border-none disabled:opacity-100 disabled:cursor-auto"
+              className="disabled:text-lg disabled:border-none disabled:opacity-50 disabled:cursor-auto"
               disabled={disabled || false}
               required
             />

@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import prisma from "@/prisma";
+import { User } from "@/types/UserType";
 import { revalidatePath } from "next/cache";
 
 export type UserAbout = {
@@ -35,7 +36,7 @@ export const isAlreadyFollowing = async(id: string) => {
   return { data: false }
 }
 
-export const updateUserAboutSection = async(formData: FormData) => {
+export const updateUserAboutSection = async (initialState: any, formData: FormData) => {
 
   const session = await auth()
   if(!session?.user?.id) return { error: 'No user id provided' };
@@ -207,7 +208,7 @@ export const getFollowing = async(id: string) => {
 
 export const getTopUsers = async(filter: string = '') => {
 
-  const users = await prisma.user.findMany({
+  const users: User[] = await prisma.user.findMany({
     where: {
       OR: [
         {
