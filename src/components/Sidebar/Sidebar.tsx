@@ -1,33 +1,21 @@
 import Link from "next/link";
-import LinkButton from "./LinkButton";
-import { auth } from "@/auth";
+import LinkButton, { SideButton } from "./LinkButton";
 
-import { signOut } from "next-auth/react";
-import prisma from "@/prisma";
 import Followings from "./Followings";
 import CreateFlowForm from "../form/CreateFlowForm";
+import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page";
+import { ChartNoAxesCombinedIcon, Handshake, LogOut, Newspaper, Settings, UserSearch } from "lucide-react";
+import { UserWithFollowers } from "@/types/UserType";
 
-const SideBar = async () => {
-  const session = await auth();
-  if(!session) return null;
+type sidebarProps = {
+  user: UserWithFollowers
+}
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session?.user.id,
-    },
-    include: {
-      followers: {
-        select: {
-          followingId: true,
-        }
-      }
-    }
-  })
-
+const SideBar = ({user}: sidebarProps) => {
 
   return (
-    <div className="h-screen pt-5 px-2 md:flex flex-col justify-between border-r">
-      <div className="md:flex flex-col justify-center text-sm gap-5">
+    <div className="h-screen py-5 px-5 md:flex flex-col justify-between border-r">
+      <div className="md:flex flex-col text-sm gap-5">
         <Link href='/?search=' className="mx-auto">
           Write Flow
         </Link>
@@ -35,21 +23,14 @@ const SideBar = async () => {
         {/* sb buttons yaha */}
         <div className="flex flex-col gap-1">
           <LinkButton
-            imageUrl={user?.image || ""}
+            imageUrl={user?.image || DefaultAvatarImage}
             link={`/user/${user?.id}`}
-          >
-            Profile
-          </LinkButton>
-
-          <LinkButton icon={"/home"}>Feeds</LinkButton>
-
+          >Profile</LinkButton>
+          <LinkButton icon={<Newspaper />}>Feeds</LinkButton>
           <CreateFlowForm />
-
-          <LinkButton icon={""} link={`/user/${session?.user.id}/friends`}>
-            Friends
-          </LinkButton>
-          <LinkButton icon={""} link="/user/search">Search User</LinkButton>
-          <LinkButton icon={""}>Messages</LinkButton>
+          <LinkButton icon={<Handshake />} link={`/user/${user?.id}/friends`}>Friends</LinkButton>
+          <LinkButton icon={<UserSearch />} link="/user/search">Search User</LinkButton>
+          <LinkButton link={`/user/${user?.id}/dashboard`} icon={<ChartNoAxesCombinedIcon />}>Dashboard</LinkButton>
         </div>
 
         {/* followings show krega yaha */}
@@ -62,10 +43,10 @@ const SideBar = async () => {
           }
         </div>
       </div>
-      <div className="pb-5">
-        {/* //TODO: Logout ko button bana dena */}
-        <LinkButton action={signOut} link="#">Logout</LinkButton>
-        <LinkButton link="/user/settings">Settings</LinkButton>
+
+      <div className="flex flex-col gap-1">
+        <LinkButton icon={<Settings />}>Settings</LinkButton>
+        <SideButton icon={<LogOut />} action={""}>Logout</SideButton>
       </div>
     </div>
   );

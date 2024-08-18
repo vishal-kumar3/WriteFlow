@@ -30,7 +30,7 @@ const HomeFlows = async ({ data }: { data: FlowForHome}) => {
 
 
   return (
-    <div className="max-w-[70%]">
+    <div className="md:w-[70%]">
       {
         data.map((flow, key) => (
           <HomeFlowCard key={key} userBookmark={userBookmarks} flow={flow} />
