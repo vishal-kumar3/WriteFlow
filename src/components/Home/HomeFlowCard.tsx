@@ -33,16 +33,21 @@ const HomeFlowCard = ({ flow, userBookmark }: HomeFlowCardProps) => {
   return (
     <div className="border-2 rounded-lg m-10 p-4">
       <UserCard userData={flow.user} createdAt={flow.createdAt} flowId={flow.id} />
-      <Card className="border-none">
+      <Card className="border-none w-full">
         <div className="flex w-full">
-          <CardHeader className="p-0">
+          <CardHeader className="p-0 w-full">
             <Link href={`/blog/${flow.id}`}>
               <CardTitle className="font-bold line-clamp-2 text-lg px-2 pt-2">
                 {flow.title}
               </CardTitle>
               <CardDescription className="px-2 w-full line-clamp-4">
-                {flow.description}
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit, maiores itaque autem pariatur facilis tenetur, eius tempore ea dicta sapiente repudiandae dignissimos id et, cumque ab asperiores vel. Atque, reiciendis.
+                {
+                  flow.description && flow.description?.replace(/<[^>]*>?/gm, '').replace(/\s\s+/g, ' ').slice(0, 200)
+                }
+                {
+                  flow.description ? '\n' : '\n' +
+                  flow.content?.replace(/<[^>]*>?/gm, '').replace(/\s\s+/g, ' ').slice(0, 200)
+                }
               </CardDescription>
             </Link>
           </CardHeader>

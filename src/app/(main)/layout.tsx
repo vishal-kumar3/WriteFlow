@@ -1,6 +1,7 @@
 import React from "react";
 import Sidebar from "@/components/Sidebar/Sidebar";
 import AuthUserOnly from "@/util/AuthUserOnly";
+import ToggleSidebar from "@/components/Sidebar/ToggleSidebar";
 
 type props = {
   children: React.ReactNode;
@@ -11,8 +12,8 @@ const layout = ({ children }: props) => {
     <div className="relative flex">
       {/* @ts-expect-error Async Server Component */}
       <AuthUserOnly>
-        <div className="sticky h-screen top-0 min-w-[17%]">
-          <Sidebar />
+        <div className="sticky h-screen overflow-hidden top-0 min-w-[17%]">
+          <ToggleSidebar />
         </div>
       </AuthUserOnly>
       <div className="w-full pb-5">{children}</div>
