@@ -531,14 +531,34 @@ export const commentFlow = async (formData: FormData) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
 
-  const createdComment = await prisma.comment.create({
-    data: {
-      blogId: flowId,
-      userId: session.user.id!,
-      content,
-      parentId,
+  const createdComment = await prisma.blog.update({
+    where: {
+      id: flowId,
     },
-  });
+    data: {
+      Comment: {
+        create: {
+          content,
+          userId: session.user.id!,
+          parentId,
+        },
+      },
+      noOfComments: {
+        increment: 1,
+      }
+    },
+  })
+
+  // const createdComment = await prisma.comment.create({
+  //   data: {
+  //     blogId: flowId,
+  //     userId: session.user.id!,
+  //     content,
+  //     parentId,
+  //   },
+  // });
+
+
 
   if (!createdComment)
     return { error: 'Unexpected error while commenting flow!!!' };
@@ -653,6 +673,17 @@ export const deleteComment = async (commentId: string, flowId: string) => {
       userId: session.user.id,
     },
   });
+
+  const updatedFlow = await prisma.blog.update({
+    where: {
+      id: flowId,
+    },
+    data: {
+      noOfComments: {
+        decrement: 1,
+      }
+    },
+  })
 
   if (deletedComment.count === 0)
     return { error: "You can't delete this comment!!!" };

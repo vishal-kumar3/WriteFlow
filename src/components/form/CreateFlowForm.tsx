@@ -10,9 +10,13 @@ import { useRouter } from 'next/navigation'
 import { SideButton } from '../Sidebar/LinkButton'
 import { NotebookPen } from 'lucide-react'
 
-type props = {}
+type props = {
+  title: string
+  className?: string
+  showIcon?: boolean
+}
 
-const CreateFlowForm = (props: props) => {
+const CreateFlowForm = ({title, className, showIcon}: props) => {
   const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false)
   const [state, createFlowAction, isPending] = useActionState(createFlow, null)
@@ -37,8 +41,10 @@ const CreateFlowForm = (props: props) => {
           <SideButton
             action={() => setIsOpen(true)}
             icon={<NotebookPen />}
+            showIcon={showIcon}
+            className={className}
           >
-            Create Flow
+            {title}
           </SideButton>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">

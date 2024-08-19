@@ -6,6 +6,7 @@ import CreateFlowForm from "../form/CreateFlowForm";
 import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page";
 import { ChartNoAxesCombinedIcon, Handshake, LogOut, Newspaper, Settings, UserSearch } from "lucide-react";
 import { UserWithFollowers } from "@/types/UserType";
+import { signOut } from "next-auth/react";
 
 type sidebarProps = {
   user: UserWithFollowers
@@ -27,10 +28,10 @@ const SideBar = ({user}: sidebarProps) => {
             link={`/user/${user?.id}`}
           >Profile</LinkButton>
           <LinkButton icon={<Newspaper />}>Feeds</LinkButton>
-          <CreateFlowForm />
+          <CreateFlowForm title="Create Flow" />
           <LinkButton icon={<Handshake />} link={`/user/${user?.id}/friends`}>Friends</LinkButton>
           <LinkButton icon={<UserSearch />} link="/user/search">Search User</LinkButton>
-          <LinkButton link={`/user/${user?.id}/dashboard`} icon={<ChartNoAxesCombinedIcon />}>Dashboard</LinkButton>
+          <LinkButton link={`/user/dashboard`} icon={<ChartNoAxesCombinedIcon />}>Dashboard</LinkButton>
         </div>
 
         {/* followings show krega yaha */}
@@ -46,7 +47,7 @@ const SideBar = ({user}: sidebarProps) => {
 
       <div className="flex flex-col gap-1">
         <LinkButton icon={<Settings />}>Settings</LinkButton>
-        <SideButton icon={<LogOut />} action={""}>Logout</SideButton>
+        <SideButton icon={<LogOut />} action={signOut}>Logout</SideButton>
       </div>
     </div>
   );

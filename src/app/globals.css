@@ -32,7 +32,6 @@
   outline: 3px solid #6A00F5;
 }
 
-
 @layer base {
   :root {
     --background: 0 0% 100%;
