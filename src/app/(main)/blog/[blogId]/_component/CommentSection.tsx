@@ -56,16 +56,15 @@ export const Comment = ({
 
       }} className="w-full">
         <div className="flex gap-0">
-          {/* <input type="text" className="hidden" id="parentId" name="parentId" value={null} /> */}
-          <input type="text" className="hidden" id="flowId" name="flowId" defaultValue={flowId} />
+          <input type="text" className="hidden" readOnly id="flowId" name="flowId" defaultValue={flowId} />
           <div className="w-full">
-            {/* <p>@{username}</p> */}
             <Input
               id="content"
               name="content"
               value={optimisticComment?.content}
               placeholder="Enter your comment here..."
-              className="disabled:text-lg disabled:border-none disabled:opacity-50 disabled:cursor-auto"
+              className="disabled:text-lg disabled:border-none disabled:cursor-auto"
+              readOnly={disabled || false}
               disabled={disabled || false}
               required
             />

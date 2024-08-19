@@ -10,7 +10,6 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ModeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import FollowButtonServerWraper from "@/components/UserProfile/FollowButtonServerWraper";
-import { isAlreadyFollowing } from "@/actions/user.action";
 import AuthUserOnly from "@/util/AuthUserOnly";
 import HideForCurrentUser from "@/util/HideForCurrentUser";
 import { BlogWithUserAndComments } from "@/types/BlogType";
