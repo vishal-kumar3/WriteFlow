@@ -25,7 +25,6 @@ const SearchUser = ({data}: props) => {
         <Button variant={'ghost'}>Search</Button>
       </form>
 
-      {/* Use suspense here */}
       <div className='flex flex-col gap-2'>
         {
           data?.map((user, key) => (

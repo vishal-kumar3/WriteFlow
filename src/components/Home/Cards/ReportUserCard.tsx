@@ -26,7 +26,7 @@ export const ReportUserCard = ({ reportOptions, type, reportedUserId, reportedBl
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen} >
       <DialogTrigger>
-        <div className="hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Report {type}</div>
+        <div className="hover:bg-gray-200 dark:bg-white/20 dark:hover:bg-white/10 bg-gray-100 rounded-sm hover:text-accent-foreground h-10 px-4 py-2">Report {type}</div>
         {/* <Button className="w-full" variant="ghost">Report {type}</Button> */}
       </DialogTrigger>
       <DialogContent>

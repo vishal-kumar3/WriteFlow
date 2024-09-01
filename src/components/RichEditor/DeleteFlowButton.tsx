@@ -3,23 +3,26 @@ import { Button } from '../ui/button'
 import { deleteFlow } from '@/actions/flow.action'
 import { toast } from 'sonner'
 import { redirect } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 type props = {}
 
-const DeleteFlowButton = ({flowId, userId}: {flowId: string, userId: string}) => {
+const DeleteFlowButton = ({flowId, userId, redirectMode}: {flowId: string, userId: string, redirectMode: boolean}) => {
   return (
     <form action={async() => {
+      "use server"
       const {error, success} = await deleteFlow(flowId)
 
       if(error) return toast.error(error)
       if(success) {
-        toast.success(success)
-        redirect(`/user/${userId}`)
+        if(!redirectMode) {
+          redirect(`/user/${userId}`)
+        }
       }
     }}>
       <Button
         variant="destructive"
-        className='text-black dark:text-white'
+        className={cn('text-black dark:text-white', redirectMode ? 'w-full' : '')}
       >
         Delete
       </Button>
