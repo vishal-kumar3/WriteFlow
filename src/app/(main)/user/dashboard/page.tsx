@@ -2,21 +2,6 @@ import { getSevenDaysViews, getSevenDaysFollowers, getTotalViews, getRecentBlog,
 import { auth } from "@/auth";
 import AnalyticsCard from "@/components/Dashboard/AnalyticsCard";
 import CreateFlowForm from "@/components/form/CreateFlowForm";
-import {
-  Breadcrumb,
-  BreadcrumbEllipsis,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -89,8 +74,8 @@ const RecentArticle = async ({ userId }: { userId: string | undefined }) => {
               }
             </div>
             <CardFooter className="flex justify-center w-full">
-              <Button variant="outline" className="w-full rounded-full">
-                See All Flows
+              <Button variant="outline" className="w-[50%] rounded-full">
+                <Link href="/user/dashboard/flows" className="w-full">See All Flows</Link>
               </Button>
             </CardFooter>
           </>

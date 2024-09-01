@@ -42,8 +42,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
     likeData,
     (state, newLikeData: likeDataProps) => {
       return {
-        likesCnt: newLikeData.likesCnt,
-        isAlreadyLiked: newLikeData.isAlreadyLiked
+        ...newLikeData
       }
     }
   )
@@ -61,10 +60,10 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
         <button
           onClick={async () => {
             addOptimisticLikeData({
-              likesCnt: likeData.isAlreadyLiked ? likeData.likesCnt - 1 : likeData.likesCnt + 1,
-              isAlreadyLiked: !likeData.isAlreadyLiked
+              likesCnt: optimisticLikeData.isAlreadyLiked ? optimisticLikeData.likesCnt - 1 : optimisticLikeData.likesCnt + 1,
+              isAlreadyLiked: !optimisticLikeData.isAlreadyLiked
             })
-            toast.success(likeData.isAlreadyLiked ? "Flow Unliked" : "Flow Liked")
+            toast.success(optimisticLikeData.isAlreadyLiked ? "Flow Unliked" : "Flow Liked")
 
             const { error, success } = await likeFlow(flowId, userId)
             if (error) return toast.error(error)
@@ -88,7 +87,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
       }
       <button
         onClick={async () => {
-          addOptimisticIsBookmark(!isBookmarked)
+          addOptimisticIsBookmark(!optimisticIsBookmark)
           toast.success(isBookmarked ? "Flow Unbookmarked" : "Flow Bookmarked")
 
           const { error, success } = await toggleBookmark(flowId)

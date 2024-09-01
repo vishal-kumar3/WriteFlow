@@ -10,6 +10,8 @@ import { ReportUserCard } from "./ReportUserCard";
 import FollowButtonServerWraper from "@/components/UserProfile/FollowButtonServerWraper";
 import CopyButton from "@/util/CopyButton";
 import { auth } from "@/auth";
+import CurrentUserOnly from "@/util/CurrentUserOnly";
+import DeleteFlowButton from "@/components/RichEditor/DeleteFlowButton";
 
 export type UserCardProps = {
   userData: FlowUser;
@@ -44,12 +46,16 @@ export const UserCard = async({ userData, createdAt, flowId }: UserCardProps) =>
           <Tally3 className=" rotate-90" />
         </PopoverTrigger>
         <PopoverContent className="flex flex-col gap-1">
-          <CopyButton copyLink={`/blog/${flowId}`}>Copy Link</CopyButton>
           {
             session?.user?.id !== userData.id && (
               <FollowButtonServerWraper id={userData.id} username={userData.username} />
             )
           }
+          {/* @ts-expect-error Async Server Component */}
+          <CurrentUserOnly userId={userData.id}>
+            <DeleteFlowButton redirectMode={true} flowId={flowId} userId={userData.id} />
+          </CurrentUserOnly>
+          <CopyButton copyLink={`/blog/${flowId}`}>Copy Link</CopyButton>
           <ReportUserCard reportedUserId={userData.id} reportedBlogId={flowId} reportOptions={reportUserOptions} type="post" />
         </PopoverContent>
       </Popover>

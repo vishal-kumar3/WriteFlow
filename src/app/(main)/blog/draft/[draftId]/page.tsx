@@ -1,6 +1,7 @@
 import { updateFlowCoverImage } from "@/actions/image.action"
 import { DefaultCoverImage } from "@/app/(main)/user/[userId]/page"
 import { auth } from "@/auth"
+import DeleteFlowButton from "@/components/RichEditor/DeleteFlowButton"
 import RichEditor from "@/components/RichEditor/RichEditor"
 import CoverImage from "@/components/UserProfile/CoverImage"
 import prisma from "@/prisma"
@@ -43,6 +44,9 @@ const DraftPage = async ({ params }: DraftPageProps) => {
       <RichEditor
         {...DraftFlowData}
       />
+      <div className="absolute top-5 right-0 gap-5">
+        <DeleteFlowButton redirectMode={true} flowId={DraftFlowData.id} userId={DraftFlowData.userId} />
+      </div>
     </div>
   )
 }

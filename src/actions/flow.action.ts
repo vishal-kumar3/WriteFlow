@@ -549,17 +549,6 @@ export const commentFlow = async (formData: FormData) => {
     },
   })
 
-  // const createdComment = await prisma.comment.create({
-  //   data: {
-  //     blogId: flowId,
-  //     userId: session.user.id!,
-  //     content,
-  //     parentId,
-  //   },
-  // });
-
-
-
   if (!createdComment)
     return { error: 'Unexpected error while commenting flow!!!' };
   revalidatePath(`/blog/${flowId}`);

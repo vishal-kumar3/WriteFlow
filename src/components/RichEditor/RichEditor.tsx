@@ -157,13 +157,12 @@ const RichEditor = ({ id, userId, title, description, content, coverImage, tags,
       <FloatingToolbar editor={editor} />
       <EditorContent editor={editor} />
 
-      <div className='absolute top-5 right-0 w-full flex justify-between items-center gap-5'>
+      <div className='absolute top-5 right-[100px] w-full flex justify-between items-center gap-5'>
         <div className='bg-slate-100 dark:bg-background p-2 px-6 rounded-md hover:bg-slate-200'>
           Edit Mode
         </div>
         <div className='flex gap-4 items-center'>
           <Button className={cn(isSaved ? "text-green-500" : "text-red-500")} variant="ghost">{isSaved ? "Saved!" : "Saving..."}</Button>
-          <DeleteFlowButton flowId={id} userId={userId} />
           <DraftPublishSidebar title={title} userId={userId} flowId={id} thumbnail={thumbnail} />
         </div>
       </div>

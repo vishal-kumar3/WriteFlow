@@ -26,8 +26,8 @@ const ToggleBookmark = ({isBookmarked, flowId}: props) => {
         // if (error) toast.error(error)
         // if (success) toast.success(success)
 
-        addOptimisticIsBookmark(!isBookmarked)
-        toast.success(isBookmarked ? "Flow Unbookmarked" : "Flow Bookmarked")
+        addOptimisticIsBookmark(!optimisticIsBookmark)
+        toast.success(optimisticIsBookmark ? "Flow Unbookmarked" : "Flow Bookmarked")
 
         const {error, success} = await toggleBookmark(flowId)
         if(error) return toast.error(error)

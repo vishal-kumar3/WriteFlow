@@ -2,7 +2,7 @@
 import { alreadyLikedComment, deleteComment, likeComment } from '@/actions/flow.action'
 import { HeartFilledIcon } from '@radix-ui/react-icons'
 import { Heart, Trash } from 'lucide-react'
-import React, { useEffect, useOptimistic, useState } from 'react'
+import React, { useEffect, useOptimistic, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 export type CommentButtonsProps = {
@@ -14,6 +14,7 @@ export type CommentButtonsProps = {
 
 export const CommentButtons = ({ commentId, flowId, likeCount, auth }: CommentButtonsProps) => {
   const [alreadyLiked, setAlreadyLiked] = useState(false)
+  const [isPending, startTransition] = useTransition();
 
   const [alreadyLikedOptimistic, setAlreadyLikedOptimistic] = useOptimistic(
     alreadyLiked,
@@ -44,8 +45,11 @@ export const CommentButtons = ({ commentId, flowId, likeCount, auth }: CommentBu
       <button
         className="flex gap-2 items-center"
         onClick={async () => {
-          setAlreadyLikedOptimistic(!alreadyLiked)
-          setLikeCountOptimistic(alreadyLikedOptimistic ? likeCount - 1 : likeCount + 1)
+          startTransition(() => {
+            setAlreadyLikedOptimistic(!alreadyLikedOptimistic)
+            console.log(alreadyLikedOptimistic)
+            setLikeCountOptimistic(alreadyLikedOptimistic ? likeCountOptimistic - 1 : likeCountOptimistic + 1)
+          })
           toast.success('Comment Liked!!!')
 
           const { error, success, data } = await likeComment(flowId, commentId)

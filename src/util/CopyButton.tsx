@@ -13,7 +13,7 @@ const CopyButton = ({copyLink, children}: props) => {
     <Button onClick={() => {
       navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_HOST}${copyLink}`)
       toast.success("Copied to clipboard")
-    }} variant={'ghost'} >
+    }} variant={'ghost'} className="bg-gray-100 hover:bg-gray-200 dark:bg-white/20 dark:hover:bg-white/10" >
       {children}
     </Button>
   )
