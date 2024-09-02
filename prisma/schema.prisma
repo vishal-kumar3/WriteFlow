@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,31 +17,30 @@ model User {
   coverImage      String?
   password        String?
   role            Role          @default(USER)
-  accounts        Account?
-  about           About?
   followerCount   Int           @default(0)
   followingCount  Int           @default(0)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  about           About?
+  accounts        Account?
+  blogs           Blog[]
   likedBlogIds    BlogLike[]
+  comments        Comment[]
   likedCommentIds CommentLike[]
   followers       Follows[]     @relation("follower")
   following       Follows[]     @relation("following")
-  blogs           Blog[]
-  bookmarks       Blog[]        @relation("bookmarkedBy")
-  history         View[]
-  comments        Comment[]
   report          Report[]      @relation("IssuedBy")
   reportedUser    Report[]      @relation("ReportedUser")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  history         View[]
+  bookmarks       Blog[]        @relation("bookmarkedBy")
 }
 
 model Follows {
-  follower    User   @relation("follower", fields: [followerId], references: [id])
   followerId  String
-  following   User   @relation("following", fields: [followingId], references: [id])
   followingId String
   createdAt   DateTime @default(now())
+  follower    User     @relation("follower", fields: [followerId], references: [id])
+  following   User     @relation("following", fields: [followingId], references: [id])
 
   @@id([followerId, followingId])
 }
@@ -61,19 +54,12 @@ model About {
   career    String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-enum Role {
-  USER
-  MODERATOR
-  ADMIN
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String  @unique
+  id                String   @id @default(cuid())
+  userId            String   @unique
   type              String
   provider          String
   providerAccountId String
@@ -84,11 +70,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -100,6 +84,7 @@ model Blog {
   title        String
   description  String?
   content      String?
+  jsonContent  Json?
   isPublished  Boolean    @default(false)
   thumbnail    String?
   coverImage   String?
@@ -107,17 +92,15 @@ model Blog {
   likeCount    Int        @default(0)
   noOfComments Int        @default(0)
   noOfViews    Int        @default(0)
-  viewedBy     View[]
-  bookmarkedBy User[]     @relation("bookmarkedBy")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   likedBy      BlogLike[]
-  tags         Tag[]
   Comment      Comment[]
   Report       Report[]   @relation("ReportedBlog")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  viewedBy     View[]
+  tags         Tag[]      @relation("BlogToTag")
+  bookmarkedBy User[]     @relation("bookmarkedBy")
 }
 
 model View {
@@ -126,9 +109,8 @@ model View {
   blogId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
-  blog Blog? @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model BlogLike {
@@ -136,9 +118,8 @@ model BlogLike {
   blogId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, blogId])
 }
@@ -148,61 +129,51 @@ model CommentLike {
   commentId String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([userId, commentId])
 }
 
-//TODO: Tag model
 model Tag {
   id         String   @id @default(cuid())
   tag        String   @unique
-  posts      Blog[]
   postsCount Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  posts      Blog[]   @relation("BlogToTag")
 }
 
 model Comment {
-  id        String   @id @default(cuid())
+  id        String        @id @default(cuid())
   userId    String?
   blogId    String?
   content   String
-  parentId  String? // Parent Comment ID
-  likeCount Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  likedBy  CommentLike[]
-  user     User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  blog     Blog?         @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  parent   Comment?      @relation("CommentParent", fields: [parentId], references: [id], onDelete: Cascade)
-  children Comment[]     @relation("CommentParent")
-  Report   Report[]      @relation("ReportedComment")
+  parentId  String?
+  likeCount Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  blog      Blog?         @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  parent    Comment?      @relation("CommentParent", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Comment[]     @relation("CommentParent")
+  user      User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likedBy   CommentLike[]
+  Report    Report[]      @relation("ReportedComment")
 }
 
 model Log {
-  id      String    @id @default(cuid())
-  userId  String?
-  type    String
-  message String
-  request Request[]
-  error   Error[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum Severity {
-  INFO
-  WARN
-  ERROR
+  id        String    @id @default(cuid())
+  userId    String?
+  type      String
+  message   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  error     Error[]
+  request   Request[]
 }
 
 model Request {
-  id         String  @id @default(cuid())
+  id         String   @id @default(cuid())
   userId     String?
   method     String
   path       String
@@ -211,23 +182,21 @@ model Request {
   ip         String
   userAgent  String
   logId      String
-  log        Log     @relation(fields: [logId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  log        Log      @relation(fields: [logId], references: [id], onDelete: Cascade)
 }
 
 model Error {
-  id       String   @id @default(cuid())
-  userId   String?
-  message  String
-  stack    String?
-  severity Severity
-  logId    String
-  log      Log      @relation(fields: [logId], references: [id])
-
+  id        String   @id @default(cuid())
+  userId    String?
+  message   String
+  stack     String?
+  severity  Severity
+  logId     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  log       Log      @relation(fields: [logId], references: [id])
 }
 
 model Report {
@@ -240,13 +209,24 @@ model Report {
   reportedBlogId    String?
   reportedCommentId String?
   createdBy         String?
-  reportedUser      User?        @relation(name: "ReportedUser", fields: [reportedUserId], references: [id])
-  reportedBlog      Blog?        @relation(name: "ReportedBlog", fields: [reportedBlogId], references: [id])
-  reportedComment   Comment?     @relation(name: "ReportedComment", fields: [reportedCommentId], references: [id])
-  issuedBy          User?        @relation(name: "IssuedBy", fields: [createdBy], references: [id])
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  issuedBy          User?        @relation("IssuedBy", fields: [createdBy], references: [id])
+  reportedBlog      Blog?        @relation("ReportedBlog", fields: [reportedBlogId], references: [id])
+  reportedComment   Comment?     @relation("ReportedComment", fields: [reportedCommentId], references: [id])
+  reportedUser      User?        @relation("ReportedUser", fields: [reportedUserId], references: [id])
+}
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum Severity {
+  INFO
+  WARN
+  ERROR
 }
 
 enum ReportStatus {

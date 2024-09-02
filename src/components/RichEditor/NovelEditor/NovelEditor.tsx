@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   EditorRoot,
   EditorCommand,
@@ -22,16 +22,18 @@ import { handleImageDrop, handleImagePaste } from "novel/plugins";
 import { uploadFn } from "./image-upload";
 import { Separator } from "@/components/ui/separator";
 import { DebouncedState } from "use-debounce";
+import { updateContent } from "@/actions/flow.action";
 
 const extensions = [...defaultExtensions, slashCommand];
 
 interface EditorProp {
   initialValue?: JSONContent;
-  debounce: DebouncedState<(update: string, userId: string, action: any) => Promise<string | number | undefined>>
+  debounce: DebouncedState<(update: JSONContent, userId: string, action: any, content?: string) => Promise<string | number | undefined>>
   setIsSaved: (val: boolean) => void
+  userId: string
 }
 
-const Editor = ({ initialValue }: EditorProp) => {
+const Editor = ({ initialValue, debounce, setIsSaved, userId }: EditorProp) => {
   const [openNode, setOpenNode] = useState(false);
   const [openColor, setOpenColor] = useState(false);
   const [openLink, setOpenLink] = useState(false);
@@ -53,9 +55,14 @@ const Editor = ({ initialValue }: EditorProp) => {
             class: `prose prose-lg dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full`,
           },
         }}
+        immediatelyRender={false}
         onUpdate={({ editor }) => {
-          // console.log(editor.getJSON());
-          console.log(editor.getHTML())
+          const jsonContent = editor.getJSON();
+          const content = editor.getHTML();
+          setIsSaved(false);
+          const plainJsonContent = JSON.parse(JSON.stringify(jsonContent));
+          console.log("This is from client side:- ",plainJsonContent)
+          debounce(plainJsonContent, userId, updateContent, content);
         }}
         slotAfter={<ImageResizer />}
       >

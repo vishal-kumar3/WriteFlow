@@ -1,50 +1,36 @@
 'use client'
 
-import {
-  BubbleMenu,
-  EditorContent,
-  FloatingMenu,
-  useEditor,
-} from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 import { Button } from '../ui/button'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
-import { publishFlow, updateContent, updateDescription, updateTitle } from '@/actions/flow.action'
+import { publishFlow, updateDescription, updateTitle } from '@/actions/flow.action'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { DraftPublishSidebar } from './DraftPublishSidebar'
 import { cn } from '@/lib/utils'
-import commands from './SlashCommand/commands'
-import suggestion from './SlashCommand/suggestion'
 
 
 import Document from '@tiptap/extension-document'
-import Paragraph from '@tiptap/extension-paragraph'
-import Text from '@tiptap/extension-text'
-import Dropcursor from '@tiptap/extension-dropcursor'
-import Image from '@tiptap/extension-image'
-import handleDrop from './HandleDrop/HandleDrop'
-import FloatingToolbar from './FloatingMenu/FloatingToolbar'
-import Placeholder from '@tiptap/extension-placeholder'
-import Blockquote from '@tiptap/extension-blockquote'
-import BulletList from '@tiptap/extension-bullet-list'
-import ListItem from '@tiptap/extension-list-item'
 import Editor from './NovelEditor/NovelEditor'
-import { defaultValue } from './NovelEditor/default-values'
 import { JSONContent } from 'novel'
 
 
 type EditorProps = {
-  id: string
-  userId: string
-  title: string
-  description: string | null
-  content: string | null
-  thumbnail: string | null
-  coverImage: string | null
-  tags: { tag: string }[]
-  updatedAt: Date
+  id: string;
+  userId: string;
+  title: string;
+  description?: string | null; // Make description optional
+  content?: string | null; // Make content optional
+  jsonContent: JSONContent | null;
+  thumbnail?: string | null; // Make thumbnail optional
+  updatedAt: Date;
+  tags?: {
+    id: string;
+    tag: string;
+    postsCount: number;
+    createdAt: Date;
+    updatedAt: Date;
+  }[];
 }
 
 type FlowPublishButtonProps = {
@@ -59,62 +45,26 @@ const CustomDocument = Document.extend({
   content: 'heading block*',
 })
 
-const RichEditor = ({ id, userId, title, description, content, thumbnail, updatedAt }: EditorProps) => {
-  const [value, setValue] = useState<JSONContent>(defaultValue);
+const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: EditorProps) => {
+  // console.log('jsonContent', jsonContent)
   const [flowTitle, setFlowTitle] = useState(title || '')
   const [flowDescription, setFlowDescription] = useState(description || '')
   const [isSaved, setIsSaved] = useState(true)
 
-  // const editor = useEditor({
-  //   extensions: [
-  //     CustomDocument,
-  //     Blockquote,
-  //     StarterKit.configure({
-  //       document: false,
-  //     }),
-  //     Placeholder.configure({
-  //       placeholder: ({ node }) => {
-  //         if (node.type.name === 'heading') {
-  //           return 'Enter Your Title Here!!!'
-  //         }
-  //         return 'Write Description Here!!!'
-  //       }
-  //     }),
-  //     Document,
-  //     Paragraph,
-  //     Text,
-  //     Dropcursor,
-  //     Image,
-  //     BulletList,
-  //     ListItem,
-  //     commands.configure({
-  //       suggestion,
-  //     }),
-  //   ],
-  //   content: content || "<h1>Heading<h1>",
-  //   editorProps: {
-  //     attributes: {
-  //       class: "prose-xl mx-auto px-5 pb-3 focus:outline-none rounded-b-xl border-x border-b min-h-[200px] border-input disabled:cursor-not-allowed disabled:opacity-50"
-  //     },
-  //     handleDrop: (view, event, slice, moved) => handleDrop({ view, event, slice, moved })
-  //   },
-  //   onUpdate({ editor }) {
-  //     setIsSaved(false)
-  //     debounce(editor.getHTML(), userId, updateContent)
-  //   },
-  //   immediatelyRender: false
-  // })
+  const debounce = useDebouncedCallback(async (updateJson: JSONContent | string, userId: string, action: any, content?: string) => {
+    if (!updateJson) return;
+    if (typeof updateJson !== 'string' && typeof updateJson !== 'object') {
+      return toast.error('Invalid updateJson content');
+    }
+    console.log('debounce', updateJson)
+    const { error, success } = await action(id, userId, content, updateJson);
 
-  const debounce = useDebouncedCallback(async (update: string, userId: string, action: any) => {
-    if (update === '' || !update) return
-    const { error, success } = await action(id, userId, update)
-
-    if (error) return toast.error(error)
+    if (error) return toast.error(error);
     else if (success) {
-      setIsSaved(true)
+      setIsSaved(true);
       // return toast.success(success)
     }
-  }, 1000)
+  }, 1000);
 
   const handleTitle = (e: any) => {
     setIsSaved(false)
@@ -160,7 +110,7 @@ const RichEditor = ({ id, userId, title, description, content, thumbnail, update
       {/* <FloatingToolbar editor={editor} />
       <EditorContent editor={editor} /> */}
 
-      <Editor initialValue={value} />
+      <Editor debounce={debounce} setIsSaved={setIsSaved} userId={userId} initialValue={jsonContent!} />
 
       <div className='absolute top-5 right-[100px] w-full flex justify-between items-center gap-5'>
         <div className='bg-slate-100 dark:bg-background p-2 px-6 rounded-md hover:bg-slate-200'>
@@ -168,7 +118,7 @@ const RichEditor = ({ id, userId, title, description, content, thumbnail, update
         </div>
         <div className='flex gap-4 items-center'>
           <Button className={cn(isSaved ? "text-green-500" : "text-red-500")} variant="ghost">{isSaved ? "Saved!" : "Saving..."}</Button>
-          <DraftPublishSidebar title={title} userId={userId} flowId={id} thumbnail={thumbnail} />
+          <DraftPublishSidebar title={title} userId={userId} flowId={id} thumbnail={thumbnail!} />
         </div>
       </div>
     </div>

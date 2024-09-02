@@ -4,6 +4,7 @@ import { auth } from '@/auth';
 import prisma from '@/prisma';
 import { BlogWithUserAndTagsHome } from '@/types/BlogType';
 import { revalidatePath } from 'next/cache';
+import { JSONContent } from 'novel';
 
 export const deleteFlow = async (flowId: string) => {
   const session = await auth()
@@ -25,7 +26,6 @@ export const deleteFlow = async (flowId: string) => {
   revalidatePath('/')
   return { success: 'Flow deleted!!!' }
 }
-
 export const createFlow = async (initialState: any, formData: FormData) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
@@ -33,9 +33,25 @@ export const createFlow = async (initialState: any, formData: FormData) => {
   const title = formData.get('title') as string;
   if (!title) return { error: 'Title is required' };
 
+  const jsonContent: JSONContent = {
+    type: "doc",
+    content: [
+      {
+        type: "paragraph",
+        content: [
+          {
+            type: "text",
+            text: "Write with your flow!!!",
+          },
+        ],
+      },
+    ],
+  };
+
   const createdFlow = await prisma.blog.create({
     data: {
       title,
+      jsonContent: jsonContent,
       user: {
         connect: {
           id: session.user.id!,
@@ -47,6 +63,7 @@ export const createFlow = async (initialState: any, formData: FormData) => {
   if (!createdFlow) {
     return { error: 'Unexpected error while creating flow!!!' };
   } else {
+    console.log(createdFlow)
     // redirect(`/blog/draft/${createdFlow.id}`);
     return {
       success: `${createdFlow.title} is created!!!`,
@@ -241,13 +258,17 @@ export const toggleBookmark = async (flowId: string) => {
 export const updateContent = async (
   flowId: string,
   userId: string,
-  content: string
+  content: string,
+  jsonContent: JSONContent
 ) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
 
   if (session.user.id !== userId)
     return { error: "Nope you can't do this here!!!" };
+
+  // Log the 'content' array inside 'jsonContent' with full detail
+  console.log('jsonContent content:', JSON.stringify(jsonContent));
 
   const updatedFlow = await prisma.blog.update({
     where: {
@@ -256,6 +277,7 @@ export const updateContent = async (
       isPublished: false,
     },
     data: {
+      jsonContent,
       content,
     },
   });
@@ -263,6 +285,7 @@ export const updateContent = async (
   if (!updatedFlow) {
     return { error: 'Unexpected error while updating flow content!!!' };
   } else {
+    console.log('Updated flow jsonContent:', JSON.stringify(updatedFlow.jsonContent, null, 2));
     return { success: 'Flow content updated!!!' };
   }
 };
