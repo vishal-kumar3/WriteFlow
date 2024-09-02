@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import prisma from "@/prisma";
+import { User } from "@/types/UserType";
 import { revalidatePath } from "next/cache";
 
 export type UserAbout = {
@@ -35,7 +36,7 @@ export const isAlreadyFollowing = async(id: string) => {
   return { data: false }
 }
 
-export const updateUserAboutSection = async(formData: FormData) => {
+export const updateUserAboutSection = async (initialState: any, formData: FormData) => {
 
   const session = await auth()
   if(!session?.user?.id) return { error: 'No user id provided' };
@@ -174,4 +175,62 @@ export const followToggle = async(id: string) => {
     revalidatePath(`/user/${id}`);
     return { success: 'User followed successfully', data: true };
   }
+}
+
+
+export const getFollowers = async(id: string) => {
+  const followers = await prisma.follows.findMany({
+    where: {
+      followingId: id
+    },
+    include: {
+      follower: true
+    }
+  })
+
+  if(!followers) return { error: 'Could not get followers' };
+  return { data: followers }
+}
+
+export const getFollowing = async(id: string) => {
+  const following = await prisma.follows.findMany({
+    where: {
+      followerId: id
+    },
+    include: {
+      following: true
+    }
+  })
+
+  if(!following) return { error: 'Could not get following' };
+  return { data: following }
+}
+
+export const getTopUsers = async(filter: string = '') => {
+
+  const users: User[] = await prisma.user.findMany({
+    where: {
+      OR: [
+        {
+          name: {
+            contains: filter,
+            mode: 'insensitive'
+          }
+        },
+        {
+          username: {
+            contains: filter,
+            mode: 'insensitive'
+          }
+        }
+      ]
+    },
+    orderBy: {
+      followerCount: 'desc'
+    },
+    take: 5
+  })
+
+  if(!users) return { error: 'Could not get top users' };
+  return { data: users }
 }

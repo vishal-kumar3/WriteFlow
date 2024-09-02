@@ -17,11 +17,9 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import SocialLogin from "./SocialLogin";
 import ErrorMessage from "./ErrorMessage";
@@ -34,6 +32,7 @@ type props = {};
 const LoginForm = (props: props) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof loginFormSchema>>({
     resolver: zodResolver(loginFormSchema),
@@ -49,7 +48,8 @@ const LoginForm = (props: props) => {
     setSuccess("");
 
     const res = await login(data);
-
+    setLoadingButton(true)
+    if(res?.error) setLoadingButton(false)
     setError(res?.error || "");
     setSuccess(res?.success || "");
   };
@@ -102,9 +102,9 @@ const LoginForm = (props: props) => {
             <ErrorMessage message={error} />
             <SuccessMessage message={success} />
             <Button
-              className="w-full bg-black text-white font-semibold"
+              className="w-full bg-black text-white font-semibold dark:disabled:bg-black/50 disabled:bg-gray-300 disabled:cursor-not-allowed"
               type="submit"
-              disabled={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting || loadingButton}
             >
               Login
             </Button>

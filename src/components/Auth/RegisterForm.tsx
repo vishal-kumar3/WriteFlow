@@ -22,7 +22,6 @@ import {
   CardTitle,
 } from "../ui/card";
 import Link from "next/link";
-import { FcGoogle } from "react-icons/fc";
 import SocialLogin from "./SocialLogin";
 import ErrorMessage from "./ErrorMessage";
 import SuccessMessage from "./SuccessMessage";
@@ -34,6 +33,7 @@ type props = {};
 const RegisterForm = (props: props) => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const [loadingButton, setLoadingButton] = useState<boolean>(false);
 
   const form = useForm<z.infer<typeof registerFormSchema>>({
     resolver: zodResolver(registerFormSchema),
@@ -52,9 +52,11 @@ const RegisterForm = (props: props) => {
 
     const res = await register(data);
 
-    if(res.success) form.reset()
-    setError(res.error || "");
-    setSuccess(res.success || "");
+    if (res?.success) form.reset()
+    setLoadingButton(true)
+    if (res?.error) setLoadingButton(false)
+    setError(res?.error || "");
+    setSuccess(res?.success || "");
   };
 
   return (
@@ -141,9 +143,9 @@ const RegisterForm = (props: props) => {
             <ErrorMessage message={error} />
             <SuccessMessage message={success} />
             <Button
-              className="w-full bg-black text-white font-semibold"
+              className="w-full bg-black text-white font-semibold dark:disabled:bg-black/50 disabled:bg-gray-300 disabled:cursor-not-allowed"
               type="submit"
-              disabled={form.formState.isSubmitting}
+              disabled={form.formState.isSubmitting || loadingButton}
             >
               Register
             </Button>

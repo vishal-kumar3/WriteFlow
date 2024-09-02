@@ -1,47 +1,81 @@
 "use client"
-import React from 'react'
+import React, { useActionState, useEffect } from 'react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
-import { DialogFooter } from '../ui/dialog'
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
 import { Button } from '../ui/button'
 import { createFlow } from '@/actions/flow.action'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import FileUploader from '@/lib/fileUploader'
+import { SideButton } from '../Sidebar/LinkButton'
+import { NotebookPen } from 'lucide-react'
 
-type props = {}
+type props = {
+  title: string
+  className?: string
+  showIcon?: boolean
+}
 
-const CreateFlowForm = (props: props) => {
+const CreateFlowForm = ({title, className, showIcon}: props) => {
   const router = useRouter()
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [state, createFlowAction, isPending] = useActionState(createFlow, null)
+
+  useEffect(() => {
+    if (state?.success) {
+      setIsOpen(false)
+      router.push(`/blog/draft/${state?.id}`)
+      toast.success('Flow created successfully')
+    }
+    if (state?.error) {
+      setIsOpen(false)
+      toast.error('Failed to create flow')
+    }
+  }, [isPending, state?.success, state?.error, state?.id, router])
 
   return (
-    <form action={async(formData: FormData) => {
-      const {error, success, id} = await createFlow(formData)
-
-      if(error){
-        toast.error(error)
-      }else {
-        router.push(`/blog/draft/${id}`)
-        toast.success(success)
-      }
-    }}>
-      <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="title" className="text-right">
-            Title
-          </Label>
-          <Input
-            id="title"
-            name='title'
-            placeholder="Enter title"
-            className="col-span-3"
-          />
-        </div>
-      </div>
-      <DialogFooter>
-        <Button type="submit">Create Flow</Button>
-      </DialogFooter>
-    </form>
+    <div id='createFlowForm'>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogTrigger asChild>
+          {/* //TODO: Baad me isko dekhna h */}
+          <SideButton
+            action={() => setIsOpen(true)}
+            icon={<NotebookPen />}
+            showIcon={showIcon}
+            className={className}
+          >
+            {title}
+          </SideButton>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Write Your Flow</DialogTitle>
+          </DialogHeader>
+          <form action={createFlowAction}>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="title" className="text-right">
+                  Title
+                </Label>
+                <Input
+                  id="title"
+                  name='title'
+                  placeholder="Enter title"
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="submit" className='disabled:cursor-wait opacity-90 ' disabled={isPending} >
+                {
+                  isPending ? "Creating..." : "Create Flow"
+                }
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </div>
   )
 }
 

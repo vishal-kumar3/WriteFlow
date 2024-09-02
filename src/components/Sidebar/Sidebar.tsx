@@ -1,88 +1,37 @@
-import React from "react";
-
 import Link from "next/link";
-import LinkButton from "./LinkButton";
-import { auth } from "@/auth";
+import LinkButton, { SideButton } from "./LinkButton";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { signOut } from "next-auth/react";
-import prisma from "@/prisma";
 import Followings from "./Followings";
 import CreateFlowForm from "../form/CreateFlowForm";
-import SidebarButton from "./SidebarButton";
+import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page";
+import { ChartNoAxesCombinedIcon, Handshake, LogOut, Newspaper, Settings, UserSearch } from "lucide-react";
+import { UserWithFollowers } from "@/types/UserType";
+import { signOut } from "next-auth/react";
 
-const SideBar = async () => {
-  const session = await auth();
+type sidebarProps = {
+  user: UserWithFollowers
+}
 
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session?.user.id,
-    },
-    include: {
-      followers: {
-        select: {
-          followingId: true,
-        }
-      }
-    }
-  })
-
+const SideBar = ({user}: sidebarProps) => {
 
   return (
-    <div className="h-screen pt-5 px-2 md:flex flex-col justify-between border-r">
-      <div className="md:flex flex-col justify-center text-sm gap-5">
-        <Link href="/" className="mx-auto">
+    <div className="h-screen py-5 px-5 md:flex flex-col justify-between border-r">
+      <div className="md:flex flex-col text-sm gap-5">
+        <Link href='/?search=' className="mx-auto">
           Write Flow
         </Link>
 
         {/* sb buttons yaha */}
         <div className="flex flex-col gap-1">
           <LinkButton
-            imageUrl={user?.image || ""}
+            imageUrl={user?.image || DefaultAvatarImage}
             link={`/user/${user?.id}`}
-          >
-            Profile
-          </LinkButton>
-          <LinkButton icon={"/home"}>Feeds</LinkButton>
-          <Dialog>
-            <DialogTrigger asChild>
-              {/* //TODO: Baad me isko dekhna h */}
-              {/* <LinkButton icon={""} link={`#`}> */}
-              <button
-                className="transition-all text-sm ease-in hover:bg-[#f5f5f5] dark:hover:bg-white/20 flex items-center gap-3 px-4 py-[5px] rounded-md hover:shadow-lg"
-              >
-                <div className="flex gap-2 justify-center">
-                  <div className="size-[35px] overflow-hidden">
-                    Icon Here
-                  </div>
-                  <p className="w-[100%]">Create Flow</p>
-                </div>
-              </button>
-              {/* </LinkButton> */}
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Write Your Flow</DialogTitle>
-              </DialogHeader>
-              <CreateFlowForm />
-            </DialogContent>
-          </Dialog>
-
-          <LinkButton icon={""} link={`/user/friends`}>
-            Friends
-          </LinkButton>
-          <LinkButton icon={""}>Community</LinkButton>
-          <LinkButton icon={""}>Messages</LinkButton>
+          >Profile</LinkButton>
+          <LinkButton icon={<Newspaper />}>Feeds</LinkButton>
+          <CreateFlowForm title="Create Flow" />
+          <LinkButton icon={<Handshake />} link={`/user/${user?.id}/friends`}>Friends</LinkButton>
+          <LinkButton icon={<UserSearch />} link="/user/search">Search User</LinkButton>
+          <LinkButton link={`/user/dashboard`} icon={<ChartNoAxesCombinedIcon />}>Dashboard</LinkButton>
         </div>
 
         {/* followings show krega yaha */}
@@ -95,10 +44,10 @@ const SideBar = async () => {
           }
         </div>
       </div>
-      <div className="pb-5">
-        {/* //TODO: Logout ko button bana dena */}
-        <LinkButton action={signOut} link="#">Logout</LinkButton>
-        <LinkButton link="/user/settings">Settings</LinkButton>
+
+      <div className="flex flex-col gap-1">
+        <LinkButton icon={<Settings />}>Settings</LinkButton>
+        <SideButton icon={<LogOut />} action={signOut}>Logout</SideButton>
       </div>
     </div>
   );

@@ -1,10 +1,6 @@
-import { updateUserCoverImage } from "@/actions/image.action";
-import { auth } from "@/auth";
 import FileUploader from "@/lib/fileUploader";
 import CurrentUserOnly from "@/util/CurrentUserOnly";
-import { Pencil } from "lucide-react";
 import Image from "next/image";
-import React from "react";
 
 type props = {
   coverImage: string;
@@ -25,8 +21,6 @@ const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAct
         width={900}
         alt="Holla"
       />
-
-
       {
         !disabled && (
           // @ts-expect-error Async Server Component

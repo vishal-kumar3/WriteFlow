@@ -26,9 +26,9 @@ const History = async(props: props) => {
         HistoryData?.map((HistoryView: HistoryWithBlog, key: number) => (
           <UserFlowsCard
             key={key}
+            userId={HistoryView?.blog?.userId!}
             id={HistoryView?.blog?.id!}
             title={HistoryView?.blog?.title!}
-            // tags={HistoryView?.blog?.tags!}
             isPublished={HistoryView?.blog?.isPublished!}
             description={HistoryView?.blog?.description!}
             createdAt={HistoryView?.blog?.createdAt!}
