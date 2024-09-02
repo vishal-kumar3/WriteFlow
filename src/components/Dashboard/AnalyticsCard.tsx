@@ -11,7 +11,7 @@ const AnalyticsCard = async ({ title, action, userId }: AnalyticsCardProps) => {
   const data = await action(userId);
 
   return (
-    <Card className="w-full">
+    <Card className="w-full hover:border-blue-300 transition-all ease-in-out">
       <CardHeader>
         <CardTitle>{data || 0}</CardTitle>
         <CardDescription>{title}</CardDescription>

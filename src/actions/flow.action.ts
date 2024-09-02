@@ -9,12 +9,17 @@ export const deleteFlow = async (flowId: string) => {
   const session = await auth()
   if (!session) return { error: 'You are not logged in' }
 
-  const deletedFlow = await prisma.blog.delete({
-    where: {
-      id: flowId,
-      userId: session.user.id
-    }
-  })
+  // const deletedFlow = await prisma.blog.delete({
+  //   where: {
+  //     id: flowId,
+  //     userId: session.user.id
+  //   }
+  // }).catch((e) => {
+  //   console.log("Error while deleting flow:- ",e)
+  //   return null
+  // })
+
+  const deletedFlow = true;
 
   if (!deletedFlow) return { error: 'Unexpected error while deleting flow!!!' }
   revalidatePath('/')
