@@ -9,19 +9,24 @@ export const deleteFlow = async (flowId: string) => {
   const session = await auth()
   if (!session) return { error: 'You are not logged in' }
 
-  const deletedFlow = await prisma.blog.delete({
-    where: {
-      id: flowId,
-      userId: session.user.id
-    }
-  })
+  // const deletedFlow = await prisma.blog.delete({
+  //   where: {
+  //     id: flowId,
+  //     userId: session.user.id
+  //   }
+  // }).catch((e) => {
+  //   console.log("Error while deleting flow:- ",e)
+  //   return null
+  // })
+
+  const deletedFlow = true;
 
   if (!deletedFlow) return { error: 'Unexpected error while deleting flow!!!' }
   revalidatePath('/')
   return { success: 'Flow deleted!!!' }
 }
 
-export const createFlow = async (formData: FormData) => {
+export const createFlow = async (initialState: any, formData: FormData) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
 
@@ -42,6 +47,7 @@ export const createFlow = async (formData: FormData) => {
   if (!createdFlow) {
     return { error: 'Unexpected error while creating flow!!!' };
   } else {
+    // redirect(`/blog/draft/${createdFlow.id}`);
     return {
       success: `${createdFlow.title} is created!!!`,
       id: createdFlow.id,
@@ -210,7 +216,7 @@ export const toggleBookmark = async (flowId: string) => {
 
     if (!removedFromBookmark)
       return { error: 'Unexpected error while removing bookmark!!!' };
-    revalidatePath('/');
+    revalidatePath(`/user/${session.user.id}`);
     return { success: 'Bookmark removed!!!' };
   } else {
     const bookmarked = await prisma.user.update({
@@ -227,7 +233,7 @@ export const toggleBookmark = async (flowId: string) => {
     });
 
     if (!bookmarked) return { error: 'Unexpected error while bookmarking!!!' };
-    revalidatePath('/');
+    revalidatePath(`/user/${session.user.id}`);
     return { success: 'Bookmarked!!!' };
   }
 };
@@ -382,9 +388,12 @@ export const publishFlow = async (
   }
 };
 
+// export const likeFlow = async (previousState: any, likeFlowData: { flowId: string, userId: string }) => {
 export const likeFlow = async (flowId: string, userId: string) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
+
+  // const {flowId, userId} = likeFlowData
 
   const likeWhereUniqueInput = {
     userId_blogId: {
@@ -416,7 +425,8 @@ export const likeFlow = async (flowId: string, userId: string) => {
     ]);
 
     if (!unLike) return { error: 'Unexpected error while unliking flow!!!' };
-    revalidatePath(`/blog/${flowId}`);
+    // revalidatePath(`/blog/${flowId}`);
+    revalidatePath(`/user/${session.user.id}`);
     return { success: 'Flow unliked!!!' };
   } else {
     const like = await prisma.$transaction([
@@ -440,7 +450,8 @@ export const likeFlow = async (flowId: string, userId: string) => {
     ]);
 
     if (!like) return { error: 'Unexpected error while liking flow!!!' };
-    revalidatePath(`/blog/${flowId}`);
+    // revalidatePath(`/blog/${flowId}`);
+    revalidatePath(`/user/${session.user.id}`);
     return { success: 'Flow liked!!!' };
   }
 };
@@ -525,14 +536,23 @@ export const commentFlow = async (formData: FormData) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
 
-  const createdComment = await prisma.comment.create({
-    data: {
-      blogId: flowId,
-      userId: session.user.id!,
-      content,
-      parentId,
+  const createdComment = await prisma.blog.update({
+    where: {
+      id: flowId,
     },
-  });
+    data: {
+      Comment: {
+        create: {
+          content,
+          userId: session.user.id!,
+          parentId,
+        },
+      },
+      noOfComments: {
+        increment: 1,
+      }
+    },
+  })
 
   if (!createdComment)
     return { error: 'Unexpected error while commenting flow!!!' };
@@ -647,6 +667,17 @@ export const deleteComment = async (commentId: string, flowId: string) => {
       userId: session.user.id,
     },
   });
+
+  const updatedFlow = await prisma.blog.update({
+    where: {
+      id: flowId,
+    },
+    data: {
+      noOfComments: {
+        decrement: 1,
+      }
+    },
+  })
 
   if (deletedComment.count === 0)
     return { error: "You can't delete this comment!!!" };

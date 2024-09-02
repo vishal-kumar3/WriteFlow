@@ -1,41 +1,42 @@
 "use client"
-import { followToggle, isAlreadyFollowing } from '@/actions/user.action'
+import { followToggle } from '@/actions/user.action'
 import { Button } from '../ui/button'
 import { toast } from 'sonner'
-import { useEffect, useState } from 'react'
+import { useOptimistic } from 'react'
+import { cn } from '@/lib/utils'
 
 type props = {
-  id: string
+  id: string,
+  username: string
+  isFollowing: boolean | null
 }
 
-const FollowButton = ({id}: props) => {
-  const [isFollowing, setIsFollowing] = useState(false)
+const FollowButton = ({id, username, isFollowing}: props) => {
 
-  useEffect(() => {
-    async function isFollowing() {
-      const { error, data } = await isAlreadyFollowing(id)
-      if(error){
-        toast.error(error)
-      }
-      else {
-        setIsFollowing(data!)
-      }
+  const [isFollowingOptimistic, setIsFollowingOptimistic] = useOptimistic(
+    isFollowing,
+    (value, newIsFollowing: boolean) => {
+      return newIsFollowing
     }
+  )
 
-    isFollowing()
-  }, [id])
 
   return (
     <Button onClick={async() => {
-      const { error, success, data } = await followToggle(id)
 
+      setIsFollowingOptimistic(!isFollowingOptimistic)
+      toast.success(isFollowingOptimistic ? `You unfollowed ${username}` : `You started following ${username}`)
+
+      const { error, data } = await followToggle(id)
       if(error){
         toast.error(error)
-      }else {
-        setIsFollowing(data!)
-        toast.success(success)
       }
-    }} className="px-5 bg-blue-400 hover:bg-blue-500">{isFollowing ? "Unfollow" : "Follow"}</Button>
+    }} className={cn("px-5",
+      isFollowingOptimistic ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600",
+      "text-white"
+    )}>
+      {isFollowingOptimistic ? "Unfollow" : "Follow"}
+    </Button>
   )
 }
 

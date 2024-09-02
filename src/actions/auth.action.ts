@@ -9,7 +9,8 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 
 export const login = async (data: z.infer<typeof loginFormSchema>) => {
-  const validatedFields = loginFormSchema.safeParse(data);
+  console.log("Holla")
+  const validatedFields = await loginFormSchema.safeParseAsync(data);
 
   if (!validatedFields.success) {
     return { error: "Invalid Fields" };
@@ -23,7 +24,7 @@ export const login = async (data: z.infer<typeof loginFormSchema>) => {
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
-
+    console.log("Logged In Successfully")
     return { success: "Logged In Successfully" };
   } catch (error) {
     if (error instanceof AuthError) {
@@ -86,6 +87,29 @@ export const register = async (data: z.infer<typeof registerFormSchema>) => {
   }
 
   // Todo: Send Email Verification
+
+  try {
+    await signIn("credentials", {
+      email,
+      password,
+      redirectTo: DEFAULT_LOGIN_REDIRECT,
+    });
+
+    return { success: "Logged In Successfully" };
+  } catch (error) {
+    if (error instanceof AuthError) {
+      console.log("Error Type:- ", error.type)
+      switch (error.type) {
+        case "CredentialsSignin":
+          return { error: "Invalid Credentials!!" };
+
+        default:
+          return { error: "Something went wrong!!" };
+      }
+    }
+
+    throw error;
+  }
 
   return { success: `${name} has registered successfully` };
 };

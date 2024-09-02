@@ -1,5 +1,6 @@
 import prisma from '@/prisma'
 import LinkButton from './LinkButton'
+import { DefaultAvatarImage } from '@/app/(main)/user/[userId]/page'
 
 const Followings = async({userId}: {userId: any}) => {
 
@@ -10,7 +11,7 @@ const Followings = async({userId}: {userId: any}) => {
   })
 
   return (
-    <LinkButton imageUrl={followingUser?.image!} link={`/user/${followingUser?.id}`}>{followingUser?.name}</LinkButton>
+    <LinkButton imageUrl={followingUser?.image || DefaultAvatarImage} link={`/user/${followingUser?.id}`}>{followingUser?.name}</LinkButton>
   )
 }
 

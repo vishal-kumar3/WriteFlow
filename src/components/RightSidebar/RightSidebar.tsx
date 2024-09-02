@@ -16,10 +16,9 @@ const RightSidebar = async(props: props) => {
 
 
   return (
-    <div className='m-10 ml-0 space-y-5 sticky top-[100px] h-screen w-[30%]'>
+    <div className='pb-10 m-10 ml-0 space-y-5 sticky top-[100px] overflow-y-scroll h-screen w-[30%]'>
       <HomeDraftCard data={data!}/>
-
-      Trending Article
+      
     </div>
   )
 }

@@ -100,6 +100,7 @@ const page = async ({ params }: props) => {
           followerCnt={user?.followerCount!}
           followingCnt={user?.followingCount!}
           userId={user?.id!}
+          username={user?.name!}
           avatarImage={user?.image || DefaultAvatarImage}
         />
       </div>
@@ -112,7 +113,7 @@ const page = async ({ params }: props) => {
           location={user?.about?.location!}
           website={user?.about?.website!}
           career={user?.about?.career!}
-          tags={["Vishal", "Tag", "Rag"]}
+          tags={[]}
         />
         <div className=" mt-10">
           <TabSwitcher

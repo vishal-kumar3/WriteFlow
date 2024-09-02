@@ -30,7 +30,10 @@ import Placeholder from '@tiptap/extension-placeholder'
 import Blockquote from '@tiptap/extension-blockquote'
 import BulletList from '@tiptap/extension-bullet-list'
 import ListItem from '@tiptap/extension-list-item'
-import DeleteFlowButton from './DeleteFlowButton'
+import Editor from './NovelEditor/NovelEditor'
+import { defaultValue } from './NovelEditor/default-values'
+import { JSONContent } from 'novel'
+
 
 type EditorProps = {
   id: string
@@ -56,51 +59,51 @@ const CustomDocument = Document.extend({
   content: 'heading block*',
 })
 
-const RichEditor = ({ id, userId, title, description, content, coverImage, tags, thumbnail, updatedAt }: EditorProps) => {
-
+const RichEditor = ({ id, userId, title, description, content, thumbnail, updatedAt }: EditorProps) => {
+  const [value, setValue] = useState<JSONContent>(defaultValue);
   const [flowTitle, setFlowTitle] = useState(title || '')
   const [flowDescription, setFlowDescription] = useState(description || '')
   const [isSaved, setIsSaved] = useState(true)
 
-  const editor = useEditor({
-    extensions: [
-      CustomDocument,
-      Blockquote,
-      StarterKit.configure({
-        document: false,
-      }),
-      Placeholder.configure({
-        placeholder: ({ node }) => {
-          if (node.type.name === 'heading') {
-            return 'Enter Your Title Here!!!'
-          }
-          return 'Write Description Here!!!'
-        }
-      }),
-      Document,
-      Paragraph,
-      Text,
-      Dropcursor,
-      Image,
-      BulletList,
-      ListItem,
-      commands.configure({
-        suggestion,
-      }),
-    ],
-    content: content || "<h1>Heading<h1>",
-    editorProps: {
-      attributes: {
-        class: "prose-xl mx-auto px-5 pb-3 focus:outline-none rounded-b-xl border-x border-b min-h-[200px] border-input disabled:cursor-not-allowed disabled:opacity-50"
-      },
-      handleDrop: (view, event, slice, moved) => handleDrop({ view, event, slice, moved })
-    },
-    onUpdate({ editor }) {
-      setIsSaved(false)
-      debounce(editor.getHTML(), userId, updateContent)
-    },
-    immediatelyRender: false
-  })
+  // const editor = useEditor({
+  //   extensions: [
+  //     CustomDocument,
+  //     Blockquote,
+  //     StarterKit.configure({
+  //       document: false,
+  //     }),
+  //     Placeholder.configure({
+  //       placeholder: ({ node }) => {
+  //         if (node.type.name === 'heading') {
+  //           return 'Enter Your Title Here!!!'
+  //         }
+  //         return 'Write Description Here!!!'
+  //       }
+  //     }),
+  //     Document,
+  //     Paragraph,
+  //     Text,
+  //     Dropcursor,
+  //     Image,
+  //     BulletList,
+  //     ListItem,
+  //     commands.configure({
+  //       suggestion,
+  //     }),
+  //   ],
+  //   content: content || "<h1>Heading<h1>",
+  //   editorProps: {
+  //     attributes: {
+  //       class: "prose-xl mx-auto px-5 pb-3 focus:outline-none rounded-b-xl border-x border-b min-h-[200px] border-input disabled:cursor-not-allowed disabled:opacity-50"
+  //     },
+  //     handleDrop: (view, event, slice, moved) => handleDrop({ view, event, slice, moved })
+  //   },
+  //   onUpdate({ editor }) {
+  //     setIsSaved(false)
+  //     debounce(editor.getHTML(), userId, updateContent)
+  //   },
+  //   immediatelyRender: false
+  // })
 
   const debounce = useDebouncedCallback(async (update: string, userId: string, action: any) => {
     if (update === '' || !update) return
@@ -154,16 +157,17 @@ const RichEditor = ({ id, userId, title, description, content, coverImage, tags,
         className="bg-background text-center italic outline-none pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem] resize-none"
       />
 
-      <FloatingToolbar editor={editor} />
-      <EditorContent editor={editor} />
+      {/* <FloatingToolbar editor={editor} />
+      <EditorContent editor={editor} /> */}
 
-      <div className='absolute top-5 right-0 w-full flex justify-between items-center gap-5'>
+      <Editor initialValue={value} />
+
+      <div className='absolute top-5 right-[100px] w-full flex justify-between items-center gap-5'>
         <div className='bg-slate-100 dark:bg-background p-2 px-6 rounded-md hover:bg-slate-200'>
           Edit Mode
         </div>
         <div className='flex gap-4 items-center'>
           <Button className={cn(isSaved ? "text-green-500" : "text-red-500")} variant="ghost">{isSaved ? "Saved!" : "Saving..."}</Button>
-          <DeleteFlowButton flowId={id} userId={userId} />
           <DraftPublishSidebar title={title} userId={userId} flowId={id} thumbnail={thumbnail} />
         </div>
       </div>

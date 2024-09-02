@@ -32,3 +32,13 @@ export type UserWithFlowsAndTagsAndAbout = Prisma.UserGetPayload<{
     about: true
   }
 }> | null
+
+export type UserWithFollowers = Prisma.UserGetPayload<{
+  include: {
+    followers: {
+      select: {
+        followingId: true
+      }
+    }
+  }
+}> | null
