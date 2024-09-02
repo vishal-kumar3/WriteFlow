@@ -16,7 +16,7 @@ export type BlogWithUserAndComments = Prisma.BlogGetPayload<{
 export type BlogWithTags = Prisma.BlogGetPayload<{
   include: {
     tags: true;
-  };
+  },
 }> | null
 
 export type BlogWithUserAndTagsHome = Prisma.BlogGetPayload<{

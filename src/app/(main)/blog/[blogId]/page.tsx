@@ -1,21 +1,31 @@
+import dynamic from 'next/dynamic';
 import CoverImage from "@/components/UserProfile/CoverImage";
 import prisma from "@/prisma";
 import { DefaultCoverImage } from "../../user/[userId]/page";
-import { foramtDateTime } from "@/util/DateTime";
 import { auth } from "@/auth";
 import FlowButtons from "./_component/FlowButtons";
 import { isBookmarked, viewFlow } from "@/actions/flow.action";
-import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { ModeToggle } from "@/components/ThemeToggle/ThemeToggle";
-import FollowButtonServerWraper from "@/components/UserProfile/FollowButtonServerWraper";
-import AuthUserOnly from "@/util/AuthUserOnly";
-import HideForCurrentUser from "@/util/HideForCurrentUser";
 import { BlogWithUserAndComments } from "@/types/BlogType";
-import { User } from "@/types/UserType";
 import { ActionResponse } from "@/types/ActionResponse";
 import { Like } from "@/types/LikeType";
+import './_component/prosemirror.css'
+import { JSONContent } from 'novel';
+import { convertToJSONContent } from '@/util/convertToJSONContent';
+import Link from 'next/link';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import AvatarImage from '@/components/UserProfile/AvatarImage';
+import { foramtDateTime } from '@/util/DateTime';
+import AuthUserOnly from '@/util/AuthUserOnly';
+import HideForCurrentUser from '@/util/HideForCurrentUser';
+import FollowButton from '@/components/UserProfile/FollowButton';
+import { ModeToggle } from '@/components/ThemeToggle/ThemeToggle';
+import FollowButtonServerWraper from '@/components/UserProfile/FollowButtonServerWraper';
+
+// Dynamically import the client-side component
+const ShowBlog = dynamic(() => import('./_component/ShowBlog'), {
+  ssr: false
+});
 
 type props = {
   params: {
@@ -24,10 +34,10 @@ type props = {
 }
 
 const PublishedBlog = async ({ params }: props) => {
-  const session = await auth()
+  const session = await auth();
   const publishedId = params.blogId;
 
-  if(!session) return <div>You are not loggedIn</div>
+  if (!session) return <div>You are not loggedIn</div>;
 
   const likeWhereUniqueInput = {
     userId_blogId: {
@@ -38,9 +48,9 @@ const PublishedBlog = async ({ params }: props) => {
 
   const isAlreadyLiked: Like = await prisma.blogLike.findUnique({
     where: likeWhereUniqueInput
-  })
+  });
 
-  await viewFlow(publishedId)
+  await viewFlow(publishedId);
 
   const blog: BlogWithUserAndComments = await prisma.blog.findUnique({
     where: {
@@ -48,7 +58,6 @@ const PublishedBlog = async ({ params }: props) => {
       isPublished: true
     },
     include: {
-      //TODO: include user but not password thing!!!
       user: true,
       Comment: {
         include: {
@@ -56,21 +65,10 @@ const PublishedBlog = async ({ params }: props) => {
         }
       },
     }
-  })
+  });
 
-  if (!blog) return <div>Blog not found</div>
-
-  let currentUser: User = null;
-  if(session){
-    currentUser = await prisma.user.findUnique({
-      where: {
-        id: session.user.id!
-      }
-    })
-  }
-
-  const isAlreadyBookmarked : ActionResponse = await isBookmarked(publishedId)
-
+  if (!blog) return <div>Blog not found</div>;
+  const isAlreadyBookmarked: ActionResponse = await isBookmarked(publishedId);
 
   return (
     <div className="h-full relative max-w-[80%] mx-auto">
@@ -78,7 +76,7 @@ const PublishedBlog = async ({ params }: props) => {
         <div className="flex gap-5 items-center">
           <Link href={`/user/${blog.user.id}`}>
             <Avatar>
-              <AvatarImage src={blog.user.image!} alt="@shadcn" />
+              <AvatarImage src={blog.user.image} alt="@shadcn" />
               <AvatarFallback>{blog.user.username}</AvatarFallback>
             </Avatar>
           </Link>
@@ -103,13 +101,14 @@ const PublishedBlog = async ({ params }: props) => {
         />
         <p className="outline-none text-center py-5 pb-8 w-full focus:outline-none border-x text-5xl font-bold px-20 resize-none">{blog.title}</p>
         <p className="text-center italic outline-none pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem] resize-none">{blog.description}</p>
-        <div className="prose prose-lg border border-t-0 max-w-[100%] px-10 dark:text-white" dangerouslySetInnerHTML={{ __html: blog.content! }}>
+        {/* Use the dynamically imported Client Component */}
+        <div className="tiptap ProseMirror dark:prose-invert prose-headings:font-title font-default focus:outline-none prose prose-lg border border-t-0 max-w-[100%] px-10 dark:text-white" dangerouslySetInnerHTML={{ __html: blog.content! }}>
         </div>
       </div>
       <FlowButtons
         flowId={blog.id}
         userId={session?.user.id!}
-        currentUser={currentUser}
+        currentUser={blog.user}
         isCommentOff={blog.isCommentOff}
         likeData={{
           isAlreadyLiked: isAlreadyLiked ? true : false,
@@ -121,9 +120,8 @@ const PublishedBlog = async ({ params }: props) => {
       />
 
       <Separator />
-
     </div>
-  )
+  );
 }
 
-export default PublishedBlog
+export default PublishedBlog;
