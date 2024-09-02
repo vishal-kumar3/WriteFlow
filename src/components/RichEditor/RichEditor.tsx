@@ -30,7 +30,6 @@ import Placeholder from '@tiptap/extension-placeholder'
 import Blockquote from '@tiptap/extension-blockquote'
 import BulletList from '@tiptap/extension-bullet-list'
 import ListItem from '@tiptap/extension-list-item'
-import DeleteFlowButton from './DeleteFlowButton'
 
 type EditorProps = {
   id: string
@@ -56,7 +55,7 @@ const CustomDocument = Document.extend({
   content: 'heading block*',
 })
 
-const RichEditor = ({ id, userId, title, description, content, coverImage, tags, thumbnail, updatedAt }: EditorProps) => {
+const RichEditor = ({ id, userId, title, description, content, thumbnail, updatedAt }: EditorProps) => {
 
   const [flowTitle, setFlowTitle] = useState(title || '')
   const [flowDescription, setFlowDescription] = useState(description || '')

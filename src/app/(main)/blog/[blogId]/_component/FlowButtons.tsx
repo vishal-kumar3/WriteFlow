@@ -19,6 +19,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { ReportUserCard } from '@/components/Home/Cards/ReportUserCard';
 import { reportPostOptions } from '@/components/Home/reportOptions';
 import CopyButton from '@/util/CopyButton';
+import DeleteFlowButton from '@/components/RichEditor/DeleteFlowButton';
 
 type likeDataProps = {
   isAlreadyLiked: boolean,
@@ -117,6 +118,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
           </PopoverTrigger>
           <PopoverContent className="flex flex-col gap-1">
             <ReportUserCard reportOptions={reportPostOptions} type='post' reportedUserId={userId} reportedBlogId={flowId} />
+            <DeleteFlowButton flowId={flowId} userId={userId} modeClass='w-full' redirectMode={false} />
           </PopoverContent>
         </Popover>
       </div>

@@ -53,7 +53,7 @@ export const UserCard = async({ userData, createdAt, flowId }: UserCardProps) =>
           }
           {/* @ts-expect-error Async Server Component */}
           <CurrentUserOnly userId={userData.id}>
-            <DeleteFlowButton redirectMode={true} flowId={flowId} userId={userData.id} />
+            <DeleteFlowButton modeClass="w-full" redirectMode={true} flowId={flowId} userId={userData.id} />
           </CurrentUserOnly>
           <CopyButton copyLink={`/blog/${flowId}`}>Copy Link</CopyButton>
           <ReportUserCard reportedUserId={userData.id} reportedBlogId={flowId} reportOptions={reportUserOptions} type="post" />
