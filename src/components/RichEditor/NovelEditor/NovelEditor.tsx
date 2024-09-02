@@ -21,14 +21,17 @@ import { slashCommand, suggestionItems } from "./slash-command";
 import { handleImageDrop, handleImagePaste } from "novel/plugins";
 import { uploadFn } from "./image-upload";
 import { Separator } from "@/components/ui/separator";
+import { DebouncedState } from "use-debounce";
 
 const extensions = [...defaultExtensions, slashCommand];
 
 interface EditorProp {
   initialValue?: JSONContent;
-  onChange?: (value: JSONContent) => void;
+  debounce: DebouncedState<(update: string, userId: string, action: any) => Promise<string | number | undefined>>
+  setIsSaved: (val: boolean) => void
 }
-const Editor = ({ initialValue, onChange }: EditorProp) => {
+
+const Editor = ({ initialValue }: EditorProp) => {
   const [openNode, setOpenNode] = useState(false);
   const [openColor, setOpenColor] = useState(false);
   const [openLink, setOpenLink] = useState(false);
@@ -36,9 +39,8 @@ const Editor = ({ initialValue, onChange }: EditorProp) => {
   return (
     <EditorRoot>
       <EditorContent
-        className="border p-4 rounded-xl"
+        className="border border-t-0 p-4"
         {...(initialValue && { initialContent: initialValue })}
-        
         extensions={extensions}
         editorProps={{
           handleDOMEvents: {
@@ -51,9 +53,10 @@ const Editor = ({ initialValue, onChange }: EditorProp) => {
             class: `prose prose-lg dark:prose-invert prose-headings:font-title font-default focus:outline-none max-w-full`,
           },
         }}
-        // onUpdate={({ editor }) => {
-        //   onChange(editor.getJSON());
-        // }}
+        onUpdate={({ editor }) => {
+          // console.log(editor.getJSON());
+          console.log(editor.getHTML())
+        }}
         slotAfter={<ImageResizer />}
       >
         <EditorCommand className="z-50 h-auto max-h-[330px] overflow-y-auto rounded-md border border-muted bg-background px-1 py-2 shadow-md transition-all">

@@ -46,7 +46,6 @@ const DraftPage = async ({ params }: DraftPageProps) => {
       <RichEditor
         {...DraftFlowData}
       />
-      <Editor initialValue={<>Holla</>} />
       <div className="absolute top-5 right-0 gap-5">
         <DeleteFlowButton redirectMode={false} flowId={DraftFlowData.id} userId={DraftFlowData.userId} />
       </div>
