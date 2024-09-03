@@ -11,7 +11,7 @@ const Following = async({id}: props) => {
   const {error, data} = await getFollowing(id)
 
   return (
-    <div>
+    <div className='flex flex-col gap-4'>
       {
         data?.map(({following}, key) => (
           <SearchUserCard userData={following} key={key} />

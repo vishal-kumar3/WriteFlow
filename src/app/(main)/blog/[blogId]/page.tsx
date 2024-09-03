@@ -20,6 +20,7 @@ import HideForCurrentUser from '@/util/HideForCurrentUser';
 import FollowButton from '@/components/UserProfile/FollowButton';
 import { ModeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import FollowButtonServerWraper from '@/components/UserProfile/FollowButtonServerWraper';
+import Head from 'next/head';
 
 // Dynamically import the client-side component
 const ShowBlog = dynamic(() => import('./_component/ShowBlog'), {
@@ -70,56 +71,67 @@ const PublishedBlog = async ({ params }: props) => {
   const isAlreadyBookmarked: ActionResponse = await isBookmarked(publishedId);
 
   return (
-    <div className="h-full relative max-w-[80%] mx-auto">
-      <div className="sticky top-5 flex justify-between bg-gray-100 dark:bg-white/10 p-2 px-8 rounded-lg items-center">
-        <div className="flex gap-5 items-center">
-          <Link href={`/user/${blog.user.id}`}>
-            <Avatar>
-              <AvatarImage src={blog?.user?.image || DefaultAvatarImage} alt="@shadcn" />
-              <AvatarFallback>{blog.user.username}</AvatarFallback>
-            </Avatar>
-          </Link>
-          <Link href={`/user/${blog.user.id}`} className="font-bold text-xl">@{blog.user.username}</Link>
-          <p className="text-lg">{foramtDateTime(blog.updatedAt)}</p>
-        </div>
-        <div className="flex gap-5 items-center">
-          {/* @ts-expect-error Async Server Component */}
-          <AuthUserOnly>
+    <>
+      <Head>
+        <title>{blog.title}</title>
+        <meta property="og:title" content={blog.title} />
+        <meta property="og:description" content={blog.description!} />
+        <meta property="og:image" content={blog.thumbnail || blog.coverImage!} />
+        <meta property="og:url" content={`http://localhost:3000/blog/${blog.id}`} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Head>
+      <div className="h-full relative max-w-[80%] mx-auto">
+        <div className="sticky top-5 flex justify-between bg-gray-100 dark:bg-white/10 p-2 px-8 rounded-lg items-center">
+          <div className="flex gap-5 items-center">
+            <Link href={`/user/${blog.user.id}`}>
+              <Avatar>
+                <AvatarImage className='object-cover object-center' src={blog?.user?.image || DefaultAvatarImage} alt="@shadcn" />
+                <AvatarFallback>{blog.user.username}</AvatarFallback>
+              </Avatar>
+            </Link>
+            <Link href={`/user/${blog.user.id}`} className="font-bold text-xl">@{blog.user.username}</Link>
+            <p className="text-lg">{foramtDateTime(blog.updatedAt)}</p>
+          </div>
+          <div className="flex gap-5 items-center">
             {/* @ts-expect-error Async Server Component */}
-            <HideForCurrentUser userId={blog.user.id}>
-              <FollowButtonServerWraper username={blog.user.username} id={blog.user.id} />
-            </HideForCurrentUser>
-          </AuthUserOnly>
-          <ModeToggle />
+            <AuthUserOnly>
+              {/* @ts-expect-error Async Server Component */}
+              <HideForCurrentUser userId={blog.user.id}>
+                <FollowButtonServerWraper username={blog.user.username} id={blog.user.id} />
+              </HideForCurrentUser>
+            </AuthUserOnly>
+            <ModeToggle />
+          </div>
         </div>
-      </div>
-      <div className="my-10">
-        <CoverImage
-          coverImage={blog.coverImage || DefaultCoverImage}
-          disabled={false}
+        <div className="my-10">
+          <CoverImage
+            coverImage={blog.coverImage || DefaultCoverImage}
+            disabled={false}
+          />
+          <p className="outline-none text-center py-5 pb-8 w-full focus:outline-none border-x text-5xl font-bold px-20 resize-none">{blog.title}</p>
+          <p className="text-center italic outline-none pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem] resize-none">{blog.description}</p>
+          {/* Use the dynamically imported Client Component */}
+          <div className="tiptap ProseMirror dark:prose-invert prose-headings:font-title font-default focus:outline-none prose prose-lg border border-t-0 max-w-[100%] px-10 dark:text-white" dangerouslySetInnerHTML={{ __html: blog.content! }}>
+          </div>
+        </div>
+        <FlowButtons
+          flowId={blog.id}
+          userId={session?.user.id!}
+          currentUser={blog.user}
+          isCommentOff={blog.isCommentOff}
+          likeData={{
+            isAlreadyLiked: isAlreadyLiked ? true : false,
+            likesCnt: blog.likeCount
+          }}
+          comment={blog.Comment}
+          commentCnt={blog.noOfComments}
+          isBookmarked={isAlreadyBookmarked.data}
         />
-        <p className="outline-none text-center py-5 pb-8 w-full focus:outline-none border-x text-5xl font-bold px-20 resize-none">{blog.title}</p>
-        <p className="text-center italic outline-none pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem] resize-none">{blog.description}</p>
-        {/* Use the dynamically imported Client Component */}
-        <div className="tiptap ProseMirror dark:prose-invert prose-headings:font-title font-default focus:outline-none prose prose-lg border border-t-0 max-w-[100%] px-10 dark:text-white" dangerouslySetInnerHTML={{ __html: blog.content! }}>
-        </div>
-      </div>
-      <FlowButtons
-        flowId={blog.id}
-        userId={session?.user.id!}
-        currentUser={blog.user}
-        isCommentOff={blog.isCommentOff}
-        likeData={{
-          isAlreadyLiked: isAlreadyLiked ? true : false,
-          likesCnt: blog.likeCount
-        }}
-        comment={blog.Comment}
-        commentCnt={blog.noOfComments}
-        isBookmarked={isAlreadyBookmarked.data}
-      />
 
-      <Separator />
-    </div>
+        <Separator />
+      </div>
+    </>
   );
 }
 

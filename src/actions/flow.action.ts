@@ -10,17 +10,15 @@ export const deleteFlow = async (flowId: string) => {
   const session = await auth()
   if (!session) return { error: 'You are not logged in' }
 
-  // const deletedFlow = await prisma.blog.delete({
-  //   where: {
-  //     id: flowId,
-  //     userId: session.user.id
-  //   }
-  // }).catch((e) => {
-  //   console.log("Error while deleting flow:- ",e)
-  //   return null
-  // })
-
-  const deletedFlow = true;
+  const deletedFlow = await prisma.blog.delete({
+    where: {
+      id: flowId,
+      userId: session.user.id
+    }
+  }).catch((e) => {
+    console.log("Error while deleting flow:- ",e)
+    return null
+  })
 
   if (!deletedFlow) return { error: 'Unexpected error while deleting flow!!!' }
   revalidatePath('/')
@@ -169,6 +167,11 @@ export const getFlowForHome = async (filter: string = '') => {
         }
       }
     },
+    orderBy: {
+      createdAt: 'desc',
+      // TODO: Implement this all around
+      // publishedAt: 'desc',
+    },
   });
 
   if (!flows) return { error: 'No flows found' };
@@ -188,6 +191,9 @@ export const getDraftFlow = async (userId: string | undefined) => {
       userId: userId,
       isPublished: false,
     },
+    orderBy: {
+      updatedAt: 'desc',
+    }
   });
 
   if (!drafts) return { error: 'No drafts found' };
@@ -370,6 +376,7 @@ export const publishFlow = async (
       id: flowId,
       userId: session.user.id,
       isPublished: false,
+      publishedAt: new Date(Date.now()),
     },
     data: {
       isPublished: true,
@@ -672,6 +679,9 @@ export const getComments = async (flowId: string) => {
     },
     include: {
       user: true,
+    },
+    orderBy: {
+      createdAt: 'asc',
     }
   });
 

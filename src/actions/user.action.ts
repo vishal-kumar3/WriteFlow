@@ -185,6 +185,9 @@ export const getFollowers = async(id: string) => {
     },
     include: {
       follower: true
+    },
+    orderBy: {
+      createdAt: 'desc'
     }
   })
 
@@ -199,6 +202,9 @@ export const getFollowing = async(id: string) => {
     },
     include: {
       following: true
+    },
+    orderBy: {
+      createdAt: 'desc'
     }
   })
 
@@ -206,6 +212,7 @@ export const getFollowing = async(id: string) => {
   return { data: following }
 }
 
+// TODO: pagination
 export const getTopUsers = async(filter: string = '') => {
 
   const users: User[] = await prisma.user.findMany({

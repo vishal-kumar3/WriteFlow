@@ -1,5 +1,6 @@
 "use client"
 import { toggleBookmark } from '@/actions/flow.action'
+import { BookmarkFilledIcon } from '@radix-ui/react-icons'
 import { Bookmark, BookmarkCheck } from 'lucide-react'
 import React, { useOptimistic } from 'react'
 import { toast } from 'sonner'
@@ -34,7 +35,7 @@ const ToggleBookmark = ({isBookmarked, flowId}: props) => {
       }}
     >
       {
-        optimisticIsBookmark ? <BookmarkCheck /> : <Bookmark />
+        optimisticIsBookmark ? <BookmarkFilledIcon className='text-blue-300 size-[26px]' /> : <Bookmark />
       }
     </button>
   )
