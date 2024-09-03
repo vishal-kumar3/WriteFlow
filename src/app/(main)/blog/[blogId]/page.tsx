@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import CoverImage from "@/components/UserProfile/CoverImage";
 import prisma from "@/prisma";
-import { DefaultCoverImage } from "../../user/[userId]/page";
+import { DefaultAvatarImage, DefaultCoverImage } from "../../user/[userId]/page";
 import { auth } from "@/auth";
 import FlowButtons from "./_component/FlowButtons";
 import { isBookmarked, viewFlow } from "@/actions/flow.action";
@@ -13,8 +13,7 @@ import './_component/prosemirror.css'
 import { JSONContent } from 'novel';
 import { convertToJSONContent } from '@/util/convertToJSONContent';
 import Link from 'next/link';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import AvatarImage from '@/components/UserProfile/AvatarImage';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { foramtDateTime } from '@/util/DateTime';
 import AuthUserOnly from '@/util/AuthUserOnly';
 import HideForCurrentUser from '@/util/HideForCurrentUser';
@@ -76,7 +75,7 @@ const PublishedBlog = async ({ params }: props) => {
         <div className="flex gap-5 items-center">
           <Link href={`/user/${blog.user.id}`}>
             <Avatar>
-              <AvatarImage src={blog.user.image} alt="@shadcn" />
+              <AvatarImage src={blog?.user?.image || DefaultAvatarImage} alt="@shadcn" />
               <AvatarFallback>{blog.user.username}</AvatarFallback>
             </Avatar>
           </Link>
