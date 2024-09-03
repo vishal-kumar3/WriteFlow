@@ -51,6 +51,7 @@
     "@tiptap/react": "^2.5.8",
     "@tiptap/starter-kit": "^2.5.8",
     "@uploadcare/react-uploader": "^0.6.1",
+    "@vercel/speed-insights": "^1.0.12",
     "ai": "^3.2.37",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
