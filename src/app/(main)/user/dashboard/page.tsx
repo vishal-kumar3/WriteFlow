@@ -43,9 +43,6 @@ const InfoCard = async({userId}: {userId: string | undefined}) => {
   )
 }
 
-const RecentArticleCard = () => {
-
-}
 
 const RecentArticle = async ({ userId }: { userId: string | undefined }) => {
   if (!userId) return null
@@ -111,7 +108,7 @@ const RecentArticle = async ({ userId }: { userId: string | undefined }) => {
   )
 }
 
-export const Analytics: { title: string, action: (userId: string) => Promise<number> }[] = [
+const Analytics: { title: string, action: (userId: string) => Promise<number> }[] = [
   {
     title: "7-day page view",
     action: getSevenDaysViews,

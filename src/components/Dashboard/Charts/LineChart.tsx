@@ -17,8 +17,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { getPerDayViews } from "@/actions/dashboard.action"
 import Chart from "./Chart"
-import { AnalyticsData } from "@/app/(main)/user/dashboard/analytics/page"
 import { useState } from "react"
+import { AnalyticsData } from "@/app/(main)/user/dashboard/analytics/consts/consts"
 
 export const description = "A linear line chart"
 
