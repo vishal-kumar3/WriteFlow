@@ -2,7 +2,7 @@
 
 import { auth } from '@/auth';
 import prisma from '@/prisma';
-import { BlogWithUserAndTagsHome } from '@/types/BlogType';
+import { Blog, BlogWithUserAndTagsHome } from '@/types/BlogType';
 import { revalidatePath } from 'next/cache';
 import { JSONContent } from 'novel';
 
@@ -75,7 +75,7 @@ export const createFlow = async (initialState: any, formData: FormData) => {
 export const getFlowWithId = async (id: string) => {
   if (!id) return { error: 'Flow id is required' };
 
-  const flow = await prisma.blog.findUnique({
+  const flow: Blog = await prisma.blog.findUnique({
     where: {
       id: id,
     },
@@ -183,7 +183,7 @@ export const getDraftFlow = async (userId: string | undefined) => {
   if (session.user.id !== userId)
     return { error: "Nope you can't do this here!!!" };
 
-  const drafts = await prisma.blog.findMany({
+  const drafts: Blog[] = await prisma.blog.findMany({
     where: {
       userId: userId,
       isPublished: false,

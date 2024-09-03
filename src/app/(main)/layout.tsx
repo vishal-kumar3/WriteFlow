@@ -1,5 +1,4 @@
 import React from "react";
-import Sidebar from "@/components/Sidebar/Sidebar";
 import AuthUserOnly from "@/util/AuthUserOnly";
 import ToggleSidebar from "@/components/Sidebar/ToggleSidebar";
 
