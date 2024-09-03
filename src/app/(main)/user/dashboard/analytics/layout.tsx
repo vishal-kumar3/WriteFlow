@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Dashboard',
-  description: 'Dashboard',
+  title: 'Analytics',
+  description: 'Dashboard Analytics',
 };
 
 export default function Layout({
