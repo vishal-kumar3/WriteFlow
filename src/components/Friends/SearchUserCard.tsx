@@ -29,7 +29,7 @@ const SearchUserCard = ({userData}: props) => {
       <CardHeader className="flex flex-row gap-5 items-center">
         <Link href={`/user/${userData?.id}`}>
           <Avatar className="size-[70px]">
-            <AvatarImage src={userData?.image || DefaultAvatarImage} alt="@shadcn" />
+            <AvatarImage className="object-cover object-center" src={userData?.image || DefaultAvatarImage} alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
         </Link>

@@ -1,6 +1,6 @@
 "use client"
 import { likeFlow, toggleBookmark } from '@/actions/flow.action'
-import { Bookmark, BookmarkCheck, EllipsisVertical, Heart, HeartOff, ShareIcon } from 'lucide-react'
+import { Bookmark, BookmarkCheck, Copy, EllipsisVertical, Heart, ShareIcon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useActionState, useOptimistic, useTransition } from "react";
 import { CommentSection } from './CommentSection'
@@ -20,6 +20,12 @@ import { ReportUserCard } from '@/components/Home/Cards/ReportUserCard';
 import { reportPostOptions } from '@/components/Home/reportOptions';
 import CopyButton from '@/util/CopyButton';
 import DeleteFlowButton from '@/components/RichEditor/DeleteFlowButton';
+import AuthUserOnly from '@/util/AuthUserOnly';
+import HideForCurrentUser from '@/util/HideForCurrentUser';
+import { BookmarkFilledIcon, HeartFilledIcon } from '@radix-ui/react-icons';
+
+import { FaWhatsapp } from 'react-icons/fa6'
+import Link from 'next/link';
 
 type likeDataProps = {
   isAlreadyLiked: boolean,
@@ -38,6 +44,10 @@ type props = {
 }
 
 const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, commentCnt, comment, currentUser }: props) => {
+  const text = 'Check out this blog'
+  const shareUrl = 'http://localhost:3000' + `/blog/${flowId}`
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const message = `${text}\n\n${shareUrl}`
 
   const [optimisticLikeData, addOptimisticLikeData] = useOptimistic(
     likeData,
@@ -71,7 +81,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
           }}
         >
           {
-            optimisticLikeData.isAlreadyLiked ? <HeartOff /> : <Heart />
+            optimisticLikeData.isAlreadyLiked ? <HeartFilledIcon className='size-6 text-red-500' /> : <Heart />
           }
         </button>
         <div>{optimisticLikeData.likesCnt}</div>
@@ -96,7 +106,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
         }}
       >
         {
-          optimisticIsBookmark ? <BookmarkCheck /> : <Bookmark />
+          optimisticIsBookmark ? <BookmarkFilledIcon className='text-blue-300 size-[26px]' /> : <Bookmark />
         }
       </button>
       <HoverCard openDelay={0}>
@@ -104,8 +114,14 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
           <ShareIcon className='hover:cursor-pointer' />
         </HoverCardTrigger>
         <HoverCardContent className='flex w-fit gap-2 items-center'>
-          <CopyButton copyLink={`/blog/${flowId}`} >S</CopyButton>
-          <Button variant={'ghost'} >W</Button>
+          <CopyButton copyLink={`/blog/${flowId}`} ><Copy /></CopyButton>
+          <Button variant={'ghost'} >
+            <Link href={isMobile ?
+              `whatsapp://send?text=${encodeURIComponent(message)}`
+              : `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`} target={'_blank'}>
+              <FaWhatsapp className='size-[26px]' />
+            </Link>
+          </Button>
           <Button variant={'ghost'} >I</Button>
           <Button variant={'ghost'} >X</Button>
         </HoverCardContent>
@@ -118,7 +134,11 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
           </PopoverTrigger>
           <PopoverContent className="flex flex-col gap-1">
             <ReportUserCard reportOptions={reportPostOptions} type='post' reportedUserId={userId} reportedBlogId={flowId} />
-            <DeleteFlowButton flowId={flowId} userId={userId} modeClass='w-full' redirectMode={false} />
+            {
+              currentUser?.id === userId && (
+                <DeleteFlowButton flowId={flowId} userId={userId} modeClass='w-full' redirectMode={false} />
+              )
+            }
           </PopoverContent>
         </Popover>
       </div>

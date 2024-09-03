@@ -3,19 +3,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui
 import { Button } from '../ui/button'
 import { formatDateAgo } from '@/util/DateTime'
 import Link from 'next/link'
-import { Dot, DotIcon } from 'lucide-react'
-import { DotFilledIcon, DotsHorizontalIcon } from '@radix-ui/react-icons'
+import { Blog } from '@/types/BlogType'
 
 type props = {}
 
-type HomeDraftDataProps = {
-  title: string
-  updatedAt: Date
-  id: string
-}
-
 export type HomeDraftProps = {
-  data: HomeDraftDataProps[]
+  data: Blog[]
 }
 
 const HomeDraftCard = ({ data }: HomeDraftProps) => {
@@ -24,14 +17,14 @@ const HomeDraftCard = ({ data }: HomeDraftProps) => {
       <CardHeader className='flex flex-row mb-2 justify-between items-center'>
         <CardTitle>Drafts ({data.length})</CardTitle>
         {/* //TODO: See all will take to draft page in profile */}
-        <Button variant="outline" className='rounded-3xl'>See all</Button>
+        {/* <Button variant="outline" className='rounded-3xl'>See all</Button> */}
       </CardHeader>
       {
         data.map((draft, index) => (
-          <Link key={index} href={`/blog/draft/${draft.id}`}>
+          <Link key={index} href={`/blog/draft/${draft?.id}`}>
             <CardContent >
-              <CardTitle className='line-clamp-1 text-lg'>{draft.title}</CardTitle>
-              <CardDescription>Last edited {formatDateAgo(draft.updatedAt)}</CardDescription>
+              <CardTitle className='line-clamp-1 text-lg'>{draft?.title}</CardTitle>
+              <CardDescription>Last edited {formatDateAgo(draft?.updatedAt!)}</CardDescription>
             </CardContent>
           </Link>
         ))

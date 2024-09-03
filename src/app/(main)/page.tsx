@@ -8,21 +8,17 @@ import { getFlowForHome } from "@/actions/flow.action";
 import { BlogWithUserAndTagsHome } from "@/types/BlogType";
 
 
-type HomePageProps = {
+export type HomePageProps = {
   searchParams: { search?: string }
 }
 
 export type FlowForHome = BlogWithUserAndTagsHome[]
 
-type getFlowHomeProps = {
-  error?: string | null
-  data?: FlowForHome
-}
+
 
 const HomePage = async ({ searchParams }: HomePageProps) => {
 
-  const { error, data } : getFlowHomeProps = await getFlowForHome(searchParams.search || '');
-  if (error) return <div>{error}</div>
+  console.log(searchParams)
 
   return (
     <div className="relative w-full">
@@ -40,7 +36,7 @@ const HomePage = async ({ searchParams }: HomePageProps) => {
       </form>
 
       <div className="flex justify-center">
-        <HomeFlows data={data!} />
+        <HomeFlows searchParams={searchParams} />
         {/* @ts-expect-error Async Server Component */}
         <AuthUserOnly>
           {/* @ts-expect-error Async Server Component */}

@@ -2,14 +2,22 @@ import React from 'react'
 import HomeFlowCard from './HomeFlowCard'
 import { auth } from '@/auth'
 import prisma from '@/prisma'
-import { FlowForHome } from '@/app/(main)/page'
+import { FlowForHome, HomePageProps } from '@/app/(main)/page'
 import { UserWithBookmarkId } from '@/types/UserType'
+import { getFlowForHome } from '@/actions/flow.action'
 
+type getFlowHomeProps = {
+  error?: string | null
+  data?: FlowForHome
+}
 
-const HomeFlows = async ({ data }: { data: FlowForHome}) => {
+const HomeFlows = async ({ searchParams }: HomePageProps) => {
 
   const session = await auth()
   let userBookmarks: {id:string}[] = []
+
+  const { error, data }: getFlowHomeProps = await getFlowForHome(searchParams.search || '');
+  if (error) return <div>{error}</div>
 
   if(session){
     const user: UserWithBookmarkId = await prisma.user.findUnique({
@@ -32,7 +40,7 @@ const HomeFlows = async ({ data }: { data: FlowForHome}) => {
   return (
     <div className="md:w-[70%]">
       {
-        data.map((flow, key) => (
+        data?.map((flow, key) => (
           <HomeFlowCard key={key} userBookmark={userBookmarks} flow={flow} />
         ))
       }

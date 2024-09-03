@@ -130,11 +130,14 @@ export default RichEditor
 
 export const FlowPublishButton = ({ flowId, userId, tags, isCommentOff, slug }: FlowPublishButtonProps) => {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
   return (
     <Button
-      className=''
       type='submit'
+      className='disabled:cursor-wait opacity-90'
+      disabled={isLoading}
       onClick={async (e) => {
+        setIsLoading(true)
         e.preventDefault()
         const { error, success, data } = await publishFlow(flowId, userId, tags, isCommentOff, slug)
         if (error) toast.error(error)
@@ -142,9 +145,10 @@ export const FlowPublishButton = ({ flowId, userId, tags, isCommentOff, slug }: 
           toast.success(success)
           router.replace(`/blog/${data}`)
         }
+        setIsLoading(false)
       }}
     >
-      Publish
+      {isLoading ? "Publishing..." : "Publish Flow"}
     </Button>
   )
 }

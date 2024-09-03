@@ -8,6 +8,9 @@ export const getAllTags = async () => {
     select: {
       tag: true,
       postsCount: true,
+    },
+    orderBy: {
+      postsCount: 'desc'
     }
   })
 

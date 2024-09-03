@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -23,8 +24,9 @@ import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page"
 import { CommentButtons } from "./CommentButtons"
 import { CommentWithUser } from "@/types/CommentType"
 import { User } from "@/types/UserType"
-import { useOptimistic } from "react"
+import { useOptimistic, useState } from "react"
 import { toast } from "sonner"
+import LoadingCircle from "@/components/ui/icons/loading-circle"
 
 type CommentProps = {
   disabled?: boolean
@@ -44,16 +46,30 @@ export const Comment = ({
   addOptimisticComment,
   auth,
 }: CommentProps) => {
+  const [isCommentSending, setIsCommentSending] = useState(false)
+
   return (
     <div className="flex gap-2 items-center">
       <Avatar>
-        <AvatarImage src={currentUser?.image || DefaultAvatarImage} alt={currentUser?.username} />
+        <AvatarImage className="object-cover object-center" src={currentUser?.image || DefaultAvatarImage} alt={currentUser?.username} />
         <AvatarFallback>{currentUser?.username}</AvatarFallback>
       </Avatar>
-      <form action={async (formData: FormData) => {
-        const {error, success} = await commentFlow(formData)
-        if(error) return toast.error(error)
+      <form onSubmit={async (e) => {
+        e.preventDefault(); // Prevent default form submission
+        setIsCommentSending(true);
 
+        const form = e.target as HTMLFormElement; // Type assertion
+        const formData = new FormData(form);
+        const { error, success } = await commentFlow(formData);
+
+        if (error) {
+          toast.error(error);
+        } else if (success) {
+          toast.success(success);
+          form.reset(); // Reset form after successful submission
+        }
+
+        setIsCommentSending(false);
       }} className="w-full">
         <div className="flex gap-0">
           <input type="text" className="hidden" readOnly id="flowId" name="flowId" defaultValue={flowId} />
@@ -65,12 +81,18 @@ export const Comment = ({
               placeholder="Enter your comment here..."
               className="disabled:text-lg disabled:border-none disabled:cursor-auto"
               readOnly={disabled || false}
-              disabled={disabled || false}
+              disabled={disabled || isCommentSending || false}
               required
             />
           </div>
           {
-            !disabled && <Button variant="ghost" type="submit"><Send /></Button>
+            !disabled &&
+              <Button  variant="ghost" type="submit">
+
+                {
+                  isCommentSending ? <LoadingCircle /> : <Send className="w-6" />
+                }
+              </Button>
 
           }
         </div>

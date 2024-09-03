@@ -9,15 +9,14 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 
 export const login = async (data: z.infer<typeof loginFormSchema>) => {
-  console.log("Holla")
   const validatedFields = await loginFormSchema.safeParseAsync(data);
 
   if (!validatedFields.success) {
     return { error: "Invalid Fields" };
   }
 
-  const { email, password } = validatedFields.data;
-
+  let { email, password } = validatedFields.data;
+  email = email.toLowerCase();
   try {
     await signIn("credentials", {
       email,
@@ -49,8 +48,9 @@ export const register = async (data: z.infer<typeof registerFormSchema>) => {
     return { error: "Invalid Fields" };
   }
 
-  const { email, password, name, username } = data;
-
+  let { email, password, name, username } = data;
+  email = email.toLowerCase();
+  username = username.toLowerCase();
   const userExists = await prisma.user.findUnique({
     where: {
       email,

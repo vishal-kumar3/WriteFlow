@@ -19,17 +19,6 @@ const DraftPage = async ({ params }: DraftPageProps) => {
   const session = await auth()
   if (!session) return <div>User not logged in</div>
 
-  // let DraftFlowData: BlogWithTags = await prisma.blog.findUnique({
-  //   where: {
-  //     userId: session.user.id,
-  //     id: draftId,
-  //     isPublished: false,
-  //   },
-  //   include: {
-  //     tags: true
-  //   }
-  // })
-
   const fetchFlowData = async (flowId: string) => {
     const data = await prisma.blog.findUnique({
       where: {

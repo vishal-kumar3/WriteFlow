@@ -86,6 +86,7 @@ model Blog {
   content      String?
   jsonContent  Json?
   isPublished  Boolean    @default(false)
+  publishedAt  DateTime?
   thumbnail    String?
   coverImage   String?
   isCommentOff Boolean    @default(false)

@@ -1,5 +1,6 @@
 "use client"
 import { alreadyLikedComment, deleteComment, likeComment } from '@/actions/flow.action'
+import LoadingCircle from '@/components/ui/icons/loading-circle'
 import { HeartFilledIcon } from '@radix-ui/react-icons'
 import { Heart, Trash } from 'lucide-react'
 import React, { useEffect, useOptimistic, useState, useTransition } from 'react'
@@ -15,6 +16,8 @@ export type CommentButtonsProps = {
 export const CommentButtons = ({ commentId, flowId, likeCount, auth }: CommentButtonsProps) => {
   const [alreadyLiked, setAlreadyLiked] = useState(false)
   const [isPending, startTransition] = useTransition();
+
+  const [deleting, setDeleting] = useState(false)
 
   const [alreadyLikedOptimistic, setAlreadyLikedOptimistic] = useOptimistic(
     alreadyLiked,
@@ -70,11 +73,19 @@ export const CommentButtons = ({ commentId, flowId, likeCount, auth }: CommentBu
             type="button"
             onClick={async () => {
               // console.log(commentId)
+              setDeleting(true)
               const { error, success } = await deleteComment(commentId, flowId)
-              if (error) return toast.error(error)
-              else return toast.success(success)
+              if (error) {
+                toast.error(error)
+                setDeleting(false)
+              }
+              else toast.success(success)
             }}
-          ><Trash className="w-4" /></button>
+          >
+            {
+              !deleting ? <Trash className="w-4" /> : <LoadingCircle />
+            }
+          </button>
         )
       }
 
