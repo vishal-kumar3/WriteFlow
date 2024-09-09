@@ -1,22 +1,25 @@
+"use client"
 import { createImageUpload } from "novel/plugins";
 import { toast } from "sonner";
+import { uploadFile } from '@uploadcare/upload-client'
 
 const onUpload = (file: File) => {
-  const promise = fetch("/api/upload", {
-    method: "POST",
-    headers: {
-      "content-type": file?.type || "application/octet-stream",
-      "x-vercel-filename": file?.name || "image.png",
-    },
-    body: file,
-  });
-
+  const promise = uploadFile(file, {
+    publicKey: '3fa57431f8c491457434',
+    store: 'auto',
+    metadata: {
+      subsystem: 'uploader',
+      pet: 'cat'
+    }
+  })
+  console.log("Promise ", promise)
   return new Promise((resolve) => {
     toast.promise(
       promise.then(async (res) => {
         // Successfully uploaded image
-        if (res.status === 200) {
-          const { url } = (await res.json()) as any;
+        if (res.cdnUrl) {
+          console.log("res ",res)
+          const url = res.cdnUrl;
           // preload the image
           let image = new Image();
           image.src = url;
@@ -24,7 +27,7 @@ const onUpload = (file: File) => {
             resolve(url);
           };
           // No blob store configured
-        } else if (res.status === 401) {
+        } else if (!res.cdnUrl) {
           resolve(file);
           throw new Error(
             "`BLOB_READ_WRITE_TOKEN` environment variable not found, reading image locally instead.",

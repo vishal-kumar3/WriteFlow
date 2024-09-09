@@ -46,36 +46,29 @@ const CustomDocument = Document.extend({
 })
 
 const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: EditorProps) => {
-  // console.log('jsonContent', jsonContent)
   const [flowTitle, setFlowTitle] = useState(title || '')
   const [flowDescription, setFlowDescription] = useState(description || '')
   const [isSaved, setIsSaved] = useState(true)
 
-  const debounce = useDebouncedCallback(async (updateJson: JSONContent | string, userId: string, action: any, content?: string) => {
-    if (!updateJson) return;
-    if (typeof updateJson !== 'string' && typeof updateJson !== 'object') {
-      return toast.error('Invalid updateJson content');
-    }
-    console.log('debounce', updateJson)
+  const debounce = useDebouncedCallback(async (userId: string, action: any, content?: string, updateJson?: JSONContent | string) => {
     const { error, success } = await action(id, userId, content, updateJson);
 
     if (error) return toast.error(error);
     else if (success) {
       setIsSaved(true);
-      // return toast.success(success)
     }
   }, 1000);
 
   const handleTitle = (e: any) => {
     setIsSaved(false)
     setFlowTitle(e.target.value)
-    debounce(e.target.value, userId, updateTitle)
+    debounce(userId, updateTitle, e.target.value)
   }
 
   const handleDescription = (e: any) => {
     setIsSaved(false)
     setFlowDescription(e.target.value)
-    debounce(e.target.value, userId, updateDescription)
+    debounce(userId, updateDescription, e.target.value)
   }
 
   // const addImage = () => {
@@ -99,10 +92,12 @@ const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: 
       <textarea
         className='bg-background outline-none text-center py-5 pb-8 w-full focus:outline-none border-x text-6xl font-bold px-20 resize-none'
         onChange={handleTitle}
-        value={flowTitle || 'Enter Your Title Here!!!'}
+        value={flowTitle || ''}
+        placeholder='Enter the title here!!!'
       />
       <textarea
-        value={flowDescription || 'Write Description Here!!!'}
+        value={flowDescription || ''}
+        placeholder='Enter the description here!!!'
         onChange={handleDescription}
         className="bg-background text-center italic outline-none pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem] resize-none"
       />

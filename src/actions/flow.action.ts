@@ -61,7 +61,6 @@ export const createFlow = async (initialState: any, formData: FormData) => {
   if (!createdFlow) {
     return { error: 'Unexpected error while creating flow!!!' };
   } else {
-    console.log(createdFlow)
     // redirect(`/blog/draft/${createdFlow.id}`);
     return {
       success: `${createdFlow.title} is created!!!`,
@@ -172,6 +171,9 @@ export const getFlowForHome = async (filter: string = '') => {
       // TODO: Implement this all around
       // publishedAt: 'desc',
     },
+    cacheStrategy: {
+      ttl: 60,
+    }
   });
 
   if (!flows) return { error: 'No flows found' };
@@ -273,9 +275,6 @@ export const updateContent = async (
   if (session.user.id !== userId)
     return { error: "Nope you can't do this here!!!" };
 
-  // Log the 'content' array inside 'jsonContent' with full detail
-  console.log('jsonContent content:', JSON.stringify(jsonContent));
-
   const updatedFlow = await prisma.blog.update({
     where: {
       id: flowId,
@@ -291,7 +290,6 @@ export const updateContent = async (
   if (!updatedFlow) {
     return { error: 'Unexpected error while updating flow content!!!' };
   } else {
-    console.log('Updated flow jsonContent:', JSON.stringify(updatedFlow.jsonContent, null, 2));
     return { success: 'Flow content updated!!!' };
   }
 };
@@ -299,7 +297,7 @@ export const updateContent = async (
 export const updateTitle = async (
   flowId: string,
   userId: string,
-  title: string
+  title: string,
 ) => {
   if (title === '') return;
   title = title.replace(/\s{2,}/g, ' ');
@@ -376,7 +374,6 @@ export const publishFlow = async (
       id: flowId,
       userId: session.user.id,
       isPublished: false,
-      publishedAt: new Date(Date.now()),
     },
     data: {
       isPublished: true,

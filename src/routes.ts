@@ -1,6 +1,6 @@
 /**
  * An array of routes that are public
- * @type {string[]} 
+ * @type {string[]}
  */
 export const publicRoutes = [
   "/",
@@ -13,6 +13,8 @@ export const publicRoutes = [
 export const authRoutes = [
   "/auth/login",
   "/auth/register",
+  "/auth/error",
+  "/auth"
 ]
 
 /**
