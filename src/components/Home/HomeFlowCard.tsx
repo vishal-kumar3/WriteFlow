@@ -13,6 +13,7 @@ import Link from "next/link";
 import ToggleBookmark from "./ToggleBookmark";
 import { BlogWithUserAndTagsHome } from "@/types/BlogType";
 import { UserCard } from "./Cards/UserCard";
+import { Dot } from "lucide-react";
 
 
 type HomeFlowCardProps = {
@@ -63,11 +64,8 @@ const HomeFlowCard = ({ flow, userBookmark }: HomeFlowCardProps) => {
             </div>
           </CardContent>
         </div>
-        <CardDescription className="px-2">
-          ye vo sb Discussed and Liked this
-        </CardDescription>
-        <CardFooter className="flex px-2 justify-between items-center">
-          <div>Discuss . {flow.likeCount} Likes . {flow.noOfViews} reads</div>
+        <CardFooter className="flex pt-2 px-2 justify-between items-center">
+          <div className="flex gap-2">{flow.noOfComments} Discuss <Dot /> {flow.likeCount} Likes <Dot /> {flow.noOfViews} Reads</div>
           <div className="flex items-center">
             {
               flow.tags.map((tag: { tag: string }, key: number) => (

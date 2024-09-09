@@ -48,7 +48,7 @@ export const UserCard = async({ userData, createdAt, flowId }: UserCardProps) =>
         <PopoverContent className="flex flex-col gap-1">
           {
             session?.user?.id !== userData.id && (
-              <FollowButtonServerWraper id={userData.id} username={userData.username} />
+              <FollowButtonServerWraper id={userData.id} username={userData.username!} />
             )
           }
           {/* @ts-expect-error Async Server Component */}

@@ -21,7 +21,6 @@ const Page = async () => {
   const userId = session.user.id;
 
   const data = await getPerDayViews(session.user.id!, 7)
-  console.log(data.success)
 
   return (
     <DashboardHeader title='Analytics' description='Summary of your publication analytics'>

@@ -28,7 +28,7 @@ const extensions = [...defaultExtensions, slashCommand];
 
 interface EditorProp {
   initialValue?: JSONContent;
-  debounce: DebouncedState<(update: JSONContent, userId: string, action: any, content?: string) => Promise<string | number | undefined>>
+  debounce: DebouncedState<(userId: string, action: any, content?: string, update?: JSONContent) => Promise<string | number | undefined>>
   setIsSaved: (val: boolean) => void
   userId: string
 }
@@ -61,8 +61,7 @@ const Editor = ({ initialValue, debounce, setIsSaved, userId }: EditorProp) => {
           const content = editor.getHTML();
           setIsSaved(false);
           const plainJsonContent = JSON.parse(JSON.stringify(jsonContent));
-          console.log("This is from client side:- ",plainJsonContent)
-          debounce(plainJsonContent, userId, updateContent, content);
+          debounce(userId, updateContent, content, plainJsonContent);
         }}
         slotAfter={<ImageResizer />}
       >

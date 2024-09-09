@@ -4,6 +4,7 @@ import prisma from "./prisma"
 import {PrismaAdapter} from "@auth/prisma-adapter"
 import { getUserById } from "./data/user"
 import { Role } from "@prisma/client"
+import prismaExtended from "../prisma/extension/usernameExtension"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -20,18 +21,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
 
   callbacks: {
-    // async signIn({user}){
-    //   console.log(user.id)
-    //   const userExists = await getUserById(user.id!)
-
-    //   if(!userExists){
-    //     return false
-    //   }
-      
-
-    //   return true
-    // },
-
     async session({session, token}){
       if(token.sub && session.user){
         session.user.id = token.sub
@@ -51,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return { role:user.role, ...token }
     }
   },
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prismaExtended),
   session:{
     strategy: "jwt",
   },

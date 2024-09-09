@@ -13,7 +13,5 @@ export const getAllTags = async () => {
       postsCount: 'desc'
     }
   })
-
-  console.log(tags)
   return tags
 }

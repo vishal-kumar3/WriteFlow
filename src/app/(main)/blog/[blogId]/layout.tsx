@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: { blogId: string } }): Promise<Metadata> {
   const blogId = params.blogId;
-  console.log(blogId)
   // Simulate fetching the blog data by ID (replace with actual fetching logic)
   const {error, data} = await getFlowWithId(blogId)
 

@@ -13,7 +13,6 @@ type props = {
 }
 
 const page = async(params: props) => {
-  console.log(params.params.userId)
   return (
     <div className='w-full mx-auto'>
       <div className='flex justify-center'>

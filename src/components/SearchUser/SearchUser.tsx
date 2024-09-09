@@ -8,16 +8,6 @@ type props = {
 }
 
 const SearchUser = ({data}: props) => {
-  // useEffect(() => {
-  //   getTopUsers(searchQuery).then(({error, data}) => {
-  //     if(error) return console.error(error)
-  //     setData(data || [])
-  //   })
-  // }, [searchQuery])
-  // const {error, data} =  getTopUsers(searchQuery)
-  // if(error) return <div>{error}</div>
-  // console.log("data:- ", data)
-
   return (
     <div className='w-full border-2 rounded-lg m-10 p-4'>
       <form action="/user/search" method='GET' className='flex gap-2 mb-5'>

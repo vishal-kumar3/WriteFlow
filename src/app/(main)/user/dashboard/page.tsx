@@ -22,7 +22,6 @@ import Link from "next/link";
 const InfoCard = async({userId}: {userId: string | undefined}) => {
   if(!userId) return null
   const data = await getTotalFlowsAndFollowers(userId)
-  console.log(data)
   return (
     <Card className="min-w-[30%]">
       <CardHeader>

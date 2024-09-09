@@ -23,7 +23,6 @@ export const login = async (data: z.infer<typeof loginFormSchema>) => {
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
-    console.log("Logged In Successfully")
     return { success: "Logged In Successfully" };
   } catch (error) {
     if (error instanceof AuthError) {
@@ -42,15 +41,24 @@ export const login = async (data: z.infer<typeof loginFormSchema>) => {
 };
 
 export const register = async (data: z.infer<typeof registerFormSchema>) => {
-  const validatedFields = loginFormSchema.safeParse(data);
+  const validatedFields = registerFormSchema.safeParse(data);
+
 
   if (!validatedFields.success) {
     return { error: "Invalid Fields" };
   }
 
   let { email, password, name, username } = data;
+
+  if(!email || !name){
+    return { error: "Invalid Fields" };
+  }
+
   email = email.toLowerCase();
+
+  if(!username) username = name.split(" ").join("");
   username = username.toLowerCase();
+
   const userExists = await prisma.user.findUnique({
     where: {
       email,

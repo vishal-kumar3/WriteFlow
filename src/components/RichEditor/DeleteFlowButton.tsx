@@ -19,7 +19,6 @@ const DeleteFlowButton = ({ flowId, userId, redirectMode, modeClass }: { flowId:
     } else if (success) {
       toast.success('Flow deleted successfully.');
       if (!redirectMode) {
-        console.log("return jaa rha h")
         router.push(`/user/${userId}`);
       }
     }

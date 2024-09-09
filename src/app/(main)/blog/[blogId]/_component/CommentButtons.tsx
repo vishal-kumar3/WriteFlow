@@ -50,7 +50,6 @@ export const CommentButtons = ({ commentId, flowId, likeCount, auth }: CommentBu
         onClick={async () => {
           startTransition(() => {
             setAlreadyLikedOptimistic(!alreadyLikedOptimistic)
-            console.log(alreadyLikedOptimistic)
             setLikeCountOptimistic(alreadyLikedOptimistic ? likeCountOptimistic - 1 : likeCountOptimistic + 1)
           })
           toast.success('Comment Liked!!!')
@@ -72,7 +71,6 @@ export const CommentButtons = ({ commentId, flowId, likeCount, auth }: CommentBu
           <button
             type="button"
             onClick={async () => {
-              // console.log(commentId)
               setDeleting(true)
               const { error, success } = await deleteComment(commentId, flowId)
               if (error) {

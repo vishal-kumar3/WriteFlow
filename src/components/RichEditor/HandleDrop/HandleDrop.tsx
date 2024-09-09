@@ -92,7 +92,6 @@ async function uploadImage(file: File): Promise<string> {
     throw new Error('Image upload failed');
   }
 
-  console.log(result)
   return result.cdnUrl!
 }
 

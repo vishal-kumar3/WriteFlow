@@ -8,7 +8,7 @@ type props = {
 
 const DashboardHeader = ({children, title, description}: props) => {
   return (
-    <div className="m-10 h-[5000px]">
+    <div className="m-10">
       {/* //TODO: Breadcrum here */}
       Breadcrum here
       <div className="border-b mb-10">
