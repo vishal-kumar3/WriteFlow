@@ -46,3 +46,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   ...authConfig,
 })
+
+
+export const config = {
+  runtime: 'nodejs',  // Specify Node.js runtime to avoid issues with edge functions
+};
