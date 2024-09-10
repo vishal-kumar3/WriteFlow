@@ -170,9 +170,6 @@ export const getFlowForHome = async (filter: string = '') => {
       createdAt: 'desc',
       // TODO: Implement this all around
       // publishedAt: 'desc',
-    },
-    cacheStrategy: {
-      ttl: 60,
     }
   });
 

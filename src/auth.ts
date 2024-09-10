@@ -4,7 +4,6 @@ import prisma from "./prisma"
 import {PrismaAdapter} from "@auth/prisma-adapter"
 import { getUserById } from "./data/user"
 import { Role } from "@prisma/client"
-import prismaExtended from "../prisma/extension/usernameExtension"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -25,29 +24,50 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if(token.sub && session.user){
         session.user.id = token.sub
         session.user.role = token.role as Role
+        session.user.username = token.username as string
       }
 
       return session
     },
 
     async jwt({token}){
-      if(!token.sub) return token
+      if (!token.sub) return token;
 
-      const user = await getUserById(token.sub)
+      const user = await prisma.user.findUnique({
+        where: { id: token.sub },
+      });
 
-      if(!user) return token
+      if (!user) return token;
 
-      return { role:user.role, ...token }
+      token.username = user.username;  // Store username in token
+      token.role = user.role;
+      return token;
+    },
+
+    async signIn({user, account, profile, email, credentials}){
+      if (!user.username) {
+        let username = `${user.name?.split(" ").join("").toLowerCase()}@${Math.floor(1000 + Math.random() * 9000)}`
+
+        // Ensure username is unique
+        const existingUser = await prisma.user.findUnique({
+          where: { username },
+        });
+
+        if (existingUser) {
+          username += Math.floor(Math.random() * 1000);
+        }
+
+        user.username = username;  // Now user has a username
+      }
+      console.log("user:- ", user)
+
+      return true;
     }
+
   },
-  adapter: PrismaAdapter(prismaExtended),
+  adapter: PrismaAdapter(prisma),
   session:{
     strategy: "jwt",
   },
   ...authConfig,
 })
-
-
-export const config = {
-  runtime: 'nodejs',  // Specify Node.js runtime to avoid issues with edge functions
-};

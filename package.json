@@ -7,7 +7,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate --no-engine",
+    "postinstall": "prisma generate",
     "studio": "prisma studio"
   },
   "dependencies": {
@@ -15,7 +15,6 @@
     "@auth/prisma-adapter": "^2.4.1",
     "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "^5.19.1",
-    "@prisma/extension-accelerate": "^1.1.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.1",
