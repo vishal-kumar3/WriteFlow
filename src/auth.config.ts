@@ -12,24 +12,24 @@ export default {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
   }),
 
-    Credentials({
-      async authorize(credentials) {
-        const validatedFields = loginFormSchema.safeParse(credentials);
+  Credentials({
+    async authorize(credentials) {
+      const validatedFields = loginFormSchema.safeParse(credentials);
 
-        if(!validatedFields.success){
-          return null;
-        }
-
-        const { email, password } = validatedFields.data;
-        
-        const user = await getUserByEmail(email);
-        if(!user || !user.password) return null;
-
-        const isPasswordCorrect = compare(password, user.password!);
-        if(!isPasswordCorrect) return null;
-
-        return user;
+      if (!validatedFields.success) {
+        return null;
       }
-    })
+
+      const { email, password } = validatedFields.data;
+
+      const user = await getUserByEmail(email);
+      if (!user || !user.password) return null;
+
+      const isPasswordCorrect = compare(password, user.password!);
+      if (!isPasswordCorrect) return null;
+
+      return user;
+    }
+  })
   ],
 } satisfies NextAuthConfig
