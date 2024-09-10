@@ -46,7 +46,7 @@ const SearchBar = ({ initialSearch }: SearchBarProps) => {
           }}
           defaultValue={initialSearch || ""}
         />
-        <UserSearch />
+        {/* <UserSearch /> */}
       </div>
       <div className="flex items-center gap-3">
         <ModeToggle />

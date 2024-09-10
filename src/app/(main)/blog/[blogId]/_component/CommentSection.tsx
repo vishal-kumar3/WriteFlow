@@ -51,7 +51,7 @@ export const Comment = ({
   return (
     <div className="flex gap-2 items-center">
       <Avatar>
-        <AvatarImage className="object-cover object-center" src={currentUser?.image || DefaultAvatarImage} alt={currentUser?.username} />
+        <AvatarImage className="object-cover object-center" src={currentUser?.image || DefaultAvatarImage} alt={currentUser?.username!} />
         <AvatarFallback>{currentUser?.username}</AvatarFallback>
       </Avatar>
       <form onSubmit={async (e) => {

@@ -8,9 +8,6 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { DraftPublishSidebar } from './DraftPublishSidebar'
 import { cn } from '@/lib/utils'
-
-
-import Document from '@tiptap/extension-document'
 import Editor from './NovelEditor/NovelEditor'
 import { JSONContent } from 'novel'
 
@@ -40,10 +37,6 @@ type FlowPublishButtonProps = {
   isCommentOff: boolean
   slug: string
 }
-
-const CustomDocument = Document.extend({
-  content: 'heading block*',
-})
 
 const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: EditorProps) => {
   const [flowTitle, setFlowTitle] = useState(title || '')

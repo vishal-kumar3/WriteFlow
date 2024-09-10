@@ -10,14 +10,11 @@ import { BlogWithUserAndComments } from "@/types/BlogType";
 import { ActionResponse } from "@/types/ActionResponse";
 import { Like } from "@/types/LikeType";
 import './_component/prosemirror.css'
-import { JSONContent } from 'novel';
-import { convertToJSONContent } from '@/util/convertToJSONContent';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { foramtDateTime } from '@/util/DateTime';
 import AuthUserOnly from '@/util/AuthUserOnly';
 import HideForCurrentUser from '@/util/HideForCurrentUser';
-import FollowButton from '@/components/UserProfile/FollowButton';
 import { ModeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import FollowButtonServerWraper from '@/components/UserProfile/FollowButtonServerWraper';
 import Head from 'next/head';
@@ -98,7 +95,7 @@ const PublishedBlog = async ({ params }: props) => {
             <AuthUserOnly>
               {/* @ts-expect-error Async Server Component */}
               <HideForCurrentUser userId={blog.user.id}>
-                <FollowButtonServerWraper username={blog.user.username} id={blog.user.id} />
+                <FollowButtonServerWraper username={blog.user.username!} id={blog.user.id} />
               </HideForCurrentUser>
             </AuthUserOnly>
             <ModeToggle />
