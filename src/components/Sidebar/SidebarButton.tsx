@@ -1,7 +1,5 @@
 "use client"
 
-import Image from "next/image"
-
 type props = {
   children: React.ReactNode
   icon?: any

@@ -20,17 +20,17 @@ type props = {
 
 export const FlowCard = ({ flowId, flowData }: { flowId: string, flowData: Blog }) => {
   return (
-    <div className='flex items-center hover:bg-black/5 px-3 py-2 rounded-lg'>
+    <div className='flex items-center dark:hover:bg-black hover:bg-black/5 px-3 py-2 rounded-lg'>
       <Link href={`/blog/${flowId}`} className='flex-1'>
         <p className='line-clamp-1'>{flowData?.title}</p>
-        <div className='text-sm text-muted-foreground flex gap-1 items-center'>
+        <div className='text-sm text-muted-foreground flex flex-col md:flex-row gap-1 md:items-center'>
           <div>
             {foramtDateTime(flowData?.updatedAt!)}
           </div>
           {
             flowData?.isPublished &&
-            <>
-              <Dot />
+            <div className='flex'>
+              <Dot className='hidden lg:flex' />
               <div className='flex gap-1 items-center'>
                 <p>{flowData?.noOfViews}</p>
                 <Eye className='w-4' />
@@ -45,7 +45,7 @@ export const FlowCard = ({ flowId, flowData }: { flowId: string, flowData: Blog 
                 <p>{flowData?.likeCount}</p>
                 <FcLike className='w-4' />
               </div>
-            </>
+            </div>
           }
         </div>
       </Link>

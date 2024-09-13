@@ -2,7 +2,7 @@ import { auth } from '@/auth'
 import prisma from '@/prisma'
 import { Blog } from '@/types/BlogType'
 import React from 'react'
-import { Card } from '../ui/card'
+import { Card, CardDescription, CardTitle } from '../ui/card'
 import { FlowCard } from './FlowTabSwitcher'
 
 type props = {}
@@ -22,12 +22,15 @@ const DraftArticles = async (props: props) => {
   })
 
   return (
-    <Card className='w-[75%] mx-auto space-y-2 px-2 py-5'>
+    <Card className='w-full lg:w-[75%] mx-auto space-y-2 px-2 py-5'>
       {
+        draftFlows.length > 0 ?
         draftFlows.map((flow: Blog) => {
           if (flow)
             return <FlowCard flowData={flow} key={flow.id} flowId={`draft/${flow.id}`} />
         })
+        :
+        <CardDescription className='mx-auto w-fit'>No drafts yet!!!</CardDescription>
       }
     </Card>
   )

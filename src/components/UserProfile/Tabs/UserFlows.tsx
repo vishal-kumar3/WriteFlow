@@ -63,30 +63,24 @@ export const UserFlowsCard = async ({ id, title, tags, thumbnail, description, i
   // const currentUserId = session ? session?.user.id : null
   return (
     <Link href={url}>
-      <Card className="border-none pt-2">
-        {/* {
-          currentUserId && (
-            <UserBanner />
-          )
-        } */}
-
-        <CardContent className="pb-0">
-          <div className="max-w-[70%] bg-pink-200 h-[200px] mx-auto overflow-hidden">
-            <Image
-              src={thumbnail || defaultThumbnail}
-              width={300}
-              height={200}
-              alt={title}
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </div>
-        </CardContent>
+      <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-lg">
+      {thumbnail && (
+          <CardContent className="p-0">
+            <div className="relative aspect-video w-full overflow-hidden">
+              <Image
+                src={thumbnail || defaultThumbnail}
+                alt={title}
+                layout="fill"
+                objectFit="cover"
+                className="rounded-t-lg"
+              />
+            </div>
+          </CardContent>
+        )}
         <CardHeader>
-          {/* //TODO: Draft badge ko align krna h */}
           <CardTitle className="line-clamp-1 ">{!isPublished && <Badge variant="secondary" className=" text-sm">Draft</Badge>} {title}</CardTitle>
-          {/* //TODO: Yaha Tags ko add krna h */}
-          <ShowBadges badgeArray={tags?.map((tag) => tag.tag) || []} />
           <CardDescription>{formatDateAgo(createdAt)}</CardDescription>
+          <ShowBadges badgeArray={tags?.map((tag) => tag.tag) || []} />
           <CardDescription className="line-clamp-3">{description}</CardDescription>
         </CardHeader>
       </Card>
@@ -99,16 +93,16 @@ const UserFlows = ({ data }: UserFlowsProps) => {
     <>
       {
         data.map((card: UserFlowsCardProps, key: number) => (
-          <UserFlowsCard
-            key={key}
-            id={card.id}
-            title={card.title}
-            tags={card.tags}
-            isPublished={card.isPublished}
-            description={card.description}
-            createdAt={card.createdAt}
-            thumbnail={card.thumbnail}
-          />
+            <UserFlowsCard
+              key={key}
+              id={card.id}
+              title={card.title}
+              tags={card.tags}
+              isPublished={card.isPublished}
+              description={card.description}
+              createdAt={card.createdAt}
+              thumbnail={card.thumbnail}
+            />
         ))
       }
     </>

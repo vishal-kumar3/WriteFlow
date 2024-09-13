@@ -28,7 +28,7 @@ const Page = async () => {
         <CardTitle>Views Stats</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-10 mb-5 justify-between items-center">
+        <div className="flex flex-col gap-2 lg:flex-row lg:gap-10 mb-5 justify-between items-center">
           {
             Analytics.map((item) => (
               <AnalyticsCard key={item.title} title={item.title} action={item.action} userId={userId!} />

@@ -22,7 +22,7 @@ const PublishedArticles = async (props: props) => {
   })
 
   return (
-    <Card className='w-[75%] mx-auto space-y-2 px-2 py-5'>
+    <Card className='w-full lg:w-[75%] mx-auto space-y-2 px-2 py-5'>
       {
         publishedFlows.map((flow: Blog) => {
           if(flow)
