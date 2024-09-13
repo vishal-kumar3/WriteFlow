@@ -9,9 +9,10 @@ type props = {
   id: string,
   username: string
   isFollowing: boolean | null
+  className?: string
 }
 
-const FollowButton = ({id, username, isFollowing}: props) => {
+const FollowButton = ({id, username, isFollowing, className}: props) => {
 
   const [isFollowingOptimistic, setIsFollowingOptimistic] = useOptimistic(
     isFollowing,
@@ -33,7 +34,8 @@ const FollowButton = ({id, username, isFollowing}: props) => {
       }
     }} className={cn("px-5",
       isFollowingOptimistic ? "bg-red-500 hover:bg-red-600" : "bg-blue-500 hover:bg-blue-600",
-      "text-white"
+      "text-white",
+      className
     )}>
       {isFollowingOptimistic ? "Unfollow" : "Follow"}
     </Button>

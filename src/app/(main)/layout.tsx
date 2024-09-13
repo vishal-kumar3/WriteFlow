@@ -11,11 +11,11 @@ const layout = ({ children }: props) => {
     <div className="relative flex">
       {/* @ts-expect-error Async Server Component */}
       <AuthUserOnly>
-        <div className="sticky h-screen overflow-hidden top-0 min-w-[17%]">
+        <div className="sticky h-screen overflow-hidden top-0">
           <ToggleSidebar />
         </div>
       </AuthUserOnly>
-      <div className="w-full pb-5">{children}</div>
+      <div className="flex-1 pb-5">{children}</div>
     </div>
   );
 };

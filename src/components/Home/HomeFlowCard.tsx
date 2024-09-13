@@ -35,7 +35,7 @@ const HomeFlowCard = ({ flow, userBookmark }: HomeFlowCardProps) => {
     <div className="border-2 rounded-lg m-10 p-4">
       <UserCard userData={flow.user} createdAt={flow.createdAt} flowId={flow.id} />
       <Card className="border-none w-full">
-        <div className="flex w-full">
+        <div className="flex lg:flex-row flex-col gap-2 lg:gap-0 w-full">
           <CardHeader className="p-0 w-full">
             <Link href={`/blog/${flow.id}`}>
               <CardTitle className="font-bold line-clamp-2 text-lg px-2 pt-2">
@@ -51,21 +51,23 @@ const HomeFlowCard = ({ flow, userBookmark }: HomeFlowCardProps) => {
                 }
               </CardDescription>
             </Link>
-          </CardHeader>
+            </CardHeader>
           {/* //TODO: Image */}
-          <CardContent className="min-w-[250px] min-h-[150px] rounded-lg bg-blue-300 p-0 overflow-hidden">
-            <div className="relative w-full h-full">
-              <Image
-                src={flow.thumbnail || defaultThumbnail}
-                alt="Picture of the author"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </CardContent>
+          {
+            flow.thumbnail && (
+              <CardContent className="relative mx-auto lg:mx-0 w-[250px] h-[150px] rounded-lg bg-blue-300 p-0 overflow-hidden">
+                  <Image
+                    src={flow.thumbnail || defaultThumbnail}
+                    alt="Picture of the author"
+                    fill
+                    className="w-full h-full object-cover"
+                  />
+              </CardContent>
+            )
+          }
         </div>
-        <CardFooter className="flex pt-2 px-2 justify-between items-center">
-          <div className="flex gap-2">{flow.noOfComments} Discuss <Dot /> {flow.likeCount} Likes <Dot /> {flow.noOfViews} Reads</div>
+        <CardFooter className="flex flex-col lg:flex-row pt-2 px-2 justify-between items-center">
+          <div className="flex flex-wrap lg:gap-2">{flow.noOfComments} Discuss <Dot /> {flow.likeCount} Likes <Dot /> {flow.noOfViews} Reads</div>
           <div className="flex items-center">
             {
               flow.tags.map((tag: { tag: string }, key: number) => (

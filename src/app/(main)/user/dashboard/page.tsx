@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { foramtDateTime } from "@/util/DateTime";
-import { ArrowRightIcon } from "@radix-ui/react-icons";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -140,7 +139,7 @@ const DashboardPage = async () => {
             <h1 className="font-semibold mb-4">Your WriteFlow Stats</h1>
             <Link href={"/user/dashboard/analytics"} className="flex items-center gap-1 text-blue-400">Go to analytics <ArrowRight className="w-4" /></Link>
           </div>
-          <div className="flex gap-10 justify-between items-center">
+          <div className="flex flex-col gap-2 lg:flex-row lg:gap-10 justify-between items-center">
             {
               Analytics.map((item) => (
                 <AnalyticsCard key={item.title} title={item.title} action={item.action} userId={userId!} />
@@ -150,7 +149,7 @@ const DashboardPage = async () => {
         </div>
         <div>
           <h1 className="font-semibold">Info</h1>
-          <div className="flex justify-between gap-10">
+          <div className="flex flex-col lg:flex-row justify-between gap-10">
             <InfoCard userId={userId} />
             <RecentArticle userId={userId} />
           </div>

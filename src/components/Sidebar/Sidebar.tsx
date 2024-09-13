@@ -1,54 +1,40 @@
-import Link from "next/link";
-import LinkButton, { SideButton } from "./LinkButton";
-
-import Followings from "./Followings";
-import CreateFlowForm from "../form/CreateFlowForm";
-import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page";
-import { ChartNoAxesCombinedIcon, Handshake, LogOut, Newspaper, Settings, UserSearch } from "lucide-react";
+"use client"
 import { UserWithFollowers } from "@/types/UserType";
-import { signOut } from "next-auth/react";
+import { SidebarButtonBottom, SidebarButtonsTop } from "./ToggleSidebar";
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 type sidebarProps = {
   user: UserWithFollowers
 }
 
 const SideBar = ({user}: sidebarProps) => {
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="h-screen py-5 px-5 md:flex flex-col justify-between border-r">
-      <div className="md:flex flex-col text-sm gap-5">
-        <Link href='/?search=' className="mx-auto">
-          Write Flow
+    <div className="h-screen py-5 px-5 flex flex-col justify-between border-r">
+      <div className="flex flex-col text-sm gap-5">
+        <Link href='/' className="mx-auto">
+          <Image src='/writeflow.svg' alt="Write Flow" className="hidden md:flex w-[150px] h-[20px]" width={10} height={10} />
+          <Image src='/logo.svg' alt="Write Flow" className="md:hidden flex w-[50px] h-[30px]" width={10} height={10} />
         </Link>
 
         {/* sb buttons yaha */}
-        <div className="flex flex-col gap-1">
-          <LinkButton
-            imageUrl={user?.image || DefaultAvatarImage}
-            link={`/user/${user?.id}`}
-          >Profile</LinkButton>
-          <LinkButton icon={<Newspaper />}>Feeds</LinkButton>
-          <CreateFlowForm title="Create Flow" />
-          <LinkButton icon={<Handshake />} link={`/user/${user?.id}/friends`}>Friends</LinkButton>
-          <LinkButton icon={<UserSearch />} link="/user/search">Search User</LinkButton>
-          <LinkButton link={`/user/dashboard`} icon={<ChartNoAxesCombinedIcon />}>Dashboard</LinkButton>
-        </div>
+        <SidebarButtonsTop user={user} />
 
         {/* followings show krega yaha */}
-        <div className="flex flex-col gap-2">
+        {/* <div className="flex flex-col gap-2">
           <p className="ml-2">Followings</p>
           {
             user?.followers?.map(({followingId}, index) => (
               <Followings key={index} userId={followingId} />
             ))
           }
-        </div>
+        </div> */}
       </div>
 
-      <div className="flex flex-col gap-1">
-        <LinkButton icon={<Settings />}>Settings</LinkButton>
-        <SideButton icon={<LogOut />} action={signOut}>Logout</SideButton>
-      </div>
+      <SidebarButtonBottom />
     </div>
   );
 };

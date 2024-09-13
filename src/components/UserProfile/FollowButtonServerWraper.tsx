@@ -6,9 +6,10 @@ import { auth } from '@/auth'
 type props = {
   id: string,
   username: string
+  className?: string
 }
 
-const FollowButtonServerWraper = async({id, username}: props) => {
+const FollowButtonServerWraper = async({id, username, className}: props) => {
   const session = await auth()
   if (session){
     if(session.user.id === id) return null
@@ -21,6 +22,7 @@ const FollowButtonServerWraper = async({id, username}: props) => {
         id={id}
         username={username}
         isFollowing={alreadyFollowing.data || null}
+        className={className}
       />
     </>
   )
