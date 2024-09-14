@@ -88,42 +88,44 @@ const page = async ({ params }: props) => {
 
 
   return (
-    <div className="bg-[#f5f5f5] dark:bg-white/10 sm:mx-auto sm:w-[90%] pb-5 rounded-2xl">
-      <div className="relative w-full">
-        <CoverImage
-          userId={user?.id!}
-          coverImage={user?.coverImage || DefaultCoverImage}
-          uploadImageAction={updateUserCoverImage}
-          flowMode={false}
-        />
-        <AvatarImage
-          followerCnt={user?.followerCount!}
-          followingCnt={user?.followingCount!}
-          userId={user?.id!}
-          username={user?.name!}
-          avatarImage={user?.image || DefaultAvatarImage}
-        />
-      </div>
-      <div className="mt-8 mx-[6%] max-w-[90%] flex flex-col justify-between">
-        <AboutSection
-          about={AboutSectionDetails}
-          userId={user?.id!}
-          name={user?.name!}
-          bio={user?.about?.bio!}
-          location={user?.about?.location!}
-          website={user?.about?.website!}
-          career={user?.about?.career!}
-          tags={[]}
-        />
-        <div className=" mt-10">
-          <TabSwitcher
-            id={user?.id! || userId}
-            UserFlows={<UserFlows data={UserFlowData} />}
-            History={<History />}
-            LikedFlows={<LikedFlows />}
-            Bookmarks={<Bookmarks />}
-            DraftFlows={<DraftFlows data={DraftFlowData} />}
+    <div className=" min-h-screen overflow-hidden pb-0 p-5">
+      <div className="max-w-7xl mx-auto pb-12">
+        <div className="bg-[#f5f5f5] dark:bg-white/10 rounded-2xl shadow-lg overflow-hidden">
+          <CoverImage
+            userId={user?.id!}
+            coverImage={user?.coverImage || DefaultCoverImage}
+            uploadImageAction={updateUserCoverImage}
+            flowMode={false}
           />
+          <AvatarImage
+            followerCnt={user?.followerCount!}
+            followingCnt={user?.followingCount!}
+            userId={user?.id!}
+            username={user?.name!}
+            avatarImage={user?.image || DefaultAvatarImage}
+          />
+          <div className="px-4 sm:px-8 py-6">
+            <AboutSection
+              about={AboutSectionDetails}
+              userId={user?.id!}
+              name={user?.name!}
+              bio={user?.about?.bio!}
+              location={user?.about?.location!}
+              website={user?.about?.website!}
+              career={user?.about?.career!}
+              tags={[]}
+            />
+            <div className=" mt-8">
+              <TabSwitcher
+                id={user?.id! || userId}
+                UserFlows={<UserFlows data={UserFlowData} />}
+                History={<History />}
+                LikedFlows={<LikedFlows />}
+                Bookmarks={<Bookmarks />}
+                DraftFlows={<DraftFlows data={DraftFlowData} />}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

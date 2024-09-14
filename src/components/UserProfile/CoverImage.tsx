@@ -13,19 +13,19 @@ type props = {
 
 const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAction, disabled }: props) => {
   return (
-    <div className="mt-5 group relative">
+    <div className="relative group">
       <Image
-        className="h-[250px] w-full rounded-t-2xl object-cover object-center"
+        className="h-[150px] sm:h-[200px] md:h-[250px] w-full rounded-t-2xl object-cover object-center"
         src={coverImage}
         height={800}
         width={900}
-        alt="Holla"
+        alt="Cover Image"
       />
       {
         !disabled && (
           // @ts-expect-error Async Server Component
           <CurrentUserOnly userId={userId!}>
-            <div className="absolute right-5 bottom-5">
+            <div className="absolute right-2 bottom-2 sm:right-5 sm:bottom-5">
               <FileUploader
                 ctx_name="CoverImage"
                 userId={userId}

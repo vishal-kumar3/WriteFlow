@@ -1,6 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import CurrentUserOnly from '@/util/CurrentUserOnly'
-import { TabSwitcherRes } from './TabSwitcherRes'
 
 
 type Props = {
@@ -25,8 +24,8 @@ export const UserTabContent = ({ value, children }: UserTabContentProps) => {
 
 const TabSwitcher = ({id, UserFlows, History, LikedFlows, Bookmarks, DraftFlows}: Props) => {
   return (
-      <TabSwitcherRes>
-      <div className="overflow-x-auto">
+    <Tabs defaultValue='UserFlows'>
+      <div className="overflow-x-scroll">
         <TabsList className="w-max min-w-full flex space-x-2 sm:space-x-4 bg-black/5 dark:bg-black/20 p-2 rounded-lg">
           <TabsTrigger className="text-sm sm:text-base whitespace-nowrap" value="UserFlows">Flows</TabsTrigger>
           {/* @ts-expect-error Async Server Component */}
@@ -48,7 +47,7 @@ const TabSwitcher = ({id, UserFlows, History, LikedFlows, Bookmarks, DraftFlows}
           <UserTabContent value="Bookmarks">{Bookmarks}</UserTabContent>
         </CurrentUserOnly>
       </div>
-      </TabSwitcherRes>
+      </Tabs>
   )
 }
 
