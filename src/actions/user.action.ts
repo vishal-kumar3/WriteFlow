@@ -13,6 +13,16 @@ export type UserAbout = {
   career: string;
 };
 
+export const getFollowingUsers = async (userId: string) => {
+  const followingUser = await prisma.user.findUnique({
+    where: {
+      id: userId
+    }
+  })
+
+  return followingUser
+}
+
 export const isAlreadyFollowing = async(id: string) => {
   const session = await auth()
   if(!session?.user?.id) return { error: 'No user id provided' };

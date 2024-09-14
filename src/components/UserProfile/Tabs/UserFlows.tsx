@@ -62,17 +62,16 @@ export const UserFlowsCard = async ({ id, title, tags, thumbnail, description, i
   // const session = await auth()
   // const currentUserId = session ? session?.user.id : null
   return (
-    <Link href={url}>
-      <Card className="h-full flex flex-col transition-all duration-300 hover:shadow-lg">
+    <Link className="h-fit md:h-full" href={url}>
+      <Card className="h-fit md:h-full flex flex-col transition-all duration-300 hover:shadow-lg">
       {thumbnail && (
           <CardContent className="p-0">
             <div className="relative aspect-video w-full overflow-hidden">
               <Image
                 src={thumbnail || defaultThumbnail}
                 alt={title}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-t-lg"
+                fill
+                className="object-cover rounded-t-lg"
               />
             </div>
           </CardContent>
