@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false,
 	images: {
 		remotePatterns: [
 			{

@@ -4,6 +4,7 @@ import { SidebarButtonBottom, SidebarButtonsTop } from "./ToggleSidebar";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Followings from "./Followings";
 
 type sidebarProps = {
   user: UserWithFollowers
@@ -13,7 +14,7 @@ const SideBar = ({user}: sidebarProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="h-screen py-5 px-5 flex flex-col justify-between border-r">
+    <div className="h-screen py-5 sm:px-5 flex flex-col justify-between border-r">
       <div className="flex flex-col text-sm gap-5">
         <Link href='/' className="mx-auto">
           <Image src='/writeflow.svg' alt="Write Flow" className="hidden md:flex w-[150px] h-[20px]" width={10} height={10} />
