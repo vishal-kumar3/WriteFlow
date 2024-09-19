@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/lib/provider/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import ProgressBar from "@/util/ProgressBar";
 import { SpeedInsights } from "@vercel/speed-insights/next"
+// import '@uploadcare/react-widget/dist/uploadcare.min.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +27,7 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="light"
           enableSystem
-          disableTransitionOnChange
+          disableTransitionOnChange={false}
         >
           {children}
         </ThemeProvider>

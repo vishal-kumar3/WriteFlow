@@ -17,7 +17,7 @@ export const SidebarButtonsTop = ({user}: {user: UserWithFollowers}) => {
       <LinkButton
         imageUrl={user?.image || DefaultAvatarImage}
         link={`/user/${user?.id}`}
-      >Profile</LinkButton>
+      >{user?.name}</LinkButton>
       <LinkButton icon={<Newspaper />}>Feeds</LinkButton>
       <CreateFlowForm title="Create Flow" />
       <LinkButton icon={<Handshake />} link={`/user/${user?.id}/friends`}>Friends</LinkButton>
@@ -54,7 +54,7 @@ const ToggleSidebar = async (props: props) => {
   })
 
   return (
-    <div className=''>
+    <div className='h-screen'>
       <SideBar user={user} />
     </div>
   )

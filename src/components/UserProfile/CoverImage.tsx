@@ -1,3 +1,4 @@
+import CustomUploader from "@/lib/CustomUploader";
 import FileUploader from "@/lib/fileUploader";
 import CurrentUserOnly from "@/util/CurrentUserOnly";
 import Image from "next/image";

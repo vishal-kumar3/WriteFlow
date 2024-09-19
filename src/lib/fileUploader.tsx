@@ -4,7 +4,6 @@ import "@uploadcare/react-uploader/core.css"
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-
 type FileUploadProps = {
   uploadImageAction: (url: string, userId: string) => Promise<{ error: string; success?: undefined; } | { success: string; error?: undefined; }>
   userId?: string | null
@@ -29,10 +28,9 @@ const FileUploader = ({ uploadImageAction, userId, ctx_name, flowId, flowMode }:
   }
   return (
     <div>
-      <label htmlFor=""></label>
       <FileUploaderRegular
         ctxName={ctx_name}
-        pubkey="3fa57431f8c491457434"
+        pubkey="511e1df4c0a33fe1a180"
         onFileUploadSuccess={async (file) => {
           const url = `${uploadCareUrl}${file.uuid}/`
           const { error, success } = await uploadImageAction(url, id!);

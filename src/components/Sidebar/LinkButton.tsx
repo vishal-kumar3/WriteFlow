@@ -28,7 +28,7 @@ const LinkButton = ({ icon, action, link, imageUrl, children }: props) => {
         {icon && icon}
         {imageUrl && <Image src={imageUrl} alt="Profile Image" width={35} height={35} className="rounded-lg w-full h-full object-cover object-center" />}
       </div>
-      <div className="h-full hidden md:flex items-center">{children}</div>
+      <div className="h-full line-clamp-1 hidden md:flex items-center">{children}</div>
     </Link>
   )
 }

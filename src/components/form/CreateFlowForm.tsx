@@ -1,5 +1,5 @@
 "use client"
-import React, { useActionState, useEffect } from 'react'
+import React, { ForwardRefExoticComponent, RefAttributes, useActionState, useEffect } from 'react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
@@ -8,15 +8,22 @@ import { createFlow } from '@/actions/flow.action'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { SideButton } from '../Sidebar/LinkButton'
-import { NotebookPen } from 'lucide-react'
+import { LucideProps, NotebookPen } from 'lucide-react'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 type props = {
-  title: string
+  title?: string
   className?: string
   showIcon?: boolean
+  mobile?: {
+    mobile: boolean
+    icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>
+    label: string
+  }
 }
 
-const CreateFlowForm = ({title, className, showIcon}: props) => {
+const CreateFlowForm = ({ title, className, showIcon, mobile }: props) => {
   const router = useRouter()
   const [isOpen, setIsOpen] = React.useState(false)
   const [state, createFlowAction, isPending] = useActionState(createFlow, null)
@@ -37,15 +44,41 @@ const CreateFlowForm = ({title, className, showIcon}: props) => {
     <div id='createFlowForm'>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          {/* //TODO: Baad me isko dekhna h */}
-          <SideButton
-            action={() => setIsOpen(true)}
-            icon={<NotebookPen />}
-            showIcon={showIcon}
-            className={className}
-          >
-            {title}
-          </SideButton>
+          {
+            !mobile ? (
+              <SideButton
+                action={() => setIsOpen(true)}
+                icon={<NotebookPen />}
+                showIcon={showIcon}
+                className={className}
+              >
+                {title}
+              </SideButton>
+            )
+              :
+              (
+                <li key={mobile.label} className="relative flex-1 h-full">
+                  <button
+                    className="flex flex-col items-center justify-center h-full w-full"
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="relative z-10"
+                    >
+                      <mobile.icon
+                        className={`w-6 h-6 text-gray-500 dark:text-gray-400`}
+                      />
+                    </motion.div>
+                    <span
+                      className={`text-xs mt-1 'text-gray-500 dark:text-gray-400`}
+                    >
+                      {mobile.label}
+                    </span>
+                  </button>
+                </li>
+              )
+          }
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '../ui/button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import { publishFlow, updateDescription, updateTitle } from '@/actions/flow.action'
 import { toast } from 'sonner'
@@ -55,6 +55,10 @@ const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: 
   const handleTitle = (e: any) => {
     setIsSaved(false)
     setFlowTitle(e.target.value)
+    if(e.target.value === ''){
+      setIsSaved(true)
+      return null;
+    }
     debounce(userId, updateTitle, e.target.value)
   }
 
@@ -64,35 +68,38 @@ const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: 
     debounce(userId, updateDescription, e.target.value)
   }
 
-  // const addImage = () => {
-  //   const url = window.prompt('URL')
+  const adjustTextareaHeight = (element: HTMLTextAreaElement) => {
+    element.style.height = 'auto'
+    element.style.height = `${element.scrollHeight}px`
+  }
 
-  //   if (url) {
-  //     editor?.chain().focus().setImage({ src: url }).run()
-  //   }
-  // }
+  useEffect(() => {
+    const titleTextarea = document.getElementById('blog-title') as HTMLTextAreaElement
+    const descriptionTextarea = document.getElementById('blog-description') as HTMLTextAreaElement
+
+    if (titleTextarea) adjustTextareaHeight(titleTextarea)
+    if (descriptionTextarea) adjustTextareaHeight(descriptionTextarea)
+  }, [])
+
 
 
   return (
     <div className='flex flex-col justify-stretch w-full min-h-[300px]'>
-      {/* //TODO: contentEditable ko sahi krna h !!! */}
-      {/* <p
-        contentEditable
-        dangerouslySetInnerHTML={{ __html: flowTitle || "Here Is The Title!!!" }}
-        onInput={handleTitle}
-        className="text-center py-5 pb-8 w-full focus:outline-none border-x text-6xl font-bold px-20"
-      /> */}
       <textarea
-        className='bg-background outline-none text-center py-5 pb-8 w-full focus:outline-none border-x text-6xl font-bold px-20 resize-none'
+        id="blog-title"
+        className='bg-background outline-none text-center py-5 w-full focus:outline-none border-x text-xl sm:text-4xl font-bold px-2 sm:px-20 resize-none overflow-hidden'
         onChange={handleTitle}
-        value={flowTitle || ''}
+        value={flowTitle}
         placeholder='Enter the title here!!!'
+        rows={1}
       />
       <textarea
-        value={flowDescription || ''}
+        id="blog-description"
+        value={flowDescription}
         placeholder='Enter the description here!!!'
         onChange={handleDescription}
-        className="bg-background text-center italic outline-none pb-16 w-full focus:outline-none border-x text-2xl font-normal px-[7.5rem] resize-none"
+        className="bg-background text-center italic outline-none w-full focus:outline-none border-x text-sm sm:text-xl font-normal px-2 sm:px-[7.5rem] resize-none overflow-hidden mt-4"
+        rows={1}
       />
 
       {/* <FloatingToolbar editor={editor} />
@@ -100,8 +107,8 @@ const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: 
 
       <Editor debounce={debounce} setIsSaved={setIsSaved} userId={userId} initialValue={jsonContent!} />
 
-      <div className='absolute top-5 right-[100px] w-full flex justify-between items-center gap-5'>
-        <div className='bg-slate-100 dark:bg-background p-2 px-6 rounded-md hover:bg-slate-200'>
+      <div className='absolute top-5 sm:right-[120px] left-0 flex justify-between items-center gap-5'>
+        <div className='hidden sm:block bg-slate-100 dark:bg-background p-2 px-6 rounded-md hover:bg-slate-200'>
           Edit Mode
         </div>
         <div className='flex gap-4 items-center'>
