@@ -1,4 +1,5 @@
 import { updateUserCoverImage } from "@/actions/image.action";
+import { auth } from "@/auth";
 import AboutSection, {
   AboutDetails,
 } from "@/components/UserProfile/AboutSection";
@@ -8,7 +9,9 @@ import Bookmarks from "@/components/UserProfile/Tabs/Bookmarks";
 import DraftFlows from "@/components/UserProfile/Tabs/DraftFlows";
 import History from "@/components/UserProfile/Tabs/History";
 import LikedFlows from "@/components/UserProfile/Tabs/LikedFlows";
-import UserFlows, { UserFlowsCardProps } from "@/components/UserProfile/Tabs/UserFlows";
+import UserFlows, {
+  UserFlowsCardProps,
+} from "@/components/UserProfile/Tabs/UserFlows";
 import TabSwitcher from "@/components/UserProfile/TabSwitcher";
 import prisma from "@/prisma";
 import { UserWithFlowsAndTagsAndAbout } from "@/types/UserType";
@@ -26,6 +29,7 @@ export const DefaultAvatarImage =
 
 const page = async ({ params }: props) => {
   const { userId } = params;
+  const session = await auth();
 
   const user: UserWithFlowsAndTagsAndAbout = await prisma.user.findUnique({
     where: {
@@ -36,21 +40,21 @@ const page = async ({ params }: props) => {
       blogs: {
         include: {
           tags: true,
-        }
+        },
       },
     },
   });
 
   let UserFlowData: UserFlowsCardProps[] = [];
-  let DraftFlowData: UserFlowsCardProps[] = []
+  let DraftFlowData: UserFlowsCardProps[] = [];
 
   user?.blogs.map((blog) => {
     if (blog.isPublished) {
-      UserFlowData.push(blog)
+      UserFlowData.push(blog);
     } else {
-      DraftFlowData.push(blog)
+      DraftFlowData.push(blog);
     }
-  })
+  });
 
   const AboutSectionDetails: AboutDetails[] = [
     {
@@ -85,8 +89,6 @@ const page = async ({ params }: props) => {
     },
   ];
 
-
-
   return (
     <div className=" min-h-screen overflow-hidden pb-0 p-5">
       <div className="max-w-7xl mx-auto pb-12">
@@ -104,7 +106,7 @@ const page = async ({ params }: props) => {
             username={user?.name!}
             avatarImage={user?.image || DefaultAvatarImage}
           />
-          <div className="px-4 sm:px-8 py-6">
+          <div className="px-4 w-full sm:px-8 py-6">
             <AboutSection
               about={AboutSectionDetails}
               userId={user?.id!}
@@ -115,8 +117,9 @@ const page = async ({ params }: props) => {
               career={user?.about?.career!}
               tags={[]}
             />
-            <div className=" mt-8">
+            <div className="w-full mt-8">
               <TabSwitcher
+                isCurrentUser={session?.user.id === user?.id}
                 id={user?.id! || userId}
                 UserFlows={<UserFlows data={UserFlowData} />}
                 History={<History />}

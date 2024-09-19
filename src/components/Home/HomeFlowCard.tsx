@@ -15,7 +15,6 @@ import { BlogWithUserAndTagsHome } from "@/types/BlogType";
 import { UserCard } from "./Cards/UserCard";
 import { Dot } from "lucide-react";
 
-
 type HomeFlowCardProps = {
   flow: BlogWithUserAndTagsHome;
   userBookmark: { id: string }[];
@@ -23,25 +22,23 @@ type HomeFlowCardProps = {
 
 // TODO: Add top comment
 const HomeFlowCard = ({ flow, userBookmark }: HomeFlowCardProps) => {
-
-  if(!flow) return null;
-
+  if (!flow) return null;
   let isBookmarked = false;
   userBookmark.map((bookmark) => {
     if (bookmark.id === flow.id) isBookmarked = true;
   })
 
   return (
-    <div className="border-2 rounded-lg mx-5 sm:mx-10 my-4 p-4">
+    <div className="border-2 rounded-lg mx-2 sm:mx-4 md:mx-6 lg:mx-8 my-4 p-2 sm:p-4">
       <UserCard userData={flow.user} createdAt={flow.createdAt} flowId={flow.id} />
       <Card className="border-none shadow-none w-full">
-        <div className="flex lg:flex-row flex-col gap-2 pt-2 lg:gap-0 w-full">
-          <CardHeader className="p-0 order-2 lg:order-1 w-full">
+        <div className="flex flex-col sm:flex-row gap-2 w-full">
+          <CardHeader className="p-0 order-2 sm:order-1 w-full sm:w-2/3">
             <Link href={`/blog/${flow.id}`}>
-              <CardTitle className="font-bold line-clamp-2 text-lg px-2 pt-2">
+              <CardTitle className="font-bold line-clamp-2 text-base sm:text-lg px-2 pt-2">
                 {flow.title}
               </CardTitle>
-              <div className="flex gap-1">
+              <div className="flex gap-1 overflow-x-auto pb-2 ml-2">
                 {
                   flow.tags.map((tag: { tag: string }, key: number) => (
                     <form key={key} method="GET" action="/">
@@ -53,33 +50,32 @@ const HomeFlowCard = ({ flow, userBookmark }: HomeFlowCardProps) => {
                   ))
                 }
               </div>
-              <CardDescription className="px-2 w-full line-clamp-4">
+              <CardDescription className="px-2 w-full line-clamp-2 sm:line-clamp-3 md:line-clamp-4">
                 {
                   flow.description && flow.description?.replace(/<[^>]*>?/gm, '').replace(/\s\s+/g, ' ').slice(0, 200)
                 }
                 {
                   flow.description ? '\n' : '\n' +
-                  flow.content?.replace(/<[^>]*>?/gm, '').replace(/\s\s+/g, ' ').slice(0, 200)
+                    flow.content?.replace(/<[^>]*>?/gm, '').replace(/\s\s+/g, ' ').slice(0, 200)
                 }
               </CardDescription>
             </Link>
           </CardHeader>
-          {/* //TODO: Image */}
-          {
-            flow.thumbnail && (
-              <CardContent className="relative order-1 lg:order-2 mx-auto lg:mx-0 w-full h-[200px] lg:w-[400px]  lg:h-[150px] rounded-lg bg-blue-300 p-0 overflow-hidden">
-                  <Image
-                    src={flow.thumbnail || defaultThumbnail}
-                    alt="Picture of the author"
-                    fill
-                    className="w-full h-full object-cover"
-                  />
-              </CardContent>
-            )
-          }
+          {flow.thumbnail && (
+            <CardContent className="relative order-1 sm:order-2 mx-auto sm:mx-0 w-full sm:w-1/3 h-[200px] sm:h-[150px] rounded-lg bg-blue-300 p-0 overflow-hidden">
+              <Image
+                src={flow.thumbnail || defaultThumbnail}
+                alt="Blog thumbnail"
+                fill
+                className="w-full h-full object-cover"
+              />
+            </CardContent>
+          )}
         </div>
-        <CardFooter className="flex flex-row pb-0 pt-2 px-2 justify-between items-center">
-          <div className="flex flex-wrap lg:gap-2">{flow.noOfComments} Discuss <Dot /> {flow.likeCount} Likes <Dot /> {flow.noOfViews} Reads</div>
+        <CardFooter className="flex flex-col sm:flex-row pb-0 pt-2 px-2 justify-between items-start sm:items-center gap-2 sm:gap-0">
+          <div className="flex flex-wrap gap-2 text-sm">
+            {flow.noOfComments} Discuss <Dot /> {flow.likeCount} Likes <Dot /> {flow.noOfViews} Reads
+          </div>
           <ToggleBookmark flowId={flow.id} isBookmarked={isBookmarked} />
         </CardFooter>
       </Card>

@@ -11,7 +11,7 @@ const Page = async({ searchParams }: Props) => {
   const {error, data} = await getTopUsers(searchQuery)
 
   return (
-    <div className='w-[75%] mx-auto'>
+    <div className='w-full md:w-[75%] mx-auto'>
       <div className='flex justify-center'>
         <SearchUser data={data!} />
       </div>

@@ -9,7 +9,7 @@ type props = {
 
 const SearchUser = ({data}: props) => {
   return (
-    <div className='w-full border-2 rounded-lg m-10 p-4'>
+    <div className='w-full border-2 rounded-lg m-2 sm:m-10 p-2 md:p-4'>
       <form action="/user/search" method='GET' className='flex gap-2 mb-5'>
         <Input placeholder='Search User...' name='search' id='search' />
         <Button variant={'ghost'}>Search</Button>

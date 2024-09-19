@@ -1,11 +1,9 @@
 import React from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card'
-import { Button } from '../ui/button'
 import { formatDateAgo } from '@/util/DateTime'
 import Link from 'next/link'
 import { Blog } from '@/types/BlogType'
 
-type props = {}
 
 export type HomeDraftProps = {
   data: Blog[]
@@ -13,7 +11,7 @@ export type HomeDraftProps = {
 
 const HomeDraftCard = ({ data }: HomeDraftProps) => {
   return (
-    <Card className=' '>
+    <Card className=''>
       <CardHeader className='flex flex-row mb-2 justify-between items-center'>
         <CardTitle>Drafts ({data.length})</CardTitle>
         {/* //TODO: See all will take to draft page in profile */}

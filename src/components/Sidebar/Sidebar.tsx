@@ -4,14 +4,12 @@ import { SidebarButtonBottom, SidebarButtonsTop } from "./ToggleSidebar";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import Followings from "./Followings";
 
 type sidebarProps = {
   user: UserWithFollowers
 }
 
 const SideBar = ({user}: sidebarProps) => {
-  const [isOpen, setIsOpen] = useState(true);
 
   return (
     <div className="h-screen py-5 sm:px-5 flex flex-col justify-between border-r">

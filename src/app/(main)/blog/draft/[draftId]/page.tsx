@@ -55,7 +55,7 @@ const DraftPage = async ({ params }: DraftPageProps) => {
 
 
   return (
-    <div className="relative py-20 mx-auto max-w-[80%]">
+    <div className="relative py-20 mx-auto w-full sm:max-w-[80%]">
       <CoverImage
         coverImage={DraftFlowData.coverImage || DefaultCoverImage}
         uploadImageAction={updateFlowCoverImage}

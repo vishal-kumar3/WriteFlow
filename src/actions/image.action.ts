@@ -1,5 +1,5 @@
 "use server"
-
+import { uploadFile } from '@uploadcare/upload-client'
 import prisma from "@/prisma";
 import { revalidatePath } from "next/cache";
 
@@ -73,4 +73,32 @@ export const updateFlowThumbnailImage = async(thumbnailImage: string, flowId: st
   if(!updatedThumbnailImage) return { error: 'Could not update thumbnail image' };
   revalidatePath(`/blog/draft/${flowId}`);
   return { success: 'Thumbnail image updated successfully' };
+}
+
+export async function uploadImage(file: File) {
+  // Ensure it's a client-side operation
+  if (typeof window === 'undefined') {
+    return { error: 'File uploads should happen on the client side.' };
+  }
+
+  if (!(file instanceof File)) {
+    return { error: 'Invalid file type, expected File.' };
+  }
+
+  try {
+    const result = await uploadFile(file, {
+      publicKey: '511e1df4c0a33fe1a180', // Replace with your actual public key
+      store: 'auto',
+      metadata: {
+        subsystem: 'uploader',
+        pet: 'cat',
+      },
+    });
+
+    console.log('Upload result:', result);
+    return { success: result.cdnUrl };
+  } catch (error) {
+    console.error('Upload error in function:', error);
+    return { error: 'There was a problem uploading your image, please try again.' };
+  }
 }
