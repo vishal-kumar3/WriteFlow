@@ -66,7 +66,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
   )
 
   return (
-    <div className="sticky flex gap-8 bottom-20 bg-white dark:bg-black rounded-3xl mb-5 mx-auto w-fit border-2 p-4">
+    <div className="flex gap-4 md:gap-8 bg-white dark:bg-black rounded-3xl shadow-lg border-2 p-3 sm:p-4">
       <div className="flex gap-2 items-center justify-center">
         <button
           onClick={async () => {
@@ -84,15 +84,13 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
             optimisticLikeData.isAlreadyLiked ? <HeartFilledIcon className='size-6 text-red-500' /> : <Heart />
           }
         </button>
-        <div>{optimisticLikeData.likesCnt}</div>
+        <div className="text-sm sm:text-base">{optimisticLikeData.likesCnt}</div>
       </div>
       {
         !isCommentOff && (
           <div className="flex gap-2 items-center">
             <CommentSection currentUser={currentUser} flowId={flowId} comment={comment} />
-            <div>
-              {commentCnt}
-            </div>
+            <div className="text-sm sm:text-base">{commentCnt}</div>
           </div>
         )
       }
@@ -106,20 +104,20 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
         }}
       >
         {
-          optimisticIsBookmark ? <BookmarkFilledIcon className='text-blue-300 size-[26px]' /> : <Bookmark />
+          optimisticIsBookmark ? <BookmarkFilledIcon className='text-blue-300 size-5 sm:size-6' /> : <Bookmark />
         }
       </button>
       <HoverCard openDelay={0}>
         <HoverCardTrigger>
-          <ShareIcon className='hover:cursor-pointer' />
+          <ShareIcon className='hover:cursor-pointer size-5 sm:size-6' />
         </HoverCardTrigger>
         <HoverCardContent className='flex w-fit gap-2 items-center'>
-          <CopyButton copyLink={`/blog/${flowId}`} ><Copy /></CopyButton>
+          <CopyButton copyLink={`/blog/${flowId}`} ><Copy className='size-5 sm:size-6' /></CopyButton>
           <Button variant={'ghost'} >
             <Link href={isMobile ?
               `whatsapp://send?text=${encodeURIComponent(message)}`
               : `https://web.whatsapp.com/send?text=${encodeURIComponent(message)}`} target={'_blank'}>
-              <FaWhatsapp className='size-[26px]' />
+              <FaWhatsapp className='size-5 sm:size-6' />
             </Link>
           </Button>
           <Button variant={'ghost'} >I</Button>
@@ -130,7 +128,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
       <div>
         <Popover>
           <PopoverTrigger>
-            <EllipsisVertical />
+            <EllipsisVertical className='size-5 sm:size-6' />
           </PopoverTrigger>
           <PopoverContent className="flex flex-col gap-1">
             <ReportUserCard reportOptions={reportPostOptions} type='post' reportedUserId={userId} reportedBlogId={flowId} />
