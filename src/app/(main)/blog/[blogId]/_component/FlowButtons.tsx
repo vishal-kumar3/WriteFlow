@@ -2,7 +2,7 @@
 import { likeFlow, toggleBookmark } from '@/actions/flow.action'
 import { Bookmark, BookmarkCheck, Copy, EllipsisVertical, Heart, ShareIcon } from 'lucide-react'
 import { toast } from 'sonner'
-import { useActionState, useOptimistic, useTransition } from "react";
+import { useActionState, useOptimistic, useState, useTransition } from "react";
 import { CommentSection } from './CommentSection'
 import { CommentWithUser } from '@/types/CommentType'
 import { User } from '@/types/UserType'
@@ -65,6 +65,8 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
     }
   )
 
+  const [iscopyOpen, setIsCopyOpen] = useState(false)
+
   return (
     <div className="flex gap-4 md:gap-8 mx-auto w-fit bg-white dark:bg-black rounded-3xl shadow-lg border-2 p-3 sm:p-4">
       <div className="flex gap-2 items-center justify-center">
@@ -107,9 +109,9 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
           optimisticIsBookmark ? <BookmarkFilledIcon className='text-blue-300 size-5 sm:size-6' /> : <Bookmark />
         }
       </button>
-      <HoverCard openDelay={0}>
+      <HoverCard openDelay={0} open={iscopyOpen} onOpenChange={setIsCopyOpen}>
         <HoverCardTrigger>
-          <ShareIcon className='hover:cursor-pointer size-5 sm:size-6' />
+          <ShareIcon onClick={() => setIsCopyOpen(true)} className='hover:cursor-pointer size-5 sm:size-6' />
         </HoverCardTrigger>
         <HoverCardContent className='flex w-fit gap-2 items-center'>
           <CopyButton copyLink={`/blog/${flowId}`} ><Copy className='size-5 sm:size-6' /></CopyButton>

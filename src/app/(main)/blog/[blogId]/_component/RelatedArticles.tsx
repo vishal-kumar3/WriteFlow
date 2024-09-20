@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 
 const ArticlePreview = ({ id, title, description, author, thumbnail, tags }: RelatedArticles) => (
   <Card className="overflow-hidden h-full">
-    <Link href={`/user/${id}`}>
+    <Link href={`/user/${author.id}`}>
       <CardFooter className="flex items-center space-x-2 px-4 py-1">
         <Avatar className="h-8 w-8">
           <AvatarImage src={author.avatar!} />
