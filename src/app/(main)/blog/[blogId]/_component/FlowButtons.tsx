@@ -66,7 +66,7 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
   )
 
   return (
-    <div className="flex gap-4 md:gap-8 bg-white dark:bg-black rounded-3xl shadow-lg border-2 p-3 sm:p-4">
+    <div className="flex gap-4 md:gap-8 mx-auto w-fit bg-white dark:bg-black rounded-3xl shadow-lg border-2 p-3 sm:p-4">
       <div className="flex gap-2 items-center justify-center">
         <button
           onClick={async () => {
