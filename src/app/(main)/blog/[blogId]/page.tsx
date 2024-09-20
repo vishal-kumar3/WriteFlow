@@ -102,67 +102,71 @@ export default async function PublishedBlog({ params }: props) {
   // console.log(relatedBlogs)
 
   return (
-    <div className="min-h-screen w-full px-4 sm:px-6 lg:px-8 pb-8 overflow-x-hidden">
-      <div className="max-w-4xl relative mx-auto">
-        <div className="sm:sticky top-5 z-10 bg-gray-100/10 rounded-lg shadow-md p-4 mb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div className="flex items-center gap-4">
-              <Link href={`/user/${blog.user.id}`}>
-                <Avatar className="w-10 h-10 sm:w-12 sm:h-12">
-                  <AvatarImage className='object-cover object-center' src={blog?.user?.image || DefaultAvatarImage} alt={blog.user.username || "User"} />
-                  <AvatarFallback>{blog.user.username?.charAt(0)}</AvatarFallback>
-                </Avatar>
-              </Link>
-              <div>
-                <Link href={`/user/${blog.user.id}`} className="font-bold text-sm sm:text-base">@{blog.user.username}</Link>
-                <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{foramtDateTime(blog.updatedAt)}</p>
+    <div className="min-h-screen flex flex-col">
+      <div className='flex-grow'>
+        <div className="p-2 md:max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="sm:sticky top-5 z-10 bg-gray-100/10 rounded-lg shadow-md p-4 mb-8">
+            <div className="flex flex-wrap justify-between items-start sm:items-center gap-4">
+              <div className="flex items-center gap-4">
+                <Link href={`/user/${blog.user.id}`}>
+                  <Avatar className="w-10 h-10 sm:w-12 sm:h-12">
+                    <AvatarImage className='object-cover object-center' src={blog?.user?.image || DefaultAvatarImage} alt={blog.user.username || "User"} />
+                    <AvatarFallback>{blog.user.username?.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                </Link>
+                <div>
+                  <Link href={`/user/${blog.user.id}`} className="font-bold text-sm sm:text-base">@{blog.user.username}</Link>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{foramtDateTime(blog.updatedAt)}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                {/* @ts-expect-error Async Server Component */}
+                <AuthUserOnly>
+                  {/* @ts-expect-error Async Server Component */}
+                  <HideForCurrentUser userId={blog.user.id}>
+                    <FollowButtonServerWraper username={blog.user.username!} id={blog.user.id} />
+                  </HideForCurrentUser>
+                </AuthUserOnly>
+                <ModeToggle />
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              {/* @ts-expect-error Async Server Component */}
-              <AuthUserOnly>
-                {/* @ts-expect-error Async Server Component */}
-                <HideForCurrentUser userId={blog.user.id}>
-                  <FollowButtonServerWraper username={blog.user.username!} id={blog.user.id} />
-                </HideForCurrentUser>
-              </AuthUserOnly>
-              <ModeToggle />
+          </div>
+
+          <article className="bg-white/10 rounded-lg shadow-md overflow-hidden mb-8">
+            <CoverImage
+              coverImage={blog.coverImage || DefaultCoverImage}
+              disabled={false}
+            />
+            <div className="p-2 sm:p-6 md:p-8">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-center">{blog.title}</h1>
+              <p className="text-md sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 italic mb-8 text-center">{blog.description}</p>
+              <div
+                className="tiptap ProseMirror prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg mx-auto max-w-full overflow-hidden"
+                style={{ wordWrap: 'break-word' }}
+                dangerouslySetInnerHTML={{ __html: blog.content! }}
+              />
+            </div>
+          </article>
+
+          <Separator className="my-8" />
+          <div className='sticky bottom-20 py-4'>
+            <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
+              <FlowButtons
+                flowId={blog.id}
+                userId={session?.user.id!}
+                currentUser={blog.user}
+                isCommentOff={blog.isCommentOff}
+                likeData={{
+                  isAlreadyLiked: isAlreadyLiked ? true : false,
+                  likesCnt: blog.likeCount
+                }}
+                comment={blog.Comment}
+                commentCnt={blog.noOfComments}
+                isBookmarked={isAlreadyBookmarked.data}
+              />
             </div>
           </div>
         </div>
-
-        <article className="bg-white/10 rounded-lg shadow-md overflow-hidden">
-          <CoverImage
-            coverImage={blog.coverImage || DefaultCoverImage}
-            disabled={false}
-          />
-          <div className="p-6 sm:p-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-center">{blog.title}</h1>
-            <p className="text-md sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 italic mb-8 text-center">{blog.description}</p>
-            <div
-              className="tiptap ProseMirror prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg mx-auto"
-              dangerouslySetInnerHTML={{ __html: blog.content! }}
-            />
-          </div>
-        </article>
-
-        <div className="sticky bottom-20 mt-8 flex justify-center">
-          <FlowButtons
-            flowId={blog.id}
-            userId={session?.user.id!}
-            currentUser={blog.user}
-            isCommentOff={blog.isCommentOff}
-            likeData={{
-              isAlreadyLiked: isAlreadyLiked ? true : false,
-              likesCnt: blog.likeCount
-            }}
-            comment={blog.Comment}
-            commentCnt={blog.noOfComments}
-            isBookmarked={isAlreadyBookmarked.data}
-          />
-        </div>
-
-        <Separator className="my-8" />
         <MoreArticles />
       </div>
     </div>

@@ -32,6 +32,34 @@
   outline: 3px solid #6A00F5;
 }
 
+.ProseMirror {
+  max-width: 100%;
+  overflow-x: auto;
+  word-wrap: break-word;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+}
+
+.ProseMirror table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.ProseMirror pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.ProseMirror table, .ProseMirror pre {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+
 @layer base {
   :root {
     --chart-1: 12 76% 61%;
