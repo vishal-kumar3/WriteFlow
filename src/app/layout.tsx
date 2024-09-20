@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} mb-16 md:mb-0`}>
         <ProgressBar />
         <ThemeProvider
           attribute="class"

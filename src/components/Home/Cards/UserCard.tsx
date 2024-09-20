@@ -23,8 +23,8 @@ export const UserCard = async ({ userData, createdAt, flowId }: UserCardProps) =
   const session = await auth()
 
   return (
-    <div className="flex flex-wrap items-center justify-between p-2 pb-0">
-      <Link href={`/user/${userData.id}`} className="flex items-center gap-2 sm:gap-4 py-2">
+    <div className="flex flex-wrap items-center justify-between p-2 py-0">
+      <Link href={`/user/${userData.id}`} className="flex items-center gap-2 sm:gap-4">
         <div className="size-[40px] sm:size-[50px] rounded-full">
           <Image
             src={userData.image || defaultThumbnail}
