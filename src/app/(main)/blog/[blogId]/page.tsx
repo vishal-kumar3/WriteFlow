@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import FlowButtons from "./_component/FlowButtons";
 import { isBookmarked, viewFlow } from "@/actions/flow.action";
 import { Separator } from "@/components/ui/separator";
-import { BlogWithTagsAndUserAndComments, BlogWithUserAndComments } from "@/types/BlogType";
+import { BlogWithTagsAndUser, BlogWithTagsAndUserAndComments, BlogWithUserAndComments } from "@/types/BlogType";
 import { ActionResponse } from "@/types/ActionResponse";
 import { Like } from "@/types/LikeType";
 import './_component/prosemirror.css'
@@ -68,25 +68,25 @@ export default async function PublishedBlog({ params }: props) {
   if (!blog) return <div className="p-4 text-center">Blog not found</div>;
   const isAlreadyBookmarked: ActionResponse = await isBookmarked(publishedId);
 
-  const relatedBlogs = await prisma.blog.findMany({
+  const relatedBlogs: BlogWithTagsAndUser[] = await prisma.blog.findMany({
     where: {
-      OR: blog.tags.length > 0
-        ? [
-          {
-            tags: {
-              some: {
-                id: {
-                  in: blog.tags.map(tag => tag.id),
-                },
+      OR: [
+        {
+          tags: {
+            some: {
+              id: {
+                in: blog.tags.map(tag => tag.id),
               },
             },
           },
-        ]
-        : [
-          {
-            userId: blog.userId,
-          },
-        ],
+        },
+        {
+          userId: blog.userId,
+        },
+        {
+          isPublished: true
+        }
+      ],
       isPublished: true,
       NOT: {
         id: blog.id,
@@ -99,13 +99,13 @@ export default async function PublishedBlog({ params }: props) {
     take: 3,
   });
 
-  // console.log(relatedBlogs)
+  console.log(relatedBlogs)
 
   return (
     <div className="min-h-screen flex flex-col">
       <div className='flex-grow'>
         <div className="p-2 md:max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="sm:sticky top-5 z-10 bg-gray-100/10 rounded-lg shadow-md p-4 mb-8">
+          <div className="sm:sticky top-5 z-10 bg-white dark:bg-black rounded-lg shadow-md p-4 mb-8">
             <div className="flex flex-wrap justify-between items-start sm:items-center gap-4">
               <div className="flex items-center gap-4">
                 <Link href={`/user/${blog.user.id}`}>
@@ -115,7 +115,7 @@ export default async function PublishedBlog({ params }: props) {
                   </Avatar>
                 </Link>
                 <div>
-                  <Link href={`/user/${blog.user.id}`} className="font-bold text-sm sm:text-base">@{blog.user.username}</Link>
+                  <Link href={`/user/${blog.user.id}`} className="font-bold text-sm sm:text-base">{blog.user.name}</Link>
                   <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">{foramtDateTime(blog.updatedAt)}</p>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export default async function PublishedBlog({ params }: props) {
             </div>
           </div>
         </div>
-        <MoreArticles />
+        <MoreArticles relatedArticles={relatedBlogs} />
       </div>
     </div>
   );

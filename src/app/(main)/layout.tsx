@@ -19,7 +19,7 @@ const layout = ({ children }: props) => {
           <MobileBarServer />
         </div>
       </AuthUserOnly>
-      <div className="flex-1 pb-5">{children}</div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 };

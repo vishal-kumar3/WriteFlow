@@ -29,7 +29,7 @@ const HomeFlowCard = ({ flow, userBookmark }: HomeFlowCardProps) => {
   })
 
   return (
-    <div className="border-2 rounded-lg mx-2 sm:mx-4 md:mx-6 lg:mx-8 my-4 p-2 sm:p-4">
+    <div className="border-2 rounded-lg mx-2 sm:mx-4 md:mx-6 lg:mx-8 my-4 p-2">
       <UserCard userData={flow.user} createdAt={flow.createdAt} flowId={flow.id} />
       <Card className="border-none shadow-none w-full">
         <div className="flex flex-col sm:flex-row gap-2 w-full">
