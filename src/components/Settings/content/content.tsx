@@ -12,7 +12,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -20,9 +20,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -37,11 +34,7 @@ import {
 import { useCallback, useState } from "react"
 import { foramtDateTime } from "@/util/DateTime"
 import Link from "next/link"
-import { editFlow } from "@/actions/settings.action"
-import { toast } from "sonner"
-import { useRouter } from "next/navigation"
-import { deleteFlow } from "@/actions/flow.action"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import TableActionButton from "./TableActionButton"
 
 export const columns: ColumnDef<column>[] = [
   {
@@ -105,86 +98,7 @@ export const columns: ColumnDef<column>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const flow = row.original
-      const router = useRouter()
-
-      const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-      const [isDeletePending, setIsDeletePending] = useState(false)
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(`${process.env.NEXT_PUBLIC_HOST}/blog/${!flow.isPublished ? 'draft/' : ''}${flow.id}`)}
-            >
-              Copy
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={async() => {
-                const {error, success} = await editFlow(flow.id, flow.isPublished!)
-
-                if(error) {
-                  toast.error(error)
-                }else {
-                  toast.success(success)
-                  router.push(`/blog/draft/${flow.id}`)
-                }
-              }}
-            >
-              Edit
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.preventDefault()
-                setIsDeleteOpen(true)
-              }}
-            >
-              Delete
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link href={`/blog/${!flow.isPublished ? 'draft/' : ''}${flow.id}`}>View</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-          <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Are you sure?</DialogTitle>
-                <DialogDescription>
-                  This action will delete the flow permanently. This action cannot be undone.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>
-                  Cancel
-                </Button>
-                <Button variant="destructive" onClick={async() => {
-                  setIsDeletePending(true)
-                  const {error, success} = await deleteFlow(flow.id)
-
-                  if(error) {
-                    toast.error(error)
-                  }else {
-                    toast.success(success)
-                    setIsDeleteOpen(false)
-                  }
-                  setIsDeletePending(false)
-                }}>
-                  Delete
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </DropdownMenu>
-      )
+      return <TableActionButton row={row}  />
     },
   },
 ]

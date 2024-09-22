@@ -18,18 +18,22 @@ const LikedFlows = async(props: props) => {
   return (
     <>
       {
-        LikedFlowData?.map((card, key: number) => (
-          <UserFlowsCard
-            key={key}
-            id={card.blog.id}
-            title={card.blog.title}
-            tags={card.blog.tags}
-            isPublished={card.blog.isPublished}
-            description={card.blog.description}
-            createdAt={card.blog.createdAt}
-            thumbnail={card.blog.thumbnail}
-          />
-        ))
+        LikedFlowData?.map((card, key: number) => {
+          if(!card) return null
+
+          return (
+            <UserFlowsCard
+              key={key}
+              id={card.blog.id}
+              title={card.blog.title}
+              tags={card.blog.tags}
+              isPublished={card.blog.isPublished}
+              description={card.blog.description}
+              createdAt={card.blog.createdAt}
+              thumbnail={card.blog.thumbnail}
+            />
+          )
+        })
       }
     </>
   )

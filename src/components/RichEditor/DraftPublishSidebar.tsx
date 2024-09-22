@@ -18,7 +18,6 @@ import { TagsSelection } from "./TagsSelection"
 import { useState } from "react"
 // import { uploadImage } from "@/actions/image.action"
 import { uploadFile } from '@uploadcare/upload-client'
-import prisma from "@/prisma"
 import { thumbnailUpload } from "@/actions/flow.action"
 import { toast } from "sonner"
 
@@ -112,7 +111,7 @@ export function DraftPublishSidebar({ userId, flowId, thumbnail, title }: { user
                   alt="Thumbnail"
                   layout="fill"
                   objectFit="cover"
-                  className="rounded-lg"
+                  className="rounded-lg w-full h-full"
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center">

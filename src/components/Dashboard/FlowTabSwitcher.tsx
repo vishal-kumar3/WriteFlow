@@ -56,7 +56,7 @@ export const FlowCard = ({ flowId, flowData }: { flowId: string, flowData: Blog 
           </DropdownMenuTrigger>
           <DropdownMenuContent className=''>
             {
-              !flowData?.isPublished && <Button className='w-full' variant="ghost"><Link href={`/blog/${flowId}`}>Edit</Link></Button>
+              !flowData?.isPublished && <Link href={`/blog/${flowId}`} className='w-full' ><Button variant="ghost" >Edit</Button ></Link>
             }
             <DeleteFlowButton flowId={flowId} userId={flowData?.userId!} modeClass='w-full' redirectMode={true} />
           </DropdownMenuContent>
