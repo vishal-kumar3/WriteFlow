@@ -38,7 +38,7 @@ const HomeFlows = async ({ searchParams }: HomePageProps) => {
 
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 md:max-w-[800px]">
       {
         data?.map((flow, key) => (
           <HomeFlowCard key={key} userBookmark={userBookmarks} flow={flow} />

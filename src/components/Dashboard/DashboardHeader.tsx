@@ -1,4 +1,5 @@
 import React from 'react'
+import { ThemeToggle } from '../ThemeToggle/ThemeToggle';
 
 type props = {
   title?: string;
@@ -11,11 +12,12 @@ const DashboardHeader = ({children, title, description}: props) => {
     <div className="m-10">
       {/* //TODO: Breadcrum here */}
       Breadcrum here
-      <div className="border-b mb-10">
-        <p className="text-4xl font-semibold">{title}</p>
-        <p className="opacity-50 mt-1 mb-6">
-          {description}
-        </p>
+      <div className="flex justify-between border-b mb-10">
+        <div>
+          <p className="text-4xl font-semibold">{title}</p>
+          <p className="opacity-50 mt-1 mb-6">{description}</p>
+        </div>
+        <ThemeToggle />
       </div>
       {children}
     </div>

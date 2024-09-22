@@ -9,7 +9,6 @@ import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { SideButton } from '../Sidebar/LinkButton'
 import { LucideProps, NotebookPen } from 'lucide-react'
-import Link from 'next/link'
 import { motion } from 'framer-motion'
 
 type props = {

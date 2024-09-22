@@ -30,7 +30,7 @@ export const SidebarButtonsTop = ({user}: {user: UserWithFollowers}) => {
 export const SidebarButtonBottom = () => {
   return (
     <div className="flex flex-col gap-1">
-        <LinkButton icon={<Settings />}>Settings</LinkButton>
+        <LinkButton link='/settings' icon={<Settings />}>Settings</LinkButton>
         <SideButton icon={<LogOut />} action={signOut}>Logout</SideButton>
       </div>
   )

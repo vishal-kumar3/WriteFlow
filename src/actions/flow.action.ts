@@ -167,9 +167,8 @@ export const getFlowForHome = async (filter: string = '') => {
       }
     },
     orderBy: {
-      createdAt: 'desc',
       // TODO: Implement this all around
-      // publishedAt: 'desc',
+      publishedAt: 'desc',
     }
   });
 
@@ -259,6 +258,24 @@ export const toggleBookmark = async (flowId: string) => {
     return { success: 'Bookmarked!!!' };
   }
 };
+
+export const thumbnailUpload = async (flowId: string, url: string) => {
+  if(!flowId) {error: 'Flow Id is required'}
+  if(!url) {error: 'URL is required'}
+
+  const thumbnail = prisma.blog.update({
+    where: {
+      id: flowId,
+    },
+    data: {
+      thumbnail: url,
+    }
+  }).catch(() => null)
+
+  if(!thumbnail) return { error: 'Unexpected error while uploading thumbnail!!!' }
+  revalidatePath(`/blog/draft/${flowId}`)
+  return { success: 'Thumbnail uploaded!!!' }
+}
 
 export const updateContent = async (
   flowId: string,
@@ -376,6 +393,7 @@ export const publishFlow = async (
       isPublished: true,
       isCommentOff,
       slug,
+      publishedAt: new Date(),
       tags: {
         connectOrCreate: tags.map((tag) => ({
           where: {

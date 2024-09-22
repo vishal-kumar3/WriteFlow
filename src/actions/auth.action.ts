@@ -118,6 +118,4 @@ export const register = async (data: z.infer<typeof registerFormSchema>) => {
 
     throw error;
   }
-
-  return { success: `${name} has registered successfully` };
 };

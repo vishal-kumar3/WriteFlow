@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
   // engineType = "library"
@@ -46,8 +44,8 @@ model Follows {
   followerId  String
   followingId String
   createdAt   DateTime @default(now())
-  follower    User     @relation("follower", fields: [followerId], references: [id])
-  following   User     @relation("following", fields: [followingId], references: [id])
+  follower    User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
 
   @@id([followerId, followingId])
 }
@@ -214,7 +212,7 @@ model Error {
   logId     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  log       Log      @relation(fields: [logId], references: [id])
+  log       Log      @relation(fields: [logId], references: [id], onDelete: Cascade)
 }
 
 model Report {
@@ -229,10 +227,10 @@ model Report {
   createdBy         String?
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
-  issuedBy          User?        @relation("IssuedBy", fields: [createdBy], references: [id])
-  reportedBlog      Blog?        @relation("ReportedBlog", fields: [reportedBlogId], references: [id])
-  reportedComment   Comment?     @relation("ReportedComment", fields: [reportedCommentId], references: [id])
-  reportedUser      User?        @relation("ReportedUser", fields: [reportedUserId], references: [id])
+  issuedBy          User?        @relation("IssuedBy", fields: [createdBy], references: [id], onDelete: Cascade)
+  reportedBlog      Blog?        @relation("ReportedBlog", fields: [reportedBlogId], references: [id], onDelete: Cascade)
+  reportedComment   Comment?     @relation("ReportedComment", fields: [reportedCommentId], references: [id], onDelete: Cascade)
+  reportedUser      User?        @relation("ReportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
 }
 
 enum Role {

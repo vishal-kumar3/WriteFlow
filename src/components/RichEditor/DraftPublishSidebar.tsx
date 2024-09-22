@@ -18,6 +18,9 @@ import { TagsSelection } from "./TagsSelection"
 import { useState } from "react"
 // import { uploadImage } from "@/actions/image.action"
 import { uploadFile } from '@uploadcare/upload-client'
+import prisma from "@/prisma"
+import { thumbnailUpload } from "@/actions/flow.action"
+import { toast } from "sonner"
 
 
 export function DraftPublishSidebar({ userId, flowId, thumbnail, title }: { userId: string, flowId: string, thumbnail: string | null, title: string }) {
@@ -48,8 +51,15 @@ export function DraftPublishSidebar({ userId, flowId, thumbnail, title }: { user
         },
       });
 
-      console.log('Upload result:', result);
-      return { success: result.cdnUrl };
+      if(result.cdnUrl){
+        const {error, success} = await thumbnailUpload(flowId, result.cdnUrl);
+
+        if(error){
+          return { error: error };
+        }
+        return { success: result.cdnUrl };
+      }
+      return { error: 'There was a problem uploading your image, please try again.' };
     } catch (error) {
       console.error('Upload error in function:', error);
       return { error: 'There was a problem uploading your image, please try again.' };
@@ -126,8 +136,6 @@ export function DraftPublishSidebar({ userId, flowId, thumbnail, title }: { user
                 const prevThumbnail = thumbnail;
 
                 if (file) {
-                  console.log("Selected file:", file);
-
                   // Immediate preview using FileReader
                   const reader = new FileReader();
                   reader.onload = (e) => {
@@ -141,9 +149,10 @@ export function DraftPublishSidebar({ userId, flowId, thumbnail, title }: { user
 
                     if (error) {
                       console.error("Upload error:", error);
+                      toast.error(error);
                       setFlowThumbnail(prevThumbnail);
                     } else {
-                      console.log("Uploaded successfully:", success);
+                      toast.success("Thumbnail uploaded successfully");
                       setFlowThumbnail(success!);
                     }
                   } catch (uploadError) {
