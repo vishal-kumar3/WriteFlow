@@ -1,19 +1,43 @@
-"use client"; // Only the search bar needs to be a client component
-
+"use client";
 import { Input } from "@/components/ui/input";
-import { ModeToggle } from "@/components/ThemeToggle/ThemeToggle";
-import { Bell } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
+import { Bell, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation"; // Client-side routing
 import { useState } from "react";
-import { UserSearch } from "./UserSearch";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import Link from "next/link";
+import { User } from "@/types/UserType";
+import { signOut } from "next-auth/react";
 
 export type SearchBarProps = {
   initialSearch?: string;
+  user: User
 };
 
-const SearchBar = ({ initialSearch }: SearchBarProps) => {
+const SearchBar = ({ initialSearch, user }: SearchBarProps) => {
   const router = useRouter();
   const [search, setSearch] = useState(initialSearch);
+
+  const UserOptions = [
+    {
+      icon: <Bell className="w-4" />,
+      href: "/notifications",
+      label: "Notifications",
+    },
+    {
+      icon: <Settings className="w-4" />,
+      href: "/settings",
+      label: "Settings",
+      onClick: () => console.log("Settings"),
+    },
+    {
+      icon: <LogOut className="w-4" />,
+      href: "",
+      label: "Logout",
+      onClick: async() => await signOut(),
+    }
+  ]
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,33 +48,63 @@ const SearchBar = ({ initialSearch }: SearchBarProps) => {
 
   return (
     <form
-      className="sticky bg-background z-10 flex top-0 border-b-2 mt-0 w-full px-10 justify-between items-center h-[60px]"
+      className="sticky bg-background z-10 flex top-0 border-b-2 mt-0 w-full px-2 md:px-10 justify-between items-center h-[60px]"
       onSubmit={handleSearch}
     >
-      <div className="flex-1">
+      <div className="flex-1 mr-2">
         <Input
           name="search"
-          className="outline-none max-w-[60%] mx-auto"
+          className="outline-none flex-1 md:max-w-[60%] mx-auto"
           placeholder="Search for Flows..."
           type="text"
           value={search}
-          onChange={(e) => {
-            // setSearch(e.target.value)
-            const key = e.target.value.slice(-1);
-            if(key == '@'){
-              console.log('at');
-              setSearch(e.target.value.slice(0, -1) + 'from:');
-            } else{
-              setSearch(e.target.value);
-            }
-          }}
+          // onChange={(e) => {
+          //   setSearch(e.target.value)
+          //   const key = e.target.value.slice(-1);
+          //   if(key == '@'){
+          //     console.log('at');
+          //     setSearch(e.target.value.slice(0, -1) + 'from:');
+          //   } else{
+          //     setSearch(e.target.value);
+          //   }
+          // }}
           defaultValue={initialSearch || ""}
         />
         {/* <UserSearch /> */}
       </div>
       <div className="flex items-center gap-3">
-        <ModeToggle />
-        <Bell />
+        <ThemeToggle />
+        {
+          user ? (
+            <Popover>
+              <PopoverTrigger>
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </PopoverTrigger>
+              <PopoverContent className="w-fit flex flex-col p-2">
+                {UserOptions.map((option) => (
+                  <Link
+                    href={option.href}
+                    key={option.label}
+                    onClick={option.onClick}
+                    className="flex gap-2 text-sm items-center transition-all ease-in-out duration-200 hover:bg-black/20 hover:dark:bg-white/20 p-2 rounded-md"
+                  >
+                    {option.icon}
+                    <span>{option.label}</span>
+                  </Link>
+                ))}
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Link
+              href="/auth/login"
+              className="bg-blue-400 p-1 px-3 rounded-lg"
+            >Login</Link>
+          )
+        }
+
       </div>
     </form>
   );

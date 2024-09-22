@@ -79,7 +79,7 @@ export const Comment = ({
               name="content"
               value={optimisticComment?.content}
               placeholder="Enter your comment here..."
-              className="disabled:text-lg disabled:border-none disabled:cursor-auto"
+              className="disabled:text-lg disabled:border-none disabled:cursor-auto disabled:text-black dark:disabled:text-white"
               readOnly={disabled || false}
               disabled={disabled || isCommentSending || false}
               required
@@ -148,12 +148,6 @@ export function CommentSection({ comment, flowId, currentUser }: CommentSectionP
             ))
           }
         </div>
-
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Close Comment Section</Button>
-          </SheetClose>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   )

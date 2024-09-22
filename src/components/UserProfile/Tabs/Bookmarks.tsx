@@ -2,6 +2,7 @@ import { auth } from '@/auth'
 import prisma from '@/prisma'
 import { UserFlowsCard, UserFlowsCardProps } from './UserFlows'
 import { UserWithBookmark } from '@/types/BookmarkType'
+import { getBookmarkData } from '@/actions/tabs.action'
 
 type props = {}
 
@@ -10,14 +11,7 @@ const Bookmarks = async(props: props) => {
   const session = await auth()
   if(!session) return <div>You are not loggedIn</div>
 
-  const BookmarkData: UserWithBookmark = await prisma.user.findUnique({
-    where: {
-      id: session.user.id
-    },
-    select: {
-      bookmarks: true,
-    }
-  })
+  const BookmarkData: UserWithBookmark = await getBookmarkData(session?.user?.id!)
 
   return (
     <>

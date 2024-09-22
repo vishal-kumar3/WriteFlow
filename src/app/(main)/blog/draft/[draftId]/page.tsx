@@ -31,6 +31,8 @@ const DraftPage = async ({ params }: DraftPageProps) => {
       }
     });
 
+    if (!data) return null;
+
     return {
       ...data,
       jsonContent: data?.jsonContent // Assume this is already an object or null
@@ -38,7 +40,7 @@ const DraftPage = async ({ params }: DraftPageProps) => {
   };
 
   const DraftFlowData = await fetchFlowData(draftId);
-
+  console.log(DraftFlowData)
   if (!DraftFlowData) return <div>No draft found</div>
 
   const processedDraftFlowData = {

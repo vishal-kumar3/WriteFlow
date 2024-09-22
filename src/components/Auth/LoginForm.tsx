@@ -73,7 +73,7 @@ const LoginForm = (props: props) => {
                     <Input
                       type="email"
                       placeholder="Enter Your Email..."
-                      disabled={form.formState.isSubmitting}
+                      disabled={form.formState.isSubmitting || loadingButton}
                       {...field}
                     />
                   </FormControl>
@@ -91,7 +91,7 @@ const LoginForm = (props: props) => {
                     <Input
                       type="password"
                       placeholder="Enter Your Password..."
-                      disabled={form.formState.isSubmitting}
+                      disabled={form.formState.isSubmitting || loadingButton}
                       {...field}
                     />
                   </FormControl>

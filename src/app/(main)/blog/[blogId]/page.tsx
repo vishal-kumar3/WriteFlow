@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { foramtDateTime } from '@/util/DateTime';
 import AuthUserOnly from '@/util/AuthUserOnly';
 import HideForCurrentUser from '@/util/HideForCurrentUser';
-import { ModeToggle } from '@/components/ThemeToggle/ThemeToggle';
+import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import FollowButtonServerWraper from '@/components/UserProfile/FollowButtonServerWraper';
 import MoreArticles from './_component/RelatedArticles';
 
@@ -99,7 +99,11 @@ export default async function PublishedBlog({ params }: props) {
     take: 3,
   });
 
-  console.log(relatedBlogs)
+  const currentUser = await prisma.user.findUnique({
+    where: {
+      id: session.user.id
+    }
+  })
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -127,7 +131,7 @@ export default async function PublishedBlog({ params }: props) {
                     <FollowButtonServerWraper username={blog.user.username!} id={blog.user.id} />
                   </HideForCurrentUser>
                 </AuthUserOnly>
-                <ModeToggle />
+                <ThemeToggle />
               </div>
             </div>
           </div>
@@ -154,7 +158,7 @@ export default async function PublishedBlog({ params }: props) {
               <FlowButtons
                 flowId={blog.id}
                 userId={session?.user.id!}
-                currentUser={blog.user}
+                currentUser={currentUser}
                 isCommentOff={blog.isCommentOff}
                 likeData={{
                   isAlreadyLiked: isAlreadyLiked ? true : false,

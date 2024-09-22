@@ -78,7 +78,7 @@ const RegisterForm = (props: props) => {
                     <Input
                       type="text"
                       placeholder="Enter your name..."
-                      disabled={form.formState.isSubmitting}
+                      disabled={form.formState.isSubmitting || loadingButton}
                       {...field}
                     />
                   </FormControl>
@@ -96,7 +96,7 @@ const RegisterForm = (props: props) => {
                     <Input
                       type="text"
                       placeholder="Enter your username..."
-                      disabled={form.formState.isSubmitting}
+                      disabled={form.formState.isSubmitting || loadingButton}
                       {...field}
                     />
                   </FormControl>
@@ -114,7 +114,7 @@ const RegisterForm = (props: props) => {
                     <Input
                       type="email"
                       placeholder="Enter your email..."
-                      disabled={form.formState.isSubmitting}
+                      disabled={form.formState.isSubmitting || loadingButton}
                       {...field}
                     />
                   </FormControl>
@@ -132,7 +132,7 @@ const RegisterForm = (props: props) => {
                     <Input
                       type="password"
                       placeholder="Enter your password..."
-                      disabled={form.formState.isSubmitting}
+                      disabled={form.formState.isSubmitting || loadingButton}
                       {...field}
                     />
                   </FormControl>

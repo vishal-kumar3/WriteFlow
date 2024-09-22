@@ -95,7 +95,6 @@ export async function uploadImage(file: File) {
       },
     });
 
-    console.log('Upload result:', result);
     return { success: result.cdnUrl };
   } catch (error) {
     console.error('Upload error in function:', error);

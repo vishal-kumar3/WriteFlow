@@ -8,7 +8,7 @@ type props = {
 const SidebarButton = ({children}: props) => {
   return (
     <button
-      
+
       className="transition-all text-sm ease-in hover:bg-[#f5f5f5] dark:hover:bg-white/20 flex items-center gap-3 px-2 py-[5px] rounded-md hover:shadow-lg"
     >
       <div className="flex justify-center">

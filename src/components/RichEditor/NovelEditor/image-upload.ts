@@ -12,13 +12,11 @@ const onUpload = (file: File) => {
       pet: 'cat'
     }
   })
-  console.log("Promise ", promise)
   return new Promise((resolve) => {
     toast.promise(
       promise.then(async (res) => {
         // Successfully uploaded image
         if (res.cdnUrl) {
-          console.log("res ",res)
           const url = res.cdnUrl;
           // preload the image
           let image = new Image();
