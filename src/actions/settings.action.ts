@@ -10,26 +10,30 @@ export const personalInfoUpdate = async({ name, username, email, about }: person
   const session = await auth()
   if(!session) return { error: "You must be logged in to perform this action" }
 
-  const updatedProfile = await prisma.user.update({
-    where: {
-      id: session.user.id
-    },
-    data: {
-      name: name,
-      username: username,
-      email: email,
-      about: {
-        create: {
-          career: about.career,
-          bio: about.bio
-        },
-        update: {
-          career: about.career,
-          bio: about.bio
-        }
+  const updatedProfile = await prisma.$transaction([
+    prisma.user.update({
+      where: {
+        id: session.user.id
+      },
+      data: {
+        name,
+        username,
+        email
       }
-    }
-  }).catch((e) => {
+    }),
+    prisma.about.upsert({
+      where: {
+        userId: session.user.id
+      },
+      create: {
+        userId: session.user.id!,
+        ...about
+      },
+      update: {
+        ...about
+      }
+    })
+  ]).catch((e) => {
     console.log("error while updating profile:- ",e)
     return null
   })
@@ -117,7 +121,7 @@ export const deleteAccount = async (password: string, confirm: boolean) => {
 export const editFlow = async (flowId: string, isPublished: boolean) => {
   if(!flowId) return { error: "You must provide a flow id to perform this action" }
   if(!isPublished) return { success: "Already Flow is a Draft." }
-  
+
   const session = await auth()
   if(!session) return { error: "You must be logged in to perform this action" }
 

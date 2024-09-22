@@ -8,24 +8,7 @@ import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/
 import { z } from 'zod'
 import { auth } from '@/auth'
 import prisma from '@/prisma'
-
-export const FormWrapper = ({ title, schema, defaultValues, fields, onSubmit, buttonText }: DynamicFormProps & { title: string }) => {
-  return (
-    <div className='max-w-[70%] text-sm space-y-4'>
-      <div className='text-xl font-semibold'># {title}</div>
-      <hr />
-      <div className='ml-8'>
-        <DynamicForm
-          schema={schema}
-          defaultValues={defaultValues}
-          fields={fields}
-          onSubmit={onSubmit}
-          buttonText={buttonText}
-        />
-      </div>
-    </div>
-  )
-}
+import { FormWrapper } from '@/components/form/FormWrapper'
 
 const AccountPage = async () => {
   const session = await auth()
