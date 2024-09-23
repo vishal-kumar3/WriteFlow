@@ -12,16 +12,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown } from "lucide-react"
+import { ArrowUpDown } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -79,10 +73,20 @@ export const columns: ColumnDef<column>[] = [
   },
   {
     accessorKey: "author",
-    header: () => <div className="">Author</div>,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Author
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
-      const author = parseFloat(row.getValue("author"))
-      return <div className="font-medium">{author}</div>
+      const flow = row.original
+      return <Link href={flow.author_link || "#"} className="font-medium">{flow.author}</Link>
     },
   },
   {
@@ -90,7 +94,6 @@ export const columns: ColumnDef<column>[] = [
     header: () => <div className="">Created At</div>,
     cell: ({ row }) => {
       const publishedAt = row.getValue("publishedAt") as Date
-      console.log(publishedAt)
       return <div className="">{foramtDateTime(publishedAt)}</div>
     }
   },
@@ -110,12 +113,14 @@ type props = {
 export type column = {
   id: string
   title: string
+  author_link?: string
   author: string
   publishedAt?: Date
   isPublished?: boolean
+  owned?: boolean
 }
 
-export function DataTableDemo({ data }: props) {
+export function ContentSettingsTable({ data }: props) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
@@ -153,7 +158,7 @@ export function DataTableDemo({ data }: props) {
           onChange={onTitleFilterChange}
           className="max-w-sm"
         />
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
@@ -179,7 +184,7 @@ export function DataTableDemo({ data }: props) {
               })}
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button variant='destructive' className="ml-auto">Delete</Button>
+        <Button variant='destructive' className="ml-auto">Delete</Button> */}
       </div>
       <div className="rounded-md border">
         <Table>

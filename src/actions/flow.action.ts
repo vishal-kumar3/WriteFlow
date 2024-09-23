@@ -515,31 +515,48 @@ export const viewFlow = async (flowId: string) => {
   const session = await auth();
   if (!session) return { error: 'You are not logged in' };
 
-  const { data } = await isAlreadyViewed(flowId, session.user.id!);
-
-  if (data) return { success: 'Already viewed' };
-  const view = prisma.$transaction([
-    prisma.view.create({
-      data: {
-        userId: session.user.id!,
-        blogId: flowId,
-      }
-    }),
-    prisma.blog.update({
-      where: {
-        id: flowId,
-      },
-      data: {
-        noOfViews: {
-          increment: 1,
+  try {
+    const result = await prisma.$transaction(async (prisma) => {
+      const existingView = await prisma.view.findUnique({
+        where: {
+          userId_blogId: {
+            userId: session.user.id!,
+            blogId: flowId,
+          }
         }
-      }
-    })
-  ])
+      });
 
-  if (!view) return { error: 'Unexpected error while viewing flow!!!' };
-  revalidatePath(`/user/${session.user.id}`);
-  return { success: 'Flow viewed!!!' };
+      if (existingView) {
+        return { success: 'Already viewed' };
+      }
+
+      await prisma.view.create({
+        data: {
+          userId: session.user.id!,
+          blogId: flowId,
+        }
+      });
+
+      await prisma.blog.update({
+        where: {
+          id: flowId,
+        },
+        data: {
+          noOfViews: {
+            increment: 1,
+          }
+        }
+      });
+
+      return { success: 'Flow viewed!!!' };
+    });
+
+    revalidatePath(`/user/${session.user.id}`);
+    return result;
+  } catch (error) {
+    console.error("Error in viewFlow:", error);
+    return { error: 'Unexpected error while viewing flow!!!' };
+  }
 }
 
 export const isBookmarked = async (flowId: string) => {

@@ -39,30 +39,36 @@ const TableActionButton = ({row}: props) => {
         >
           Copy
         </DropdownMenuItem>
-        <DropdownMenuItem
-          className='cursor-pointer'
-          onClick={async () => {
-            const { error, success } = await editFlow(flow.id, flow.isPublished!)
+        {
+          flow.owned && (
+            <>
+              <DropdownMenuItem
+                className='cursor-pointer'
+                onClick={async () => {
+                  const { error, success } = await editFlow(flow.id, flow.isPublished!)
 
-            if (error) {
-              toast.error(error)
-            } else {
-              toast.success(success)
-              router.push(`/blog/draft/${flow.id}`)
-            }
-          }}
-        >
-          Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          className='cursor-pointer'
-          onClick={(e) => {
-            e.preventDefault()
-            setIsDeleteOpen(true)
-          }}
-        >
-          Delete
-        </DropdownMenuItem>
+                  if (error) {
+                    toast.error(error)
+                  } else {
+                    toast.success(success)
+                    router.push(`/blog/draft/${flow.id}`)
+                  }
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className='cursor-pointer'
+                onClick={(e) => {
+                  e.preventDefault()
+                  setIsDeleteOpen(true)
+                }}
+              >
+                Delete
+              </DropdownMenuItem>
+            </>
+          )
+        }
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className='cursor-pointer'

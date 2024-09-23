@@ -4,40 +4,47 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Tabs, TabsContent } from "@/components/ui/tabs"
 import { ChevronDown } from "lucide-react"
 import { useState } from "react"
-import { column, DataTableDemo } from "./content"
-import { HistoryWithBlog } from "@/types/ViewType"
-import { UserWithBookmark } from "@/types/BookmarkType"
-import { LikedFlowWithTags } from "@/types/LikeType"
-import { BlogWithTags } from "@/types/BlogType"
+import { column, ContentSettingsTable } from "./content"
+import { HistoryWithBlogAndUser } from "@/types/ViewType"
+import { UserWithBookmarkAndUserAndTags } from "@/types/BookmarkType"
+import { LikedFlowWithTagsAndUser } from "@/types/LikeType"
+import { BlogWithTagsAndUser } from "@/types/BlogType"
 
 type props = {
-  historyData: HistoryWithBlog[]
-  bookmarkData: UserWithBookmark
-  publishedData: BlogWithTags[]
-  likedData: LikedFlowWithTags[]
-  draftData: BlogWithTags[]
+  currentUserId: string
+  historyData: HistoryWithBlogAndUser[]
+  bookmarkData: UserWithBookmarkAndUserAndTags
+  publishedData: BlogWithTagsAndUser[]
+  likedData: LikedFlowWithTagsAndUser[]
+  draftData: BlogWithTagsAndUser[]
 }
 
-const ContentTabSwitcher = ({ historyData, bookmarkData, publishedData, likedData, draftData }: props) => {
+const ContentTabSwitcher = ({ currentUserId, historyData, bookmarkData, publishedData, likedData, draftData }: props) => {
   const [activeTab, setActiveTab] = useState("Published Flow")
 
   const historyColumnData: column[] = historyData.map((data) => {
+    const author = currentUserId === data?.blog?.user?.id ? "(You)" : data?.blog?.user?.username!
     return {
       id: data?.blog?.id!,
       title: data?.blog?.title!,
-      author: data?.blog?.userId!,
+      author_link: `/user/${data?.blog?.user?.id}`,
+      author: author,
       publishedAt: data?.blog?.publishedAt!,
       isPublished: data?.blog?.isPublished!,
+      owned: currentUserId === data?.blog?.user?.id
     }
   }) || []
 
   const bookmarkColumnData: column[] = bookmarkData?.bookmarks.map((data) => {
+    const author = currentUserId === data?.user?.id ? "(You)" : data?.user?.username!
     return {
       id: data?.id!,
       title: data?.title!,
-      author: data?.userId!,
+      author_link: `/user/${data?.user?.id}`,
+      author: author,
       publishedAt: data?.publishedAt!,
       isPublished: data?.isPublished!,
+      owned: currentUserId === data?.user?.id
     }
   }) || []
 
@@ -45,19 +52,24 @@ const ContentTabSwitcher = ({ historyData, bookmarkData, publishedData, likedDat
     return {
       id: data?.id!,
       title: data?.title!,
-      author: data?.userId!,
+      author_link: `/user/${data?.user?.id}`,
+      author: "(You)",
       publishedAt: data?.publishedAt!,
       isPublished: data?.isPublished!,
+      owned: true
     }
   }) || []
 
   const likedColumnData: column[] = likedData.map((data) => {
+    const author = currentUserId === data?.blog?.user?.id ? "(You)" : data?.blog?.user?.username!
     return {
       id: data?.blog?.id!,
       title: data?.blog?.title!,
-      author: data?.blog?.userId!,
+      author_link: `/user/${data?.blog?.user?.id}`,
+      author: author,
       publishedAt: data?.blog?.publishedAt!,
       isPublished: data?.blog?.isPublished!,
+      owned: currentUserId === data?.blog?.user?.id
     }
   }) || []
 
@@ -65,9 +77,11 @@ const ContentTabSwitcher = ({ historyData, bookmarkData, publishedData, likedDat
     return {
       id: data?.id!,
       title: data?.title!,
-      author: data?.userId!,
-      publishedAt: data?.createdAt!,
+      author_link: `/user/${data?.user?.id}`,
+      author: "(You)",
+      publishedAt: data?.updatedAt!,
       isPublished: data?.isPublished!,
+      owned: true
     }
   })
 
@@ -87,11 +101,11 @@ const ContentTabSwitcher = ({ historyData, bookmarkData, publishedData, likedDat
           <DropdownMenuItem onClick={() => setActiveTab("History")}>History</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <TabsContent value="Published Flow"><DataTableDemo data={publishedColumnData} /></TabsContent>
-      <TabsContent value="Draft Flow"><DataTableDemo data={draftColumnData} /></TabsContent>
-      <TabsContent value="Liked Flow"><DataTableDemo data={likedColumnData} /></TabsContent>
-      <TabsContent value="Bookmarks"><DataTableDemo data={bookmarkColumnData} /></TabsContent>
-      <TabsContent value="History"><DataTableDemo data={historyColumnData} /></TabsContent>
+      <TabsContent value="Published Flow"><ContentSettingsTable data={publishedColumnData} /></TabsContent>
+      <TabsContent value="Draft Flow"><ContentSettingsTable data={draftColumnData} /></TabsContent>
+      <TabsContent value="Liked Flow"><ContentSettingsTable data={likedColumnData} /></TabsContent>
+      <TabsContent value="Bookmarks"><ContentSettingsTable data={bookmarkColumnData} /></TabsContent>
+      <TabsContent value="History"><ContentSettingsTable data={historyColumnData} /></TabsContent>
     </Tabs>
   )
 }

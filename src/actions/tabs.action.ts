@@ -1,19 +1,24 @@
 "use server"
 
 import prisma from "@/prisma"
-import { BlogWithTags } from "@/types/BlogType"
-import { UserWithBookmark } from "@/types/BookmarkType"
-import { LikedFlowWithTags } from "@/types/LikeType"
-import { HistoryWithBlog } from "@/types/ViewType"
+import { BlogWithTagsAndUser } from "@/types/BlogType"
+import { UserWithBookmarkAndUserAndTags } from "@/types/BookmarkType"
+import { LikedFlowWithTagsAndUser } from "@/types/LikeType"
+import { HistoryWithBlogAndUser } from "@/types/ViewType"
 
 
 export const getHistoryData = async (userId: string) => {
-  const HistoryData: HistoryWithBlog[] = await prisma.view.findMany({
+  const HistoryData: HistoryWithBlogAndUser[] = await prisma.view.findMany({
     where: {
       userId: userId,
     },
-    select: {
-      blog: true
+    include: {
+      blog: {
+        include: {
+          user: true,
+          tags: true
+        }
+      },
     }
   }).catch(() => {
     return []
@@ -23,12 +28,17 @@ export const getHistoryData = async (userId: string) => {
 }
 
 export const getBookmarkData = async (userId: string) => {
-  const BookmarkData: UserWithBookmark = await prisma.user.findUnique({
+  const BookmarkData: UserWithBookmarkAndUserAndTags = await prisma.user.findUnique({
     where: {
       id: userId
     },
-    select: {
-      bookmarks: true,
+    include: {
+      bookmarks: {
+        include: {
+          user: true,
+          tags: true
+        }
+      }
     }
   })
 
@@ -36,7 +46,7 @@ export const getBookmarkData = async (userId: string) => {
 }
 
 export const getLikedData = async (userId: string) => {
-  const LikedFlowData: LikedFlowWithTags[] = await prisma.blogLike.findMany({
+  const LikedFlowData: LikedFlowWithTagsAndUser[] = await prisma.blogLike.findMany({
     where: {
       userId: userId
     },
@@ -44,6 +54,7 @@ export const getLikedData = async (userId: string) => {
       blog: {
         include: {
           tags: true,
+          user: true,
         },
       },
     }
@@ -53,12 +64,13 @@ export const getLikedData = async (userId: string) => {
 }
 
 export const getPublishedData = async (userId: string) => {
-  const PublishedFlowData: BlogWithTags[] = await prisma.blog.findMany({
+  const PublishedFlowData: BlogWithTagsAndUser[] = await prisma.blog.findMany({
     where: {
       userId: userId,
       isPublished: true
     },
     include: {
+      user: true,
       tags: true
     }
   }).catch(() => [])
@@ -67,13 +79,14 @@ export const getPublishedData = async (userId: string) => {
 }
 
 export const getDraftData = async (userId: string) => {
-  const DraftFlowData: BlogWithTags[] = await prisma.blog.findMany({
+  const DraftFlowData: BlogWithTagsAndUser[] = await prisma.blog.findMany({
     where: {
       userId: userId,
       isPublished: false
     },
     include: {
-      tags: true
+      tags: true,
+      user: true
     }
   }).catch(() => [])
 

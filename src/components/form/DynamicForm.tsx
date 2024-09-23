@@ -184,9 +184,13 @@ export default function DynamicForm({ schema, defaultValues, fields, onSubmit, b
         ))}
         <div className="space-x-4">
           <Button type="submit">{ buttonText || 'Submit' }</Button>
-          <Button onClick={() => {
-            form.reset()
-          }} variant='secondary'>Cancel</Button>
+          {
+            fields[0].type !== 'password' && (
+              <Button type="reset" onClick={() => {
+                form.reset()
+              }} variant='secondary'>Cancel</Button>
+            )
+          }
         </div>
       </form>
     </Form>

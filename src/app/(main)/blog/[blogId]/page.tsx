@@ -137,10 +137,14 @@ export default async function PublishedBlog({ params }: props) {
           </div>
 
           <article className="bg-white/10 rounded-lg shadow-md overflow-hidden mb-8">
-            <CoverImage
-              coverImage={blog.coverImage || DefaultCoverImage}
-              disabled={false}
-            />
+            {
+              blog.coverImage && (
+                <CoverImage
+                  coverImage={blog.coverImage}
+                  disabled={false}
+                />
+              )
+            }
             <div className="p-2 sm:p-6 md:p-8">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-center">{blog.title}</h1>
               <p className="text-md sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 italic mb-8 text-center">{blog.description}</p>

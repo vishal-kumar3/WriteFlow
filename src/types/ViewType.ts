@@ -1,7 +1,11 @@
 import { Prisma } from '@prisma/client';
 
-export type HistoryWithBlog = Prisma.ViewGetPayload<{
-  select: {
-    blog: true,
+export type HistoryWithBlogAndUser = Prisma.ViewGetPayload<{
+  include: {
+    blog: {
+      include: {
+        user: true,
+      }
+    },
   }
 }> | null

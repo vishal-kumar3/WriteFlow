@@ -3,12 +3,13 @@ import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import { Bell, LogOut, Settings } from "lucide-react";
 import { useRouter } from "next/navigation"; // Client-side routing
-import { useState } from "react";
+import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import Link from "next/link";
 import { User } from "@/types/UserType";
 import { signOut } from "next-auth/react";
+import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page";
 
 export type SearchBarProps = {
   initialSearch?: string;
@@ -20,11 +21,11 @@ const SearchBar = ({ initialSearch, user }: SearchBarProps) => {
   const [search, setSearch] = useState(initialSearch);
 
   const UserOptions = [
-    {
-      icon: <Bell className="w-4" />,
-      href: "/notifications",
-      label: "Notifications",
-    },
+    // {
+    //   icon: <Bell className="w-4" />,
+    //   href: "/notifications",
+    //   label: "Notifications",
+    // },
     {
       icon: <Settings className="w-4" />,
       href: "/settings",
@@ -79,8 +80,17 @@ const SearchBar = ({ initialSearch, user }: SearchBarProps) => {
             <Popover>
               <PopoverTrigger>
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage src={user.image || DefaultAvatarImage} className="object-center object-cover" alt={user.name!} />
+                  <AvatarFallback>
+                    <span className="text-sm font-medium text-white">
+                      {/* if name if separated by space then it will show first letter of each word else two letters of the worrd */}
+                      {user?.name?.split(" ").map((word, index) => (
+                        <React.Fragment key={index}>
+                          {word[0]}
+                        </React.Fragment>
+                      ))}
+                    </span>
+                  </AvatarFallback>
                 </Avatar>
               </PopoverTrigger>
               <PopoverContent className="w-fit flex flex-col p-2">

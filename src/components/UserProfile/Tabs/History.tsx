@@ -1,6 +1,5 @@
 import { auth } from '@/auth'
-import prisma from '@/prisma'
-import { HistoryWithBlog } from '@/types/ViewType'
+import { HistoryWithBlogAndUser } from '@/types/ViewType'
 import { UserFlowsCard } from './UserFlows'
 import { getHistoryData } from '@/actions/tabs.action'
 
@@ -10,14 +9,14 @@ const History = async(props: props) => {
   const session = await auth()
   if (!session) return <div>You are not loggedIn</div>
 
-  const HistoryData: HistoryWithBlog[] = await getHistoryData(session?.user?.id!)
+  const HistoryData: HistoryWithBlogAndUser[] = await getHistoryData(session?.user?.id!)
 
   if(HistoryData?.length === 0) return <div>No History Found</div>
 
   return (
     <>
       {
-        HistoryData?.map((HistoryView: HistoryWithBlog, key: number) => (
+        HistoryData?.map((HistoryView: HistoryWithBlogAndUser, key: number) => (
           <UserFlowsCard
             key={key}
             userId={HistoryView?.blog?.userId!}
