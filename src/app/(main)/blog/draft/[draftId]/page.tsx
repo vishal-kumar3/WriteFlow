@@ -40,7 +40,6 @@ const DraftPage = async ({ params }: DraftPageProps) => {
   };
 
   const DraftFlowData = await fetchFlowData(draftId);
-  console.log(DraftFlowData)
   if (!DraftFlowData) return <div>No draft found</div>
 
   const processedDraftFlowData = {

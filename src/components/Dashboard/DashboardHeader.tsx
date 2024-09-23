@@ -11,7 +11,7 @@ const DashboardHeader = ({children, title, description}: props) => {
   return (
     <div className="m-10">
       {/* //TODO: Breadcrum here */}
-      Breadcrum here
+      {/* Breadcrum here */}
       <div className="flex justify-between border-b mb-10">
         <div>
           <p className="text-4xl font-semibold">{title}</p>

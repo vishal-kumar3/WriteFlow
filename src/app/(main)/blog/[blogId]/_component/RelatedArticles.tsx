@@ -6,13 +6,14 @@ import { BlogWithTagsAndUser } from '@/types/BlogType';
 import Link from 'next/link';
 import { ShowBadges } from '@/components/UserProfile/Tabs/UserFlows';
 import { cn } from '@/lib/utils';
+import { DefaultAvatarImage } from '@/app/(main)/user/[userId]/page';
 
 const ArticlePreview = ({ id, title, description, author, thumbnail, tags }: RelatedArticles) => (
   <Card className="overflow-hidden h-full">
     <Link href={`/user/${author.id}`}>
       <CardFooter className="flex items-center space-x-2 px-4 py-1">
         <Avatar className="h-8 w-8">
-          <AvatarImage src={author.avatar!} />
+          <AvatarImage src={author.avatar || DefaultAvatarImage} alt={author.name!} />
           <AvatarFallback>{author.name}</AvatarFallback>
         </Avatar>
         <span className="text-sm font-medium">{author.name}</span>
@@ -20,7 +21,11 @@ const ArticlePreview = ({ id, title, description, author, thumbnail, tags }: Rel
     </Link>
     <Link href={`/blog/${id}`}>
       <CardHeader className="p-0">
-        <Image src={thumbnail!} width={400} height={160} alt={title!} className="w-full h-40 object-cover" />
+        {
+          thumbnail && (
+            <Image src={thumbnail!} width={400} height={160} alt={title!} className="w-full h-40 object-cover" />
+          )
+        }
       </CardHeader>
       <CardContent className="p-4">
         <h3 className="text-lg line-clamp-1 font-semibold">{title}</h3>
@@ -69,8 +74,6 @@ export default function MoreArticles({ relatedArticles }: { relatedArticles: Blo
     thumbnail: article?.thumbnail,
     tags: article?.tags?.map(tag => tag.tag)
   }));
-
-  console.log(relatedArticles);
 
   return <ArticleGrid articles={articles} />;
 }

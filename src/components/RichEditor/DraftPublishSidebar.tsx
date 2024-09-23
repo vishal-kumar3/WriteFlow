@@ -102,26 +102,24 @@ export function DraftPublishSidebar({ userId, flowId, thumbnail, title }: { user
 
             {/* Image preview */}
             <div
-              className="w-full h-[200px] bg-red-200 flex items-center justify-center cursor-pointer relative rounded-lg overflow-hidden"
+              className="w-full h-[200px] flex items-center justify-center cursor-pointer relative rounded-lg overflow-hidden"
               onClick={() => document.getElementById("file-input")?.click()} // Simulate click on the input
             >
               {flowThumbnail ? (
                 <Image
                   src={flowThumbnail}
                   alt="Thumbnail"
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-lg w-full h-full"
+                  className="object-cover object-center rounded-lg w-full h-full"
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center">
                   <Image
                     src="/Thumbnail.avif"
-                    width={100}
-                    height={100}
+                    width={500}
+                    height={500}
                     alt="Default Thumbnail"
+                    className="object-cover object-center rounded-lg w-full h-full"
                   />
-                  <p className="text-sm text-gray-600">Click to upload thumbnail</p>
                 </div>
               )}
             </div>

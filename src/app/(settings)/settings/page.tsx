@@ -1,9 +1,14 @@
+"use client"
 import DashboardHeader from '@/components/Dashboard/DashboardHeader'
+import { useRouter } from 'next/navigation'
 import React from 'react'
 
 type props = {}
 
-const page = (props: props) => {
+const SettingPage = (props: props) => {
+  const router = useRouter()
+  router.replace('/settings/account')
+
   return (
     <DashboardHeader title='Settings' description=''>
       <div className='text-2xl'>
@@ -13,4 +18,4 @@ const page = (props: props) => {
   )
 }
 
-export default page
+export default SettingPage

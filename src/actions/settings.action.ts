@@ -56,12 +56,7 @@ export const changePassword = async ({ currentPassword, newPassword }: changePas
   if(!user) return { error: "User not found" }
   if(!user.password) return { error: "User does not have a password" }
 
-  const newCurrentPassword = await bcrypt.hash(currentPassword, 10)
-  console.log("current password hash:", newCurrentPassword);
-  console.log("Stored Hashed Password:", user.password);
-
   const passwordMatch = await bcrypt.compare(currentPassword, user.password)
-  console.log("Password Match:", passwordMatch);
   if(!passwordMatch) return { error: "Password is incorrect" }
 
   const hashedPassword = await bcrypt.hash(newPassword, 10)
@@ -85,8 +80,6 @@ export const changePassword = async ({ currentPassword, newPassword }: changePas
 export const deleteAccount = async (password: string, confirm: boolean) => {
   if(!confirm) return { error: "You must confirm that you want to delete your account" }
   if(!password) return { error: "You must enter your password to delete your account" }
-  console.log("Password:", password);
-  console.log("Confirm:", confirm);
   const session = await auth()
   if(!session) return { error: "You must be logged in to perform this action" }
 

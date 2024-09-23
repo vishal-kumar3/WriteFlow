@@ -19,6 +19,7 @@ const page = async(props: props) => {
   return (
     <DashboardHeader title='Content Settings'>
       <ContentTabSwitcher
+        currentUserId={session?.user?.id!}
         historyData={historyData}
         bookmarkData={bookmarkData}
         publishedData={publishedData}

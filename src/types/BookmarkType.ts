@@ -1,7 +1,12 @@
 import { Prisma } from '@prisma/client';
 
-export type UserWithBookmark = Prisma.UserGetPayload<{
-  select: {
-    bookmarks: true,
+export type UserWithBookmarkAndUserAndTags = Prisma.UserGetPayload<{
+  include: {
+    bookmarks: {
+      include: {
+        user: true,
+        tags: true
+      }
+    },
   }
 }> | null

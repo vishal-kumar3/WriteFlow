@@ -46,7 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     async signIn({user, account, profile, email, credentials}){
       if (!user.username) {
-        let username = `${user.name?.split(" ").join("").toLowerCase()}@${Math.floor(1000 + Math.random() * 9000)}`
+        let username = `${user.name?.split(" ").join("").toLowerCase()}_${Math.floor(1000 + Math.random() * 9000)}`
 
         // Ensure username is unique
         const existingUser = await prisma.user.findUnique({
@@ -59,8 +59,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         user.username = username;  // Now user has a username
       }
-      console.log("user:- ", user)
-
       return true;
     }
 

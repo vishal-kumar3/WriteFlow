@@ -11,31 +11,33 @@ datasource db {
 }
 
 model User {
-  id              String        @id @default(cuid())
-  username        String        @unique
-  name            String?
-  email           String        @unique
-  emailVerified   DateTime?
-  image           String?
-  coverImage      String?
-  password        String?
-  role            Role          @default(USER)
-  followerCount   Int           @default(0)
-  followingCount  Int           @default(0)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  about           About?
-  accounts        Account?
-  blogs           Blog[]
-  likedBlogIds    BlogLike[]
-  comments        Comment[]
-  likedCommentIds CommentLike[]
-  followers       Follows[]     @relation("follower")
-  following       Follows[]     @relation("following")
-  report          Report[]      @relation("IssuedBy")
-  reportedUser    Report[]      @relation("ReportedUser")
-  history         View[]
-  bookmarks       Blog[]        @relation("bookmarkedBy")
+  id                 String         @id @default(cuid())
+  username           String         @unique
+  name               String?
+  email              String         @unique
+  emailVerified      DateTime?
+  image              String?
+  coverImage         String?
+  password           String?
+  role               Role           @default(USER)
+  followerCount      Int            @default(0)
+  followingCount     Int            @default(0)
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  about              About?
+  accounts           Account?
+  blogs              Blog[]
+  notifications      Notification[]
+  notificationsCount Int            @default(0)
+  likedBlogIds       BlogLike[]
+  comments           Comment[]
+  likedCommentIds    CommentLike[]
+  followers          Follows[]      @relation("follower")
+  following          Follows[]      @relation("following")
+  report             Report[]       @relation("IssuedBy")
+  reportedUser       Report[]       @relation("ReportedUser")
+  history            View[]
+  bookmarks          Blog[]         @relation("bookmarkedBy")
 
   @@index([username, email, id])
 }
@@ -122,6 +124,7 @@ model View {
   blog      Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, blogId])
   @@index([userId, blogId])
 }
 
@@ -175,6 +178,21 @@ model Comment {
   Report    Report[]      @relation("ReportedComment")
 
   @@index([userId, blogId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  redirect  String
+  type      String
+  title     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Log {

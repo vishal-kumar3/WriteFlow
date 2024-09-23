@@ -11,36 +11,36 @@ const SettingsTabs = [
     href: "/settings/account",
     tab: "account",
   },
-  {
-    name: "Privacy & Security",
-    href: "/settings/privacy",
-    tab: "privacy",
-  },
+  // {
+  //   name: "Privacy & Security",
+  //   href: "/settings/privacy",
+  //   tab: "privacy",
+  // },
   {
     name: "Content Settings",
     href: "/settings/content",
     tab: "content",
   },
-  {
-    name: "Notifications",
-    href: "/settings/notification",
-    tab: "notification",
-  },
-  {
-    name: "Reports",
-    href: "/settings/reports",
-    tab: "reports",
-  },
-  {
-    name: "Appearance",
-    href: "/settings/appearance",
-    tab: "appearance",
-  },
-  {
-    name: "Security Logs",
-    href: "/settings/security",
-    tab: "security",
-  },
+  // {
+  //   name: "Notifications",
+  //   href: "/settings/notification",
+  //   tab: "notification",
+  // },
+  // {
+  //   name: "Reports",
+  //   href: "/settings/reports",
+  //   tab: "reports",
+  // },
+  // {
+  //   name: "Appearance",
+  //   href: "/settings/appearance",
+  //   tab: "appearance",
+  // },
+  // {
+  //   name: "Security Logs",
+  //   href: "/settings/security",
+  //   tab: "security",
+  // },
 ]
 
 

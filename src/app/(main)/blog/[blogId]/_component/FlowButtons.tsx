@@ -45,7 +45,7 @@ type props = {
 
 const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, commentCnt, comment, currentUser }: props) => {
   const text = 'Check out this blog'
-  const shareUrl = 'http://localhost:3000' + `/blog/${flowId}`
+  const shareUrl = process.env.NEXT_PUBLIC_HOST + `/blog/${flowId}`
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const message = `${text}\n\n${shareUrl}`
 
@@ -122,8 +122,8 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
               <FaWhatsapp className='size-5 sm:size-6' />
             </Link>
           </Button>
-          <Button variant={'ghost'} >I</Button>
-          <Button variant={'ghost'} >X</Button>
+          {/* <Button variant={'ghost'} >I</Button>
+          <Button variant={'ghost'} >X</Button> */}
         </HoverCardContent>
       </HoverCard>
 
