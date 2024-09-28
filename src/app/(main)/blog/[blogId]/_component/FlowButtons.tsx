@@ -72,11 +72,11 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
       <div className="flex gap-2 items-center justify-center">
         <button
           onClick={async () => {
-            addOptimisticLikeData({
+            currentUser && addOptimisticLikeData({
               likesCnt: optimisticLikeData.isAlreadyLiked ? optimisticLikeData.likesCnt - 1 : optimisticLikeData.likesCnt + 1,
               isAlreadyLiked: !optimisticLikeData.isAlreadyLiked
             })
-            toast.success(optimisticLikeData.isAlreadyLiked ? "Flow Unliked" : "Flow Liked")
+            currentUser && toast.success(optimisticLikeData.isAlreadyLiked ? "Flow Unliked" : "Flow Liked")
 
             const { error, success } = await likeFlow(flowId, userId)
             if (error) return toast.error(error)
@@ -98,8 +98,8 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
       }
       <button
         onClick={async () => {
-          addOptimisticIsBookmark(!optimisticIsBookmark)
-          toast.success(isBookmarked ? "Flow Unbookmarked" : "Flow Bookmarked")
+          currentUser && addOptimisticIsBookmark(!optimisticIsBookmark)
+          currentUser && toast.success(isBookmarked ? "Flow Unbookmarked" : "Flow Bookmarked")
 
           const { error, success } = await toggleBookmark(flowId)
           if (error) return toast.error(error)
@@ -127,21 +127,25 @@ const FlowButtons = ({ flowId, userId, likeData, isBookmarked, isCommentOff, com
         </HoverCardContent>
       </HoverCard>
 
-      <div>
-        <Popover>
-          <PopoverTrigger>
-            <EllipsisVertical className='size-5 sm:size-6' />
-          </PopoverTrigger>
-          <PopoverContent className="flex flex-col gap-1">
-            <ReportUserCard reportOptions={reportPostOptions} type='post' reportedUserId={userId} reportedBlogId={flowId} />
-            {
-              currentUser?.id === userId && (
-                <DeleteFlowButton flowId={flowId} userId={userId} modeClass='w-full' redirectMode={false} />
-              )
-            }
-          </PopoverContent>
-        </Popover>
-      </div>
+      {
+        currentUser && (
+          <div>
+            <Popover>
+              <PopoverTrigger>
+                <EllipsisVertical className='size-5 sm:size-6' />
+              </PopoverTrigger>
+              <PopoverContent className="flex flex-col gap-1">
+                <ReportUserCard reportOptions={reportPostOptions} type='post' reportedUserId={userId} reportedBlogId={flowId} />
+                {
+                  currentUser && currentUser.id === userId && (
+                    <DeleteFlowButton flowId={flowId} userId={userId} modeClass='w-full' redirectMode={false} />
+                  )
+                }
+              </PopoverContent>
+            </Popover>
+          </div>
+        )
+      }
     </div>
   )
 }

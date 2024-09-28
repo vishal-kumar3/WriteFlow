@@ -2,8 +2,10 @@
  * An array of routes that are public
  * @type {string[]}
  */
-export const publicRoutes = [
+export const publicRoutes: (string | RegExp)[] = [
   "/",
+  /^\/blog\/[a-zA-Z0-9]+$/,
+  /^\/user\/[a-zA-Z0-9]+$/,
 ];
 
 /**

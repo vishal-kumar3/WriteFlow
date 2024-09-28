@@ -14,6 +14,7 @@ type props = {
 
 const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAction, disabled }: props) => {
   if(!coverImage) return null
+
   return (
     <div className="relative group">
       <Image
@@ -37,7 +38,6 @@ const CoverImage = async ({ coverImage, userId, flowId, flowMode, uploadImageAct
               />
             </div>
           </CurrentUserOnly>
-
         )
       }
     </div>

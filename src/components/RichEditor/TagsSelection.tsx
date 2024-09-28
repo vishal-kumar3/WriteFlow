@@ -74,8 +74,10 @@ export function TagsSelection({ selectedTags, setSelectedTags }: { selectedTags:
 
                 // Space not allowed
                 if (target.value.includes(' ')) return;
-
-                setInputTag(target.value.toLowerCase());
+                target.value  = target.value.toLowerCase()
+                target.value = target.value.replace('india', 'Bharat')
+                target.value = target.value.replace('bharat', 'Bharat')
+                setInputTag(target.value);
               }}
             />
             <CommandList className="">

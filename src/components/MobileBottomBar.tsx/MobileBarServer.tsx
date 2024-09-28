@@ -7,7 +7,7 @@ type props = {}
 const MobileBarServer = async(props: props) => {
 
   const session = await auth();
-  if(!session) return null;
+  // if(!session) return null;
 
   const user = await prisma.user.findUnique({
     where: {
@@ -20,7 +20,7 @@ const MobileBarServer = async(props: props) => {
         }
       }
     }
-  })
+  }).catch(() => null)
 
   return (
     <MobileBar user={user} />

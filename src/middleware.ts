@@ -9,12 +9,20 @@ export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
 
-  console.log("Route:- ", req.nextUrl.pathname)
+  console.log("Route:- ", nextUrl.pathname)
   console.log("isLoggedIn:- ", isLoggedIn)
 
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
+  const isPublicRoute = publicRoutes.some((route) => {
+    if (typeof route === 'string') {
+      return route === nextUrl.pathname; // Exact match for static routes
+    }
+    if (route instanceof RegExp) {
+      return route.test(nextUrl.pathname); // Pattern match for dynamic routes
+    }
+    return false;
+  });
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   if(isApiAuthRoute) return
