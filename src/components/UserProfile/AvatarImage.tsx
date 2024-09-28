@@ -12,9 +12,10 @@ type Props = {
   followingCnt: number;
   followerCnt: number;
   username: string;
+  sessionId?: string;
 };
 
-const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt, username }: Props) => {
+const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt, username, sessionId }: Props) => {
   return (
     <div className="flex flex-col md:flex-row justify-between items-center md:items-end px-4 md:px-8 -mt-16 md:-mt-20 relative z-10 pointer-events-none">
       <div className="relative pointer-events-auto">
@@ -42,10 +43,16 @@ const AvatarImage = async ({ avatarImage, userId, followingCnt, followerCnt, use
           <p className="text-sm md:text-base lg:text-lg font-semibold">{followerCnt} Followers</p>
           <p className="text-sm md:text-base lg:text-lg font-semibold">{followingCnt} Following</p>
         </div>
-        {/* @ts-expect-error Async Server Component */}
-        <HideForCurrentUser userId={userId}>
-          <FollowButtonServerWraper username={username} id={userId} />
-        </HideForCurrentUser>
+        {
+          sessionId && (
+            <>
+              {/* @ts-expect-error Async Server Component */}
+              <HideForCurrentUser userId={userId}>
+                <FollowButtonServerWraper username={username} id={userId} />
+              </HideForCurrentUser>
+            </>
+          )
+        }
       </div>
     </div>
   );

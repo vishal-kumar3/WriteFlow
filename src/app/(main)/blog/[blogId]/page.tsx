@@ -18,6 +18,8 @@ import HideForCurrentUser from '@/util/HideForCurrentUser';
 import { ThemeToggle } from '@/components/ThemeToggle/ThemeToggle';
 import FollowButtonServerWraper from '@/components/UserProfile/FollowButtonServerWraper';
 import MoreArticles from './_component/RelatedArticles';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 // Dynamically import the client-side component
 const ShowBlog = dynamic(() => import('./_component/ShowBlog'), {
@@ -34,7 +36,7 @@ export default async function PublishedBlog({ params }: props) {
   const session = await auth();
   const publishedId = params.blogId;
 
-  if (!session) return <div className="p-4 text-center">You are not logged in</div>;
+  // if (!session) return <div className="p-4 text-center">You are not logged in</div>;
 
   const likeWhereUniqueInput = {
     userId_blogId: {
@@ -45,7 +47,7 @@ export default async function PublishedBlog({ params }: props) {
 
   const isAlreadyLiked: Like = await prisma.blogLike.findUnique({
     where: likeWhereUniqueInput
-  });
+  }).catch(() => null);
 
   await viewFlow(publishedId);
 
@@ -101,9 +103,9 @@ export default async function PublishedBlog({ params }: props) {
 
   const currentUser = await prisma.user.findUnique({
     where: {
-      id: session.user.id
+      id: session?.user.id
     }
-  })
+  }).catch(() => null);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -124,6 +126,13 @@ export default async function PublishedBlog({ params }: props) {
                 </div>
               </div>
               <div className="flex items-center gap-4">
+                {
+                  !currentUser && (
+                    <Link href="/auth/login">
+                      <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full">Login to bookmark</button>
+                    </Link>
+                  )
+                }
                 {/* @ts-expect-error Async Server Component */}
                 <AuthUserOnly>
                   {/* @ts-expect-error Async Server Component */}
@@ -141,12 +150,24 @@ export default async function PublishedBlog({ params }: props) {
               blog.coverImage && (
                 <CoverImage
                   coverImage={blog.coverImage}
-                  disabled={false}
+                  disabled={true}
                 />
               )
             }
             <div className="p-2 sm:p-6 md:p-8">
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-center">{blog.title}</h1>
+              <div className="flex gap-2 justify-center items-center flex-wrap text-sm sm:text-base text-gray-500 dark:text-gray-400">
+                {
+                  blog.tags.map(tag => (
+                    <form className='' key={tag.id} method="GET" action="/">
+                      <input type="hidden" name="search" value={tag.tag} />
+                      <Badge>
+                        <button type='submit'>{tag.tag}</button>
+                      </Badge>
+                    </form>
+                  ))
+                }
+              </div>
               <p className="text-md sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 italic mb-8 text-center">{blog.description}</p>
               <div
                 className="tiptap ProseMirror prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg mx-auto max-w-full overflow-hidden"
@@ -161,7 +182,7 @@ export default async function PublishedBlog({ params }: props) {
             <div className="max-w-[90%] mx-auto px-4 sm:px-6 lg:px-8">
               <FlowButtons
                 flowId={blog.id}
-                userId={session?.user.id!}
+                userId={blog.userId!}
                 currentUser={currentUser}
                 isCommentOff={blog.isCommentOff}
                 likeData={{

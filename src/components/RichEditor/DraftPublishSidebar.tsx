@@ -83,13 +83,16 @@ export function DraftPublishSidebar({ userId, flowId, thumbnail, title }: { user
               placeholder={placeholder}
               value={articleSlug}
               onChange={(e) => {
+                // if e.target.value has a word called 'india' then replace it with 'Bharat'.
                 e.target.value = e.target.value.toLowerCase()
                 e.target.value = e.target.value.replace(/^\s+/, '')
                 e.target.value = e.target.value.replace(/-{2,}/g, '-')
                 e.target.value = e.target.value.replace(/\s/g, '-')
+                e.target.value = e.target.value.replace('india', 'Bharat')
+                e.target.value = e.target.value.replace('bharat', 'Bharat')
                 setArticleSlug(e.target.value)
               }}
-            />
+              />
           </div>
           <div className="space-y-3">
             <Label>Select Tags</Label>

@@ -44,7 +44,7 @@ export default function MobileBar({user}: {user: User}) {
 
   const tabsLeft = [
     { icon: FiHome, label: 'Home', href: '/', index: 0 },
-    { icon: FiUser, label: 'Profile', href: `/user/${user?.id}`, index: 1 },
+    { icon: FiUser, label: 'Profile', href: user ? `/user/${user?.id}` : '/auth/login', index: 1 },
   ]
 
   const createFlowTab = {
@@ -54,8 +54,8 @@ export default function MobileBar({user}: {user: User}) {
   }
 
   const tabsRight = [
-    { icon: FiSearch, label: 'Search', href: '/user/search', index: 3 },
-    { icon: ChartNoAxesCombinedIcon, label: 'Dashboard', href: '/user/dashboard', index: 4 },
+    { icon: FiSearch, label: 'Search', href: user ? '/user/search' : '/auth/login', index: 3 },
+    { icon: ChartNoAxesCombinedIcon, label: 'Dashboard', href: user ? '/user/dashboard' : '/auth/login', index: 4 },
   ]
 
   return (
@@ -98,7 +98,11 @@ export default function MobileBar({user}: {user: User}) {
             )}
           </li>
         ))}
-        <CreateFlowForm title="Create Flow" mobile={createFlowTab} />
+        {
+          user && (
+            <CreateFlowForm title="Create Flow" mobile={createFlowTab} />
+          )
+        }
         {tabsRight.map((tab) => (
           <li key={tab.label} className="relative flex-1 h-full">
             <Link

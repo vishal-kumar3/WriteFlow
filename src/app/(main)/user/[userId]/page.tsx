@@ -105,6 +105,7 @@ const page = async ({ params }: props) => {
             userId={user?.id!}
             username={user?.name!}
             avatarImage={user?.image || DefaultAvatarImage}
+            sessionId={session?.user.id}
           />
           <div className="px-4 w-full sm:px-8 py-6">
             <AboutSection

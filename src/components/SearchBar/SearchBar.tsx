@@ -1,7 +1,7 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
-import { Bell, LogOut, Settings } from "lucide-react";
+import { Bell, LogOut, SearchIcon, Settings } from "lucide-react";
 import { useRouter } from "next/navigation"; // Client-side routing
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -10,6 +10,8 @@ import Link from "next/link";
 import { User } from "@/types/UserType";
 import { signOut } from "next-auth/react";
 import { DefaultAvatarImage } from "@/app/(main)/user/[userId]/page";
+import Image from "next/image";
+import { Button } from "../ui/button";
 
 export type SearchBarProps = {
   initialSearch?: string;
@@ -52,25 +54,39 @@ const SearchBar = ({ initialSearch, user }: SearchBarProps) => {
       className="sticky bg-background z-10 flex top-0 border-b-2 mt-0 w-full px-2 md:px-10 justify-between items-center h-[60px]"
       onSubmit={handleSearch}
     >
-      <div className="flex-1 mr-2">
-        <Input
-          name="search"
-          className="outline-none flex-1 md:max-w-[60%] mx-auto"
-          placeholder="Search for Flows..."
-          type="text"
-          value={search}
-          // onChange={(e) => {
-          //   setSearch(e.target.value)
-          //   const key = e.target.value.slice(-1);
-          //   if(key == '@'){
-          //     console.log('at');
-          //     setSearch(e.target.value.slice(0, -1) + 'from:');
-          //   } else{
-          //     setSearch(e.target.value);
-          //   }
-          // }}
-          defaultValue={initialSearch || ""}
-        />
+      {
+        !user && (
+          <Link href='/' className="mx-auto">
+            <Image src='/writeflow.svg' alt="Write Flow" className="hidden md:flex w-[150px] h-[20px]" width={10} height={10} />
+            <Image src='/logo.svg' alt="Write Flow" className="md:hidden flex w-[50px] h-[30px]" width={10} height={10} />
+          </Link>
+        )
+      }
+      <div className=" flex-1 mr-2">
+        <div className="relative md:max-w-[60%] mx-auto">
+          <Input
+            name="search"
+            className="outline-none flex-1"
+            placeholder="Search for Flows..."
+            type="text"
+            value={search}
+            // onChange={(e) => {
+            //   setSearch(e.target.value)
+            //   const key = e.target.value.slice(-1);
+            //   if(key == '@'){
+            //     console.log('at');
+            //     setSearch(e.target.value.slice(0, -1) + 'from:');
+            //   } else{
+            //     setSearch(e.target.value);
+            //   }
+            // }}
+            defaultValue={initialSearch || ""}
+          />
+          <Button type="submit" className="absolute w-fit top-0 right-0 bottom-0 backdrop-blur-sm" variant='ghost'>
+            <SearchIcon />
+          </Button>
+
+        </div>
         {/* <UserSearch /> */}
       </div>
       <div className="flex items-center gap-3">

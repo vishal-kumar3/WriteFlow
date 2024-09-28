@@ -46,13 +46,19 @@ export const UserCard = async ({ userData, createdAt, flowId }: UserCardProps) =
           </div>
         </PopoverTrigger>
         <PopoverContent className="flex flex-col gap-1 max-h-[300px] overflow-y-auto">
-          {session?.user?.id !== userData.id ? (
-            <FollowButtonServerWraper id={userData.id} username={userData.username!} />
-          ) : (
-            <DeleteFlowButton modeClass="w-full" redirectMode={true} flowId={flowId} userId={userData.id} />
-          )}
+          {
+            session && (
+              <>
+                {session?.user?.id !== userData.id ? (
+                  <FollowButtonServerWraper id={userData.id} username={userData.username!} />
+                ) : (
+                  <DeleteFlowButton modeClass="w-full" redirectMode={true} flowId={flowId} userId={userData.id} />
+                )}
+                <ReportUserCard reportedUserId={userData.id} reportedBlogId={flowId} reportOptions={reportUserOptions} type="post" />
+              </>
+            )
+          }
           <CopyButton copyLink={`/blog/${flowId}`}>Copy Link</CopyButton>
-          <ReportUserCard reportedUserId={userData.id} reportedBlogId={flowId} reportOptions={reportUserOptions} type="post" />
         </PopoverContent>
       </Popover>
     </div>

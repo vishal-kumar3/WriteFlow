@@ -27,6 +27,7 @@ import { User } from "@/types/UserType"
 import { useOptimistic, useState } from "react"
 import { toast } from "sonner"
 import LoadingCircle from "@/components/ui/icons/loading-circle"
+import Link from "next/link"
 
 type CommentProps = {
   disabled?: boolean
@@ -137,7 +138,15 @@ export function CommentSection({ comment, flowId, currentUser }: CommentSectionP
             Kindly follow the guidelines to keep the comment section clean and respectful.
           </SheetDescription>
         </SheetHeader>
-        <Comment auth={true} disabled={false} addOptimisticComment={addOptimisticComment} currentUser={currentUser} flowId={flowId} />
+        {
+          currentUser ? (
+            <Comment auth={true} disabled={false} addOptimisticComment={addOptimisticComment} currentUser={currentUser} flowId={flowId} />
+          ) : (
+            <Link href={'/auth/login'}>
+              <Button variant='secondary'>Login To Comment!!</Button>
+            </Link>
+          )
+        }
 
         {/* yaha se sara comment start hoga */}
 
