@@ -8,6 +8,29 @@ export const publicRoutes: (string | RegExp)[] = [
   /^\/user\/[a-zA-Z0-9]+$/,
 ];
 
+export type notAllowedType = {
+  [key: string]: string
+}
+
+/**
+ * An array of routes that are not allowed
+ * @type {string[]}
+ */
+export const notAllowed: notAllowedType[] = [
+  // "/settings",
+  // "/blog",
+  // "/user",
+  {
+    "/settings": "/settings/account",
+  },
+  {
+    "/blog": "/",
+  },
+  {
+    "/user": "/",
+  }
+]
+
 /**
  * An array of routes that are protected
  * @type {string[]}
