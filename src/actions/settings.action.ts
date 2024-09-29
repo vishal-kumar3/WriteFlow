@@ -77,6 +77,31 @@ export const changePassword = async ({ currentPassword, newPassword }: changePas
   return { success: "Password updated successfully" }
 }
 
+export const setPassword = async ({password}: {password: string}) => {
+  if(!password) return { error: "You must enter a password to set" }
+
+  const session = await auth()
+  if(!session) return { error: "You must be logged in to perform this action" }
+
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  const passUpdate = await prisma.user.update({
+    where: {
+      id: session.user.id,
+      password: null
+    },
+    data: {
+      password: hashedPassword
+    }
+  }).catch(() => {
+    return null
+  })
+
+  if(!passUpdate) return { error: "An error occurred while updating your password" }
+
+  return { success: "Password updated successfully" }
+}
+
 export const deleteAccount = async (password: string, confirm: boolean) => {
   if(!confirm) return { error: "You must confirm that you want to delete your account" }
   if(!password) return { error: "You must enter your password to delete your account" }

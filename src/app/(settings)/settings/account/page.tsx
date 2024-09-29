@@ -1,7 +1,6 @@
 import DashboardHeader from '@/components/Dashboard/DashboardHeader'
-import DynamicForm, { DynamicFormProps } from '@/components/form/DynamicForm'
-import { onSubmitChangePassword, onSubmitPersonalInfo } from '@/components/form/AccountOnSubmit'
-import { PasswordSchema, PasswordUpdate, PersonalInfoSchema, PersonalInfoUpdate } from '@/components/form/AccountSchema'
+import { onSubmitChangePassword, onSubmitPersonalInfo, onSubmitSetPassword } from '@/components/form/AccountOnSubmit'
+import { PasswordSchema, PasswordUpdate, PersonalInfoSchema, PersonalInfoUpdate, SetPassword, setPasswordSchema } from '@/components/form/AccountSchema'
 import DeleteAccount from '@/components/Settings/account/DeleteAccount'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from '@/components/ui/dialog'
@@ -9,6 +8,7 @@ import { z } from 'zod'
 import { auth } from '@/auth'
 import prisma from '@/prisma'
 import { FormWrapper } from '@/components/form/FormWrapper'
+import { redirect } from 'next/navigation'
 
 const AccountPage = async () => {
   const session = await auth()
@@ -21,7 +21,9 @@ const AccountPage = async () => {
     include: {
       about: true
     }
-  })
+  }).catch(() => null)
+
+  if(!user) return redirect('/settings/account')
 
   const defaultValue: z.infer<typeof PersonalInfoSchema> = {
     name: user?.name!,
@@ -47,11 +49,11 @@ const AccountPage = async () => {
         />
         <FormWrapper
           title='Password'
-          schema={PasswordSchema}
-          defaultValues={defaultValue}
-          fields={PasswordUpdate}
-          onSubmit={onSubmitChangePassword}
-          buttonText='Change Password'
+          schema={user.password ? PasswordSchema : setPasswordSchema}
+          // defaultValues={defaultValue}
+          fields={user.password ? PasswordUpdate : SetPassword}
+          onSubmit={user.password ? onSubmitChangePassword : onSubmitSetPassword}
+          buttonText={user.password ? 'Change Password' : 'Set Password'}
         />
 
         <div className='max-w-[70%] text-sm space-y-4'>

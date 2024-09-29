@@ -1,13 +1,13 @@
 "use client"
 import { z } from "zod"
-import { PasswordSchema, PersonalInfoSchema } from "./AccountSchema"
-import { changePassword, personalInfoUpdate } from "@/actions/settings.action"
+import { PasswordSchema, PersonalInfoSchema, setPasswordSchema } from "./AccountSchema"
+import { changePassword, personalInfoUpdate, setPassword } from "@/actions/settings.action"
 import { toast } from "sonner"
 
 export type personalInfoType = {
   name: string
   username: string
-  email: string
+  email: string | undefined
   about: {
     career: string
     bio: string
@@ -39,6 +39,10 @@ export type changePasswordType = {
   newPassword: string
 }
 
+export type setPasswordType = {
+  password: string
+}
+
 export const onSubmitChangePassword = async (data: z.infer<typeof PasswordSchema>) => {
   const values: changePasswordType = {
     currentPassword: data.currentPassword,
@@ -48,6 +52,20 @@ export const onSubmitChangePassword = async (data: z.infer<typeof PasswordSchema
   const { error, success } = await changePassword(values);
 
   if (error) {
+    toast.error(error)
+  } else {
+    toast.success(success)
+  }
+}
+
+export const onSubmitSetPassword = async (data:z.infer<typeof setPasswordSchema>) => {
+  const values: setPasswordType = {
+    password: data.password
+  }
+
+  const { error, success } = await setPassword(values);
+
+  if(error){
     toast.error(error)
   } else {
     toast.success(success)
