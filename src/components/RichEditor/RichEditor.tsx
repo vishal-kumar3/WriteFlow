@@ -102,11 +102,11 @@ const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: 
             <DialogDescription>
               This is a rich text editor. You can use the toolbar to format your content. Click on the icons to see the options available.
             </DialogDescription>
-            <div className='space-y-4'>
+            <div className='flex flex-col md:flex-row gap-4'>
               <DialogHeader>
                 <DialogTitle>Floating Menu</DialogTitle>
                 <DialogDescription>
-                  <video autoPlay loop muted disableRemotePlayback disablePictureInPicture aria-disabled width={400} >
+                  <video autoPlay loop muted disableRemotePlayback disablePictureInPicture aria-disabled width={200} >
                     <source src='/floatingmenu.mp4' type='video/mp4' />
                   </video>
                 </DialogDescription>
@@ -114,7 +114,7 @@ const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: 
                 <DialogHeader>
                   <DialogTitle>Slash Command</DialogTitle>
                   <DialogDescription>
-                    <video autoPlay loop muted disableRemotePlayback disablePictureInPicture aria-disabled width={400} >
+                    <video autoPlay loop muted disableRemotePlayback disablePictureInPicture aria-disabled width={200} >
                       <source src='/slashcommand.mp4' type='video/mp4' />
                     </video>
                   </DialogDescription>
