@@ -10,6 +10,8 @@ import {
   AIHighlight,
   TextStyle,
   Color,
+  TiptapUnderline,
+  HighlightExtension,
 } from "novel/extensions";
 import { UploadImagesPlugin } from "novel/plugins";
 
@@ -29,20 +31,22 @@ const tiptapImage = TiptapImage.extend({
   addProseMirrorPlugins() {
     return [
       UploadImagesPlugin({
-        imageClass: cx("opacity-40 rounded-lg border border-stone-200"),
+        imageClass: cx("opacity-40 rounded-lg"),
       }),
     ];
   },
 }).configure({
+  inline: false,
   allowBase64: true,
   HTMLAttributes: {
-    class: cx("rounded-lg border border-muted"),
+    class: cx("rounded-lg"),
   },
 });
 
 const updatedImage = UpdatedImage.configure({
+  inline: false,
   HTMLAttributes: {
-    class: cx("rounded-lg border border-muted"),
+    class: cx("rounded-lg"),
   },
 });
 
@@ -117,5 +121,7 @@ export const defaultExtensions = [
   horizontalRule,
   aiHighlight,
   TextStyle,
-  Color
+  Color,
+  TiptapUnderline,
+  HighlightExtension
 ];

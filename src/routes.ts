@@ -17,9 +17,6 @@ export type notAllowedType = {
  * @type {string[]}
  */
 export const notAllowed: notAllowedType[] = [
-  // "/settings",
-  // "/blog",
-  // "/user",
   {
     "/settings": "/settings/account",
   },
