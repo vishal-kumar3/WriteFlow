@@ -51,6 +51,7 @@ Before you start, ensure you have the following installed:
 
    ```bash
    docker run --name postgres -e POSTGRES_DB=writeflow -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=12345 -p 5432:5432 -d postgres
+   bunx prisma migrate deploy
    bun run dev
    ```
 
@@ -74,6 +75,7 @@ Before you start, ensure you have the following installed:
 3. Set up your Postgres database:
    - Create a database named `writeflow`.
    - Create a user (if necessary) to access the database.
+   - Then run `bunx prisma migrate deploy` to migrate all the tables.
 
 4. Update your `.env` file with the database connection details:
 
