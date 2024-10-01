@@ -24,7 +24,6 @@ Before you start, ensure you have the following installed:
 
 - Node.js (v20 or higher)
 - Docker
-- Docker Compose
 
 ## Installation
 
@@ -48,10 +47,11 @@ Before you start, ensure you have the following installed:
    cd WriteFlow
    ```
 
-2. Build and run the application using Docker Compose:
+2. Build and run the application using Docker:
 
    ```bash
-   docker-compose -f docker-compose.dev.yml up
+   docker run --name postgres -e POSTGRES_DB=writeflow -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=12345 -p 5432:5432 -d postgres
+   bun run dev
    ```
 
    The application will be accessible at [http://localhost:3000](http://localhost:3000), and the Postgres database will be running in the background.
@@ -80,7 +80,7 @@ Before you start, ensure you have the following installed:
    ```plaintext
    AUTH_TRUST_HOST=http://localhost:3000
    NEXT_PUBLIC_HOST=http://localhost:3000
-   DATABASE_URL=postgresql://<user>:<password>@localhost:5432/writeflow
+   DATABASE_URL=postgresql://postgres:12345@localhost:5432/writeflow
    AUTH_SECRET=secret
    GOOGLE_CLIENT_ID=
    GOOGLE_CLIENT_SECRET=
@@ -105,7 +105,7 @@ Ensure you set the following environment variables in your `.env` file:
 ```plaintext
 AUTH_TRUST_HOST=http://localhost:3000
 NEXT_PUBLIC_HOST=http://localhost:3000
-DATABASE_URL=postgresql://<user>:<password>@localhost:5432/writeflow
+DATABASE_URL=postgresql://postgres:12345@localhost:5432/writeflow
 AUTH_SECRET=secret
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
