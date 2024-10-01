@@ -82,7 +82,7 @@ Before you start, ensure you have the following installed:
    ```plaintext
    AUTH_TRUST_HOST=http://localhost:3000
    NEXT_PUBLIC_HOST=http://localhost:3000
-   DATABASE_URL=postgresql://postgres:12345@localhost:5432/writeflow
+   DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database>
    AUTH_SECRET=secret
    GOOGLE_CLIENT_ID=
    GOOGLE_CLIENT_SECRET=
