@@ -18,6 +18,7 @@ const DeleteFlowButton = ({ flowId, userId, redirectMode, modeClass }: { flowId:
       toast.error(error);
     } else if (success) {
       toast.success('Flow deleted successfully.');
+      localStorage.removeItem(`infoDialogSeen_${flowId}`);
       if (!redirectMode) {
         router.push(`/user/${userId}`);
       }

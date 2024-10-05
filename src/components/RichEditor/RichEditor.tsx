@@ -46,7 +46,15 @@ const RichEditor = ({ id, userId, title, description, jsonContent, thumbnail }: 
   const [flowTitle, setFlowTitle] = useState(title || '')
   const [flowDescription, setFlowDescription] = useState(description || '')
   const [isSaved, setIsSaved] = useState(true)
-  const [infoDialogOpen, setInfoDialogOpen] = useState(true)
+  const [infoDialogOpen, setInfoDialogOpen] = useState(false)
+
+  useEffect(() => {
+    const hasSeenDialog = localStorage.getItem(`infoDialogSeen_${id}`)
+    if (!hasSeenDialog) {
+      setInfoDialogOpen(true)
+      localStorage.setItem(`infoDialogSeen_${id}`, 'true')
+    }
+  }, [id])
 
   const debounce = useDebouncedCallback(async (userId: string, action: any, content?: string, updateJson?: JSONContent | string) => {
     const { error, success } = await action(id, userId, content, updateJson);
