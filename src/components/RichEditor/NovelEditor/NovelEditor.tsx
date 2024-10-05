@@ -41,7 +41,7 @@ const Editor = ({ initialValue, debounce, setIsSaved, userId }: EditorProp) => {
   return (
     <EditorRoot>
       <EditorContent
-        className="border border-t-0 p-4"
+        className="border-t-0"
         {...(initialValue && { initialContent: initialValue })}
         extensions={extensions}
         editorProps={{
