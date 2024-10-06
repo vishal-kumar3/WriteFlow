@@ -18,6 +18,7 @@ const DeleteFlowButton = ({ flowId, userId, redirectMode, modeClass }: { flowId:
       toast.error(error);
     } else if (success) {
       toast.success('Flow deleted successfully.');
+      localStorage.removeItem(`infoDialogSeen_${flowId}`);
       if (!redirectMode) {
         router.push(`/user/${userId}`);
       }
@@ -35,7 +36,7 @@ const DeleteFlowButton = ({ flowId, userId, redirectMode, modeClass }: { flowId:
     >
       <Button
         variant="destructive"
-        className={cn('text-black dark:text-white', modeClass)}
+        className={cn('text-black dark:text-white w-[100px]', modeClass)}
         disabled={isPending} // Disable button while deleting
       >
         {isPending ? 'Deleting...' : 'Delete'}

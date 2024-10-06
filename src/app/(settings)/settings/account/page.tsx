@@ -56,7 +56,7 @@ const AccountPage = async () => {
           buttonText={user.password ? 'Change Password' : 'Set Password'}
         />
 
-        <div className='max-w-[70%] text-sm space-y-4'>
+        <div className=' max-w-full md:max-w-[70%] text-sm space-y-4'>
           <div className='text-xl font-semibold'># Delete Your Account Permanently</div>
           <hr />
           <div className='ml-8 text-md'>This is will delete your account permanently</div>
