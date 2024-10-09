@@ -58,6 +58,15 @@ export const createFlow = async (initialState: any, formData: FormData) => {
     },
   });
 
+  await prisma.activityLog.create({
+    data: {
+      userId: session.user.id!,
+      activityType: 'CREATE',
+      entityType: 'BLOG',
+      entityId: createdFlow.id,
+    },
+  });
+
   if (!createdFlow) {
     return { error: 'Unexpected error while creating flow!!!' };
   } else {
@@ -301,6 +310,15 @@ export const updateContent = async (
     },
   });
 
+  await prisma.activityLog.create({
+    data: {
+      userId: session.user.id!,
+      activityType: 'EDIT',
+      entityType: 'BLOG',
+      entityId: flowId,
+    },
+  });
+
   if (!updatedFlow) {
     return { error: 'Unexpected error while updating flow content!!!' };
   } else {
@@ -466,6 +484,15 @@ export const likeFlow = async (flowId: string, userId: string) => {
       }),
     ]);
 
+    await prisma.activityLog.create({
+      data: {
+        userId: session.user.id!,
+        activityType: 'UNLIKE',
+        entityType: 'BLOG',
+        entityId: flowId,
+      },
+    });
+    
     if (!unLike) return { error: 'Unexpected error while unliking flow!!!' };
     // revalidatePath(`/blog/${flowId}`);
     revalidatePath(`/user/${session.user.id}`);
@@ -490,6 +517,15 @@ export const likeFlow = async (flowId: string, userId: string) => {
         },
       }),
     ]);
+
+    await prisma.activityLog.create({
+      data: {
+        userId: session.user.id!,
+        activityType: 'LIKE',
+        entityType: 'BLOG',
+        entityId: flowId,
+      },
+    });
 
     if (!like) return { error: 'Unexpected error while liking flow!!!' };
     // revalidatePath(`/blog/${flowId}`);
@@ -546,6 +582,15 @@ export const viewFlow = async (flowId: string) => {
             increment: 1,
           }
         }
+      });
+
+      await prisma.activityLog.create({
+        data: {
+          userId: session.user.id!,
+          activityType: 'VIEW',
+          entityType: 'BLOG',
+          entityId: flowId,
+        },
       });
 
       return { success: 'Flow viewed!!!' };
@@ -611,7 +656,17 @@ export const commentFlow = async (formData: FormData) => {
         increment: 1,
       }
     },
-  })
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      userId: session.user.id!,
+      activityType: 'COMMENT',
+      entityType: 'BLOG',
+      entityId: flowId,
+    },
+  });
+
 
   if (!createdComment)
     return { error: 'Unexpected error while commenting flow!!!' };

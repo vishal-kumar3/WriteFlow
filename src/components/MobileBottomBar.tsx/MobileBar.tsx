@@ -75,15 +75,15 @@ export default function MobileBar({user}: {user: User}) {
               >
                 <tab.icon
                   className={`w-6 h-6 ${activeTab === tab.index
-                    ? 'text-black dark:text-white'
-                    : 'text-gray-500 dark:text-gray-400'
+                      ? 'text-black dark:text-white'
+                      : 'text-gray-500 dark:text-gray-400'
                     }`}
                 />
               </motion.div>
               <span
                 className={`text-xs mt-1 ${activeTab === tab.index
-                  ? 'text-black dark:text-white'
-                  : 'text-gray-500 dark:text-gray-400'
+                    ? 'text-black dark:text-white'
+                    : 'text-gray-500 dark:text-gray-400'
                   }`}
               >
                 {tab.label}

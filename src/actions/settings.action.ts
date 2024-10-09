@@ -102,6 +102,23 @@ export const setPassword = async ({password}: {password: string}) => {
   return { success: "Password updated successfully" }
 }
 
+export const updateIsOnline = async (isOnline: boolean) => {
+  const session = await auth();
+  if (!session) return { error: "You must be logged in to perform this action" };
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: { id: session.user.id },
+      data: { isOnline },
+    });
+
+    return { success: "User status updated", user: updatedUser };
+  } catch (error) {
+    console.error("Error updating online status:", error);
+    return { error: "Failed to update online status" };
+  }
+};
+
 export const deleteAccount = async (password: string, confirm: boolean) => {
   if(!confirm) return { error: "You must confirm that you want to delete your account" }
   if(!password) return { error: "You must enter your password to delete your account" }
@@ -120,6 +137,10 @@ export const deleteAccount = async (password: string, confirm: boolean) => {
   const passwordMatch = await bcrypt.compare(password, user.password)
   if(!passwordMatch) return { error: "Password is incorrect" }
 
+
+  const onlineStatusUpdate = await updateIsOnline(false);
+  if (onlineStatusUpdate.error) return { error: onlineStatusUpdate.error };
+  
   const deletedUser = await prisma.user.delete({
     where: {
       id: session.user.id

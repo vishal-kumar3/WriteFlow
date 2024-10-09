@@ -17,20 +17,40 @@ export const login = async (data: z.infer<typeof loginFormSchema>) => {
 
   let { email, password } = validatedFields.data;
   email = email.toLowerCase();
+
+
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { isActive: true }, 
+  });
+
+
+  if (!user) {
+    return { error: "Invalid Credentials!!" }; 
+  }
+
+  if (!user.isActive) {
+    return { error: "Your account is inactive. Please contact support." };
+  }
+
   try {
     await signIn("credentials", {
       email,
       password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true, isOnline: true }, // Select the user ID to update isOnline status later
+    });
+
     return { success: "Logged In Successfully" };
   } catch (error) {
     if (error instanceof AuthError) {
-      console.log("Error Type:- ",error.type)
+      console.log("Error Type:- ", error.type);
       switch (error.type) {
         case "CredentialsSignin":
           return { error: "Invalid Credentials!!" };
-
         default:
           return { error: "Something went wrong!!" };
       }

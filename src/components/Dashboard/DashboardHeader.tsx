@@ -9,7 +9,7 @@ type props = {
 
 const DashboardHeader = ({children, title, description}: props) => {
   return (
-    <div className="m-0 md:m-10">
+    <div className="m-10">
       {/* //TODO: Breadcrum here */}
       {/* Breadcrum here */}
       <div className="flex justify-between border-b mb-10">

@@ -1,5 +1,5 @@
 "use client"
-import React, { ForwardRefExoticComponent, RefAttributes, useActionState, useEffect } from 'react'
+import { ForwardRefExoticComponent, RefAttributes, useActionState, useEffect } from 'react'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation'
 import { SideButton } from '../Sidebar/LinkButton'
 import { LucideProps, NotebookPen } from 'lucide-react'
 import { motion } from 'framer-motion'
+import React from 'react'
 
 type props = {
   title?: string

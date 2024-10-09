@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
 import { Bell, LogOut, SearchIcon, Settings } from "lucide-react";
-import { useRouter } from "next/navigation"; // Client-side routing
+import { useRouter } from "next/navigation"; 
 import React, { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -22,6 +22,27 @@ const SearchBar = ({ initialSearch, user }: SearchBarProps) => {
   const router = useRouter();
   const [search, setSearch] = useState(initialSearch);
 
+  const handleSignOut = async () => {
+    try {
+      const response = await fetch('/api/user/update-status', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: user.id, isOnline: false }),
+      });
+
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        throw new Error(`Failed to update user status: ${errorDetails.error || 'Unknown error'}`);
+      }
+
+      await signOut();
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
+
   const UserOptions = [
     // {
     //   icon: <Bell className="w-4" />,
@@ -38,7 +59,7 @@ const SearchBar = ({ initialSearch, user }: SearchBarProps) => {
       icon: <LogOut className="w-4" />,
       href: "",
       label: "Logout",
-      onClick: async() => await signOut(),
+      onClick: handleSignOut,
     }
   ]
 

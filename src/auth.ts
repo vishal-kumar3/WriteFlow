@@ -1,8 +1,7 @@
 import NextAuth from "next-auth"
 import authConfig from "./auth.config"
 import prisma from "./prisma"
-import {PrismaAdapter} from "@auth/prisma-adapter"
-import { getUserById } from "./data/user"
+import { PrismaAdapter } from "@auth/prisma-adapter"
 import { Role } from "@prisma/client"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -11,26 +10,38 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     error: "/auth/error",
   },
   events: {
-    async linkAccount({user}){
+    async linkAccount({ user }) {
       await prisma.user.update({
         where: { id: user.id },
-        data: { emailVerified: new Date() }
-      })
-    }
+        data: { emailVerified: new Date() },
+      });
+    },
+    async signIn({ user }) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { isOnline: true },
+      });
+    },
+    async signOut({ user }) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { isOnline: false },
+      });
+    },
   },
 
   callbacks: {
-    async session({session, token}){
-      if(token.sub && session.user){
-        session.user.id = token.sub
-        session.user.role = token.role as Role
-        session.user.username = token.username as string
+    async session({ session, token }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+        session.user.role = token.role as Role;
+        session.user.username = token.username as string;
       }
 
-      return session
+      return session;
     },
 
-    async jwt({token}){
+    async jwt({ token }) {
       if (!token.sub) return token;
 
       const user = await prisma.user.findUnique({
@@ -44,11 +55,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
 
-    async signIn({user, account, profile, email, credentials}){
+    async signIn({ user, account, profile, email, credentials }) {
       if (!user.username) {
-        let username = `${user.name?.split(" ").join("").toLowerCase()}_${Math.floor(1000 + Math.random() * 9000)}`
-
-        // Ensure username is unique
+        let username = `${user.name?.split(" ").join("").toLowerCase()}_${Math.floor(1000 + Math.random() * 9000)}`;
         const existingUser = await prisma.user.findUnique({
           where: { username },
         });
@@ -57,15 +66,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           username += Math.floor(Math.random() * 1000);
         }
 
-        user.username = username;  // Now user has a username
+        user.username = username; 
       }
       return true;
-    }
-
+    },
   },
   adapter: PrismaAdapter(prisma),
-  session:{
+  session: {
     strategy: "jwt",
   },
   ...authConfig,
-})
+});
