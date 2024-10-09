@@ -12,6 +12,7 @@ import { signOut } from 'next-auth/react';
 type props = {}
 
 export const SidebarButtonsTop = ({user}: {user: UserWithFollowers}) => {
+  
   return (
     <div className="flex flex-col gap-1">
       <LinkButton
@@ -23,6 +24,10 @@ export const SidebarButtonsTop = ({user}: {user: UserWithFollowers}) => {
       <LinkButton icon={<Handshake />} link={`/user/${user?.id}/friends`}>Friends</LinkButton>
       <LinkButton icon={<UserSearch />} link="/user/search">Search User</LinkButton>
       <LinkButton link={`/user/dashboard`} icon={<ChartNoAxesCombinedIcon />}>Dashboard</LinkButton>
+
+      {user?.role != 'USER' && (
+        <LinkButton link="/users" icon={<Settings />}>Admin Dashboard</LinkButton>
+      )}
     </div>
   )
 }

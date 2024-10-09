@@ -38,6 +38,9 @@ model User {
   reportedUser       Report[]       @relation("ReportedUser")
   history            View[]
   bookmarks          Blog[]         @relation("bookmarkedBy")
+  activities         Activity[]     @relation("UserActivities")
+  isActive           Boolean        @default(true)
+  isOnline           Boolean        @default(false)
 
   @@index([username, email, id])
 }
@@ -267,4 +270,23 @@ enum ReportStatus {
   PENDING
   RESOLVED
   REJECTED
+}
+
+model Activity {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  action    String
+  timestamp DateTime @default(now())
+  user      User     @relation("UserActivities", fields: [userId], references: [id])
+}
+
+
+
+model ActivityLog {
+  id            String   @id @default(cuid())
+  userId        String
+  activityType  String
+  entityType    String
+  entityId      String
+  createdAt     DateTime @default(now())
 }
